@@ -31,3 +31,4 @@ export const getSpotifyToken = async (): Promise<string> => {
     
     return cachedToken ?? ''
 }
+//TODO. 캐싱하는 로직 필요
