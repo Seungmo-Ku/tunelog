@@ -1,0 +1,22 @@
+export interface DefaultCardProps {
+    imgUrl: string
+    title: string
+    subtitle: string
+}
+
+const DefaultCard = ({
+    imgUrl,
+    title,
+    subtitle,
+    ...props
+}: DefaultCardProps) => {
+    return (
+        <div {...props} className='flex flex-col gap-y-[5px] items-start w-[153px] overflow-hidden shrink-0'>
+            <img src={imgUrl} alt={imgUrl} className='w-[153px] h-[153px] rounded-[25px] shrink-0 aspect-square'/>
+            <p className='text-12-regular text-white'>{title}</p>
+            <p className='text-12-regular text-white/50 truncate'>{subtitle}</p>
+        </div>
+    )
+}
+
+export default DefaultCard

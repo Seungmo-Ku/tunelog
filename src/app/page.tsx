@@ -7,7 +7,7 @@ export default function Home() {
     // const { data, isLoading } = useSpotifyToken()
     
     return (
-        <div>
+        <div className=''>
             <Suspense fallback={<div>Loading...</div>}>
                 <SpotifyExample/>
             </Suspense>

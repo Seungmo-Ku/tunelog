@@ -1,6 +1,7 @@
 'use client'
 
 import { useSearchAlbumQuery } from '@/hooks/use-spotify'
+import { Cards } from '@/components/cards'
 
 
 export const SpotifyExample = () => {
@@ -11,14 +12,11 @@ export const SpotifyExample = () => {
     console.log('SpotifyExample data', data)
     return (
         <div>
-            <div className='grid grid-cols-3'>
+            <div className='flex gap-x-[30px]'>
                 {
                     data.items?.map((album, index) => {
                         return (
-                            <div key={`album-${index}`}>
-                                <p className='line-clamp-1'>{album.name}</p>
-                                <img src={album.images[0].url} alt={album.name} className='w-32 h-32 object-cover' />
-                            </div>
+                            <Cards.Default imgUrl={album.images[0].url} title={album.name} subtitle={album.artists.map(artist => artist.name).join(', ')} key={index} />
                         )
                     })
                 }
