@@ -1,6 +1,8 @@
 import type { Preview } from '@storybook/nextjs'
 import '../src/app/globals.css'
 import { Quicksand } from 'next/font/google'
+import { clsx } from 'clsx'
+
 
 const quicksand = Quicksand({
     subsets: ['latin'],
@@ -18,7 +20,7 @@ const preview: Preview = {
     },
     decorators: [
         (Story) => (
-            <div className={quicksand.className}>
+            <div className={clsx(quicksand.className, 'bg-red-500 p-10')}>
                 <Story/>
             </div>
         )

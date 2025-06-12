@@ -26,8 +26,10 @@ export default function RootLayout({
         <body className={`${quicksand.variable} antialiased w-screen h-screen`}>
         <QueryClientProvider client={queryClient}>
             <div className='flex w-full h-full'>
-                <Navbar />
-                {children}
+                <Navbar/>
+                <main className='flex-1 overflow-y-auto h-full p-5'>
+                    {children}
+                </main>
             </div>
             {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={true}/>}
         </QueryClientProvider>
