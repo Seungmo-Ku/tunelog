@@ -2,7 +2,7 @@
 
 import { useGetAllRatings } from '@/hooks/use-rating'
 import { useMemo } from 'react'
-import { useGetAlbumQuery, useGetAlbumsQuery } from '@/hooks/use-spotify'
+import { useGetAlbumsQuery } from '@/hooks/use-spotify'
 import { Cards } from '@/components/cards'
 import { Rating } from '@/libs/interfaces/rating.interface'
 
@@ -17,7 +17,7 @@ export const NewestRatings = () => {
     }, [ratings])
     
     const { data: albums, isLoading } = useGetAlbumsQuery(idsOfRatings) // ratings 에서 type 에 따라 분리해서 따로 쿼리
-    const { data: album } = useGetAlbumQuery(idsOfRatings[0]) // 첫번째 앨범을 가져오는 쿼리, 필요시 사용
+    // const { data: album } = useGetAlbumQuery(idsOfRatings[0]) // 첫번째 앨범을 가져오는 쿼리, 필요시 사용
     
     const ratingsWithAlbums = useMemo(() => {
         if (!ratings) return {}
