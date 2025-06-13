@@ -4,7 +4,7 @@ import axios from 'axios'
 import { AlbumResponse } from '@/libs/dto/spotify.dto'
 
 
-export const GET = async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
     const { id } = await params // await 해 줘야 됨
     if (!id) {
         return new Response(JSON.stringify({ error: 'Missing album ID' }), { status: 400 })
