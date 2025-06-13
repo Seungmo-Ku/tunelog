@@ -8,7 +8,7 @@ import { DiscAlbum, GalleryVerticalEnd, House, ListMusic, Music, NotebookPen, Sq
 export default function Navbar() {
     return (
         <nav className='h-full shrink-0 px-4 py-2 text-white flex flex-col gap-y-5 justify-start items-center'>
-            <NavigationBar.Group icons={[House, ListMusic, NotebookPen, GalleryVerticalEnd]} selectedIndex={1}/>
+            <NavigationBar.Group icons={[House, ListMusic, NotebookPen, GalleryVerticalEnd]} selectedIndex={0}/>
             <NavigationBar.Group icons={[DiscAlbum, Music, SquareUser]}/>
         </nav>
     )

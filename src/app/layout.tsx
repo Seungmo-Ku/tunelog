@@ -23,9 +23,9 @@ export default function RootLayout({
     
     return (
         <html lang='en'>
-        <body className={`${quicksand.variable} antialiased w-screen h-screen`}>
+        <body className={`${quicksand.variable} antialiased w-screen h-screen flex items-center justify-center`}>
         <QueryClientProvider client={queryClient}>
-            <div className='flex w-full h-full'>
+            <div className='flex w-full h-full max-w-[1440px]'>
                 <Navbar/>
                 <main className='flex-1 overflow-y-auto h-full p-5'>
                     {children}

@@ -30,3 +30,9 @@ export interface SpotifyTokenResponse {
     token_type: string
     expires_in: number
 }
+
+export type AlbumResponse = IAlbum
+
+export interface AlbumsResponse {
+    albums: AlbumResponse[]
+}

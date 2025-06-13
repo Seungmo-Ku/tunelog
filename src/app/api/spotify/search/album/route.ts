@@ -1,10 +1,11 @@
 // src/app/api/spotify/search/album/route.ts
 
 import axios from 'axios'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getSpotifyToken } from '@/libs/api-server/api-server-spotify'
+import { SearchItemResponse } from '@/libs/dto/spotify.dto'
 
-export async function GET(req: Request) {
+export const GET = async(req: NextRequest) => {
     const { searchParams } = new URL(req.url)
     const query = searchParams.get('q')
     
@@ -14,7 +15,7 @@ export async function GET(req: Request) {
     
     const token = await getSpotifyToken()
     
-    const res = await axios.get(`https://api.spotify.com/v1/search`, {
+    const res = await axios.get<SearchItemResponse>(`${process.env.SPOTIFY_ENDPOINT!}/search`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },

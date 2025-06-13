@@ -1,16 +1,27 @@
 'use client'
 
-import { useSearchAlbumQuery } from '@/hooks/use-spotify'
+import { useGetAlbumsQuery, useSearchAlbumsQuery } from '@/hooks/use-spotify'
 import { Cards } from '@/components/cards'
 import { EllipsisVertical, Heart } from 'lucide-react'
+import { useGetAllRatings } from '@/hooks/use-rating'
+import { useMemo } from 'react'
 
 
 export const SpotifyExample = () => {
     
-    const { data, isLoading } = useSearchAlbumQuery('XCX')
+    const { data, isLoading } = useSearchAlbumsQuery('Djo')
+    const { data: ratings } = useGetAllRatings()
+    
+    const ids = useMemo(() => {
+        if(!ratings) return []
+        return ratings.map(rating => rating.spotifyId)
+    }, [ratings])
+    
+    const { data: albums } = useGetAlbumsQuery(ids)
     
     if (!data || isLoading) return <div/>
-    console.log('SpotifyExample data', data)
+    console.log('ratings', ratings)
+    console.log('albums', albums)
     return (
         <div className='flex flex-col gap-y-[40px] overflow-y-scroll'>
             <div className='flex gap-x-[30px] shrink-0'>

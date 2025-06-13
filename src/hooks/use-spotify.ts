@@ -10,10 +10,24 @@ export const useGetSpotifyToken = () => {
         refetchInterval: 1000 * 60 * 60
     })
 }
-export const useSearchAlbumQuery = (q: string) => {
+export const useSearchAlbumsQuery = (q: string) => {
     return useQuery({
         queryKey: ['search-album', q],
-        queryFn: () => ApiSpotify._get_album_list(q),
+        queryFn: () => ApiSpotify._search_albums(q),
         enabled: !!q
+    })
+}
+export const useGetAlbumsQuery = (ids: string[]) => {
+    return useQuery({
+        queryKey: ['albums', ...ids],
+        queryFn: () => ApiSpotify._get_albums(ids),
+        enabled: !!ids.length
+    })
+}
+export const useGetAlbumQuery = (id: string) => {
+    return useQuery({
+        queryKey: ['album', id],
+        queryFn: () => ApiSpotify._get_album(id),
+        enabled: !!id
     })
 }
