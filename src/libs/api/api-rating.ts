@@ -4,9 +4,9 @@ import { RatingResponse } from '@/libs/dto/rating.dto'
 
 
 const ApiRating = {
-    _get_all_ratings: async (): Promise<Rating[] | null> => {
+    _get_all_ratings: async (limit: number = 10): Promise<Rating[] | null> => {
         try {
-            const { data } = await axios.get<RatingResponse[]>('/api/ratings')
+            const { data } = await axios.get<RatingResponse[]>(`/api/ratings?limit=${limit}`)
             if (!data) return null
             return data.map(ratingResponse => new Rating(ratingResponse))
         }catch (e) {

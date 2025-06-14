@@ -1,1 +1,1 @@
-export type RatingType = 'album' | 'artist' | 'music'
+export type RatingType = 'album' | 'artist' | 'track'

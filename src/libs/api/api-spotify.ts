@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { AlbumResponse, AlbumsResponse, SearchAlbumResponse, SearchItemResponse, SpotifyTokenResponse } from '@/libs/dto/spotify.dto'
-import { Album } from '@/libs/interfaces/spotify.interface'
+import { AlbumResponse, AlbumsResponse, ArtistResponse, ArtistsResponse, SearchAlbumResponse, SearchItemResponse, SpotifyTokenResponse, TrackResponse, TracksResponse } from '@/libs/dto/spotify.dto'
+import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 
 
 const ApiSpotify = {
@@ -48,6 +48,46 @@ const ApiSpotify = {
             return new Album(data)
         }catch(e) {
             console.error('ApiSpotify._get_album', e)
+            return null
+        }
+    },
+    _get_artists: async (ids: string[]): Promise<Artist[] | null> => {
+        try {
+            const { data } = await axios.get<ArtistsResponse>(`/api/spotify/artists?ids=${ids.join(',')}`)
+            if (!data) return null
+            return data.artists.map(artistResponse => new Artist(artistResponse))
+        }catch (e) {
+            console.error('ApiSpotify._get_artists', e)
+            return null
+        }
+    },
+    _get_artist: async (id: string): Promise<Artist | null> => {
+        try {
+            const { data } = await axios.get<ArtistResponse>(`/api/spotify/artists/${id}`)
+            if (!data) return null
+            return new Artist(data)
+        }catch(e) {
+            console.error('ApiSpotify._get_artist', e)
+            return null
+        }
+    },
+    _get_tracks: async (ids: string[]): Promise<Track[] | null> => {
+        try {
+            const { data } = await axios.get<TracksResponse>(`/api/spotify/tracks?ids=${ids.join(',')}`)
+            if (!data) return null
+            return data.tracks.map(trackResponse => new Track(trackResponse))
+        }catch (e) {
+            console.error('ApiSpotify._get_tracks', e)
+            return null
+        }
+    },
+    _get_track: async (id: string): Promise<Track | null> => {
+        try {
+            const { data } = await axios.get<TrackResponse>(`/api/spotify/tracks/${id}`)
+            if (!data) return null
+            return new Track(data)
+        }catch(e) {
+            console.error('ApiSpotify._get_track', e)
             return null
         }
     }

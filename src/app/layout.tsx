@@ -27,7 +27,7 @@ export default function RootLayout({
         <QueryClientProvider client={queryClient}>
             <div className='flex w-full h-full max-w-[1440px]'>
                 <Navbar/>
-                <main className='flex-1 overflow-y-auto h-full p-5'>
+                <main className='flex-1 max-h-full p-5 overflow-hidden'>
                     {children}
                 </main>
             </div>

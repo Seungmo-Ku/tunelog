@@ -51,10 +51,10 @@ export const TopSearchBar = () => {
             <SearchBar.Default
                 value={searchQuery}
                 setValue={setSearchQuery}
-                className={openSearchResult ? 'border border-white' : 'border-none'}
+                className={'border border-white'}
                 onFocus={() => setOpenSearchResult(true)}
             />
-            <div className={clsx('flex flex-col w-full bg-tunelog-dark-alt absolute top-[72px] transition-all duration-300 ease-in-out',
+            <div className={clsx('flex flex-col w-full bg-tunelog-dark-alt absolute top-[72px] z-10 transition-all duration-300 ease-in-out',
                 (openSearchResult && !isEmpty(debouncedSearchQuery) ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible pointer-events-none')
             )}>
                 {

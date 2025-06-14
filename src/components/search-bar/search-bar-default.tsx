@@ -21,7 +21,7 @@ export const SearchBarDefault = ({
             <Input
                 type='text'
                 className='grow text-white outline-0'
-                placeholder='Search'
+                placeholder='Search for albums, artists, tracks...'
                 value={value ?? ''}
                 onChange={(e) => {
                     setValue?.(e.target.value)

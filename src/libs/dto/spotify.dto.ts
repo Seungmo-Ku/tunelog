@@ -37,7 +37,15 @@ export interface SpotifyTokenResponse {
 }
 
 export type AlbumResponse = IAlbum
+export type ArtistResponse = IArtist
+export type TrackResponse = ITrack
 
 export interface AlbumsResponse {
     albums: AlbumResponse[]
+}
+export interface ArtistsResponse {
+    artists: ArtistResponse[]
+}
+export interface TracksResponse {
+    tracks: TrackResponse[]
 }
