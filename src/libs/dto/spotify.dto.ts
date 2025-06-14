@@ -1,5 +1,5 @@
 import { SearchType } from '@/libs/constants/spotify.constant'
-import { IAlbum } from '@/libs/interfaces/spotify.interface'
+import { IAlbum, IArtist, ITrack } from '@/libs/interfaces/spotify.interface'
 
 
 export interface SearchItemRequest {
@@ -13,17 +13,22 @@ export interface SearchItemRequest {
 
 export interface SearchItemResponse {
     albums: SearchAlbumResponse
+    artists: SearchArtistResponse
+    tracks: SearchTrackResponse
 }
 
-export interface SearchAlbumResponse {
+export interface SearchDefaultResponse {
     href: string
     limit: number
     next: string | null
     offset: number
     previous: string | null
     total: number
-    items: IAlbum[]
 }
+export type SearchAlbumResponse = SearchDefaultResponse & { items: IAlbum[] }
+export type SearchArtistResponse = SearchDefaultResponse & { items: IArtist[] }
+export type SearchTrackResponse = SearchDefaultResponse & { items: ITrack[] }
+
 
 export interface SpotifyTokenResponse {
     access_token: string

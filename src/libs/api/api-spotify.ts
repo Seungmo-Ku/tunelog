@@ -13,12 +13,21 @@ const ApiSpotify = {
             return null
         }
     },
-    _search_albums: async (q: string): Promise<SearchAlbumResponse | null> => {
+    _search_all: async (q: string, limit: number = 5): Promise<SearchItemResponse | null> => {
         try {
-            const { data } = await axios.get<SearchItemResponse>(`/api/spotify/search/album?q=${q}`)
-            return data.albums
+            const { data } = await axios.get<SearchItemResponse>(`/api/spotify/search?q=${q}&limit=${limit}`)
+            return data
         } catch (e) {
-            console.error('ApiSpotify._get_album_list', e)
+            console.error('ApiSpotify._search_all', e)
+            return null
+        }
+    },
+    _search_albums: async (q: string, limit: number = 5): Promise<SearchAlbumResponse | null> => {
+        try {
+            const { data } = await axios.get<SearchAlbumResponse>(`/api/spotify/search/album?q=${q}&limit=${limit}`)
+            return data
+        } catch (e) {
+            console.error('ApiSpotify._search_albums', e)
             return null
         }
     },

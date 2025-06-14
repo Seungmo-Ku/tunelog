@@ -1,5 +1,3 @@
-// src/app/api/spotify/search/album/route.ts
-
 import axios from 'axios'
 import { NextRequest, NextResponse } from 'next/server'
 import { getSpotifyToken } from '@/libs/api-server/api-server-spotify'
@@ -22,10 +20,10 @@ export const GET = async(req: NextRequest) => {
         },
         params: {
             q: query,
-            type: 'album',
-            limit: limit ? parseInt(limit) : 5
+            type: 'album,artist,track',
+            limit: limit ? parseInt(limit) : 5,
         },
     })
     
-    return NextResponse.json(res.data.albums)
+    return NextResponse.json(res.data)
 }

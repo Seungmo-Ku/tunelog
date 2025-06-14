@@ -1,5 +1,6 @@
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import ApiSpotify from '@/libs/api/api-spotify'
+import { isEmpty } from 'lodash'
 
 
 export const useGetSpotifyToken = () => {
@@ -10,24 +11,31 @@ export const useGetSpotifyToken = () => {
         refetchInterval: 1000 * 60 * 60
     })
 }
-export const useSearchAlbumsQuery = (q: string) => {
+export const useSearchAllQuery = (q: string, limit?: number) => {
+    return useQuery({
+        queryKey: ['search-all', q, limit],
+        queryFn: () => ApiSpotify._search_all(q, limit ?? 5),
+        enabled: !isEmpty(q)
+    })
+}
+export const useSearchAlbumsQuery = (q: string, limit?: number) => {
     return useQuery({
         queryKey: ['search-album', q],
-        queryFn: () => ApiSpotify._search_albums(q),
-        enabled: !!q
+        queryFn: () => ApiSpotify._search_albums(q, limit ?? 5),
+        enabled: !isEmpty(q)
     })
 }
 export const useGetAlbumsQuery = (ids: string[]) => {
     return useQuery({
         queryKey: ['albums', ...ids],
         queryFn: () => ApiSpotify._get_albums(ids),
-        enabled: !!ids.length
+        enabled: !isEmpty(ids)
     })
 }
 export const useGetAlbumQuery = (id: string) => {
     return useQuery({
         queryKey: ['album', id],
         queryFn: () => ApiSpotify._get_album(id),
-        enabled: !!id
+        enabled: !isEmpty(id)
     })
 }

@@ -1,32 +1,133 @@
-import { AlbumType } from '@/libs/constants/spotify.constant'
+import { AlbumType, SearchType } from '@/libs/constants/spotify.constant'
 
 
 export interface ExternalUrls {
     spotify: string
 }
 
-export interface IArtist {
+export interface ITrack {
+    album: Album
+    artists: Artist[]
+    available_markets: string[]
+    disc_number: number
+    duration_ms: number
+    explicit: boolean
+    external_ids: {
+        isrc: string
+        ean: string
+        upc: string
+    }
     external_urls: ExternalUrls
     href: string
     id: string
+    is_playable: boolean
     name: string
+    popularity: number
+    track_number: number
+    type: SearchType
+    uri: string
+    is_local: boolean
+    restrictions?: {
+        reason: string
+    }
+    // linked_from:
+}
+
+export class Track implements ITrack {
+    album: Album
+    artists: Artist[]
+    available_markets: string[]
+    disc_number: number
+    duration_ms: number
+    explicit: boolean
+    external_ids: {
+        isrc: string
+        ean: string
+        upc: string
+    }
+    external_urls: ExternalUrls
+    href: string
+    id: string
+    is_playable: boolean
+    name: string
+    popularity: number
+    track_number: number
+    type: SearchType
+    uri: string
+    is_local: boolean
+    restrictions?: {
+        reason: string
+    }
+
+    constructor(track: ITrack) {
+        this.album = new Album(track.album)
+        this.artists = track.artists.map(artist => new Artist(artist))
+        this.available_markets = track.available_markets
+        this.disc_number = track.disc_number
+        this.duration_ms = track.duration_ms
+        this.explicit = track.explicit
+        this.external_ids = track.external_ids
+        this.external_urls = track.external_urls
+        this.href = track.href
+        this.id = track.id
+        this.is_playable = track.is_playable
+        this.name = track.name
+        this.popularity = track.popularity
+        this.track_number = track.track_number
+        this.type = track.type
+        this.uri = track.uri
+        this.is_local = track.is_local
+        this.restrictions = track.restrictions
+    }
+}
+
+export interface IArtist {
+    external_urls: ExternalUrls
+    followers: {
+        // href: string | null
+        total: number
+    }
+    genres: string[]
+    href: string
+    id: string
+    images: {
+        height: number
+        url: string
+        width: number
+    }[]
+    name: string
+    popularity: number
     type: string
     uri: string
 }
 
 export class Artist implements IArtist {
     external_urls: ExternalUrls
+    followers: {
+        total: number
+    }
+    genres: string[]
     href: string
     id: string
+    images: {
+        height: number
+        url: string
+        width: number
+    }[]
     name: string
+    popularity: number
     type: string
     uri: string
-    
+
     constructor(artist: IArtist) {
         this.external_urls = artist.external_urls
+        this.followers = artist.followers
+        this.genres = artist.genres
         this.href = artist.href
         this.id = artist.id
+        this.images = artist.images
         this.name = artist.name
+        this.popularity = artist.popularity
         this.type = artist.type
         this.uri = artist.uri
     }
