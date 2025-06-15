@@ -62,7 +62,7 @@ export const AllRatings = () => {
                         <Cards.LongSkeleton key={`AllRatings-Skeleton-${index}`}/>
                     )) :
                     filteredRatings?.map((rating, index) => {
-                        let imgUrl: string, title: string
+                        let imgUrl: string = '', title: string = ''
                         switch (rating.type) {
                             case SearchType.album:
                                 const album = albumsById[rating.spotifyId]
