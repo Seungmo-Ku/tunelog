@@ -1,64 +1,17 @@
 'use client'
 
 import { useGetAllRatings } from '@/hooks/use-rating'
-import { useMemo } from 'react'
-import { useGetAlbumsQuery, useGetArtistsQuery, useGetTracksQuery } from '@/hooks/use-spotify'
 import { Cards } from '@/components/cards'
 import { SearchType } from '@/libs/constants/spotify.constant'
-import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
+import { useRatingWithObjects } from '@/hooks/use-rating-with-objects'
+import { useRouter } from 'next/navigation'
 
 
 export const NewestRatings = () => {
+    const appRoute = useRouter()
+    const { data: ratings, isLoading: isRatingLoading } = useGetAllRatings(10)
     
-    const { data: ratings } = useGetAllRatings(10)
-    
-    const idsOfRatings = useMemo(() => {
-        if (!ratings) return {
-            album: [],
-            artist: [],
-            track: []
-        }
-        
-        const albumRatings = ratings.filter(rating => rating.type === SearchType.album).map(rating => rating.spotifyId)
-        const artistRatings = ratings.filter(rating => rating.type === SearchType.artist).map(rating => rating.spotifyId)
-        const trackRatings = ratings.filter(rating => rating.type === SearchType.track).map(rating => rating.spotifyId)
-        
-        return {
-            album: albumRatings,
-            artist: artistRatings,
-            track: trackRatings
-        }
-    }, [ratings])
-    
-    const { data: albums, isLoading: isAlbumLoading } = useGetAlbumsQuery(idsOfRatings.album)
-    const { data: artists, isLoading: isArtistLoading } = useGetArtistsQuery(idsOfRatings.artist)
-    const { data: tracks, isLoading: isTrackLoading } = useGetTracksQuery(idsOfRatings.track)
-    
-    const albumsById = useMemo(() => {
-        if (!albums) return {}
-        return albums.reduce((acc, album) => {
-            acc[album.id] = album
-            return acc
-        }, {} as Record<string, Album>)
-    }, [albums])
-    
-    const artistsById = useMemo(() => {
-        if (!artists) return {}
-        return artists.reduce((acc, artist) => {
-            acc[artist.id] = artist
-            return acc
-        }, {} as Record<string, Artist>)
-    }, [artists])
-    
-    const tracksById = useMemo(() => {
-        if (!tracks) return {}
-        return tracks.reduce((acc, track) => {
-            acc[track.id] = track
-            return acc
-        }, {} as Record<string, Track>)
-    }, [tracks])
-    
-    const isLoading = useMemo(() => isAlbumLoading || isArtistLoading || isTrackLoading, [isAlbumLoading, isArtistLoading, isTrackLoading])
+    const { isLoading, albumsById, tracksById, artistsById } = useRatingWithObjects(ratings, isRatingLoading)
     
     return (
         <div className='flex flex-row gap-x-[30px] overflow-x-scroll'>
@@ -81,9 +34,14 @@ export const NewestRatings = () => {
                     }
                 })
             }
-            {!isLoading && <div className='flex flex-col gap-y-[5px] w-[153px] h-[153px] shrink-0 justify-center rounded-[25px] bg-white/5 hover:bg-white/10 transition cursor-pointer items-center active:scale-95'>
-                <p className='text-white text-14-bold text-center'>View all Ratings</p>
-            </div>}
+            {!isLoading && (
+                <div
+                    className='flex flex-col gap-y-[5px] w-[153px] h-[153px] shrink-0 justify-center rounded-[25px] bg-white/5 hover:bg-white/10 transition cursor-pointer items-center active:scale-95'
+                    onClick={() => appRoute.push('/ratings')}
+                >
+                    <p className='text-white text-14-bold text-center'>View all Ratings</p>
+                </div>
+            )}
         </div>
     )
 }

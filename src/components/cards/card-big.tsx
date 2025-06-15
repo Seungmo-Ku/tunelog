@@ -11,10 +11,10 @@ export const CardBig = ({
     ...props
 }: CardBigProps) => {
     return (
-        <div {...props} className='w-[213px] h-[234px] shrink-0 rounded-[20px] border border-[#FFFFFF] border-opacity-[0.03] relative'>
+        <div {...props} className='w-[200px] h-[234px] shrink-0 rounded-[20px] border border-[#FFFFFF] border-opacity-[0.03] relative transition active:scale-95 cursor-pointer'>
             <img src={imgUrl} alt={imgUrl} className='w-full h-full rounded-[20px] object-cover object-center'/>
-            <p className='absolute text-24-regular text-tunelog-light left-[19px] bottom-[35px] text-shadow-xs text-shadow-background'>{title}</p>
-            <p className='absolute text-10-regular text-tunelog-light left-[19px] bottom-[22px] opacity-[0.75] text-shadow-xs text-shadow-background'>{subtitle}</p>
+            <p className='absolute text-24-regular text-tunelog-light left-[19px] bottom-[35px] text-shadow-lg text-shadow-background line-clamp-2'>{title}</p>
+            <p className='absolute text-12-bold text-tunelog-light left-[19px] bottom-[22px] opacity-[0.75] text-shadow-lg text-shadow-background'>{subtitle}</p>
         </div>
     )
 }

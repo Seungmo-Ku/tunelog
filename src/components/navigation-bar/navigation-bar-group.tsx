@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation'
 
 
 export interface NavigationBarGroupProps {
-    components: NavbarComponentProps[],
+    components: NavbarComponentProps[]
 }
 
 export const NavigationBarGroup = ({

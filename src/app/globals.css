@@ -11,6 +11,7 @@
     --color-foreground: var(--foreground);
 
     --color-tunelog-secondary: oklch(86.77% 0.131 85.80);
+    --color-tunelog-dark: oklch(24.45% 0.007 229.16);
     --color-tunelog-dark-alt: oklch(23.13% 0.006 214.42);
     --color-tunelog-light: oklch(94.61% 0.019 103.43);
 

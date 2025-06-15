@@ -51,7 +51,7 @@ export const TopSearchBar = () => {
             <SearchBar.Default
                 value={searchQuery}
                 setValue={setSearchQuery}
-                className={'border border-white'}
+                className={openSearchResult ? 'border border-white' : 'border-none'}
                 onFocus={() => setOpenSearchResult(true)}
             />
             <div className={clsx('flex flex-col w-full bg-tunelog-dark-alt absolute top-[72px] z-10 transition-all duration-300 ease-in-out',
