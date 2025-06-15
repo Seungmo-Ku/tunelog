@@ -68,7 +68,7 @@ export class Rating implements IRating {
         this.type = rating.type
         this.spotifyId = rating.spotifyId
         this.score = rating.score
-        this.comment = rating.comment
+        this.comment = rating.comment.replaceAll('\\n', '\n') // Ensure newlines are preserved
         this.createdAt = rating.createdAt
         this.updatedAt = rating.updatedAt
         this.author = rating.author || ''
