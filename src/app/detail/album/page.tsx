@@ -1,4 +1,4 @@
-const AlbumRatingsPage = () => {
+const AlbumDetailPage = () => {
     return (
         <div>
             앨범 평가 페이지
@@ -6,4 +6,4 @@ const AlbumRatingsPage = () => {
     )
 }
 
-export default AlbumRatingsPage
+export default AlbumDetailPage
