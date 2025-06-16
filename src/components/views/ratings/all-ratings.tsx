@@ -54,7 +54,7 @@ export const AllRatings = () => {
                 <div className='w-[1px] h-full bg-white md:flex hidden'/>
                 <SortingButtons sortingIndex={sortingIndex} setSortingIndexAction={setSortingIndex}/>
                 <div className='w-[1px] h-full bg-white md:flex hidden'/>
-                <Button.Box text='New Rating' leftIcon={PlusIcon} className='text-14-regular w-fit' onClick={() => setNewRatingOpen(true)}/>
+                <Button.Box text='New Rating' leftIcon={PlusIcon} className='text-14-regular w-fit h-10' onClick={() => setNewRatingOpen(true)}/>
             </div>
             <div className='flex flex-col w-full'>
                 {
