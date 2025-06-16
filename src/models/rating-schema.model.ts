@@ -14,7 +14,7 @@ const ratingSchema = new mongoose.Schema({
     spotifyId: { type: String, required: true },
     score: { type: Number, required: true, min: 0, max: 5 },
     comment: { type: String, required: true },
-    author: { type: String, required: false, default: '' },
+    author: { type: String, required: true },
     isEdited: { type: Boolean, default: false },
     likes: { type: Number, default: 0 },
     replies: [replySchema],

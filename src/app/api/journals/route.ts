@@ -15,7 +15,6 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
 export const POST = async (req: NextRequest) => {
     await connectDB()
     const body = await req.json()
-    console.log('POST /api/journals', body)
     const newJournal = await Journal.create(body)
     return NextResponse.json(newJournal, { status: 201 }) // 201 Created
 }

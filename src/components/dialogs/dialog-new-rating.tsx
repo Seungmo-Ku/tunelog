@@ -46,14 +46,11 @@ export const DialogNewRating = ({
                 return 'New Rating'
         }
     }, [albumData?.name, artistData?.name, isLoading, selectedObjectId, selectedType, trackData?.name])
-    console.log('selectedObjectId', selectedObjectId)
-    console.log('selectedType', selectedType)
-    console.log('score', score)
-    console.log('comment', comment)
+    
     return (
         <Dialog transition open={open} onClose={onCloseAction} className='relative z-50 transition duration-300 ease-out data-closed:opacity-0'>
             <div className='fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/50'>
-                <DialogPanel className='w-3/4 space-y-4 bg-[#33373B] text-white p-12 rounded-2xl'>
+                <DialogPanel className='w-3/4 space-y-4 bg-[#33373B] text-white md:p-12 p-4 rounded-2xl'>
                     <DialogTitle className='font-bold'>{dialogTitle}</DialogTitle>
                     <TopSearchBar
                         onAlbumClick={() => {
@@ -66,6 +63,7 @@ export const DialogNewRating = ({
                             setSelectedType(SearchType.track)
                         }}
                         setSelectedObjectId={setSelectedObjectId}
+                        className={''}
                     />
                     <Input
                         placeholder='Score (0-5)'
@@ -73,15 +71,15 @@ export const DialogNewRating = ({
                         value={score}
                         onChange={(e) => {
                             const value = parseFloat(e.target.value)
-                            if(isNaN(value)) setScore(0)
-                            else if(value >= 0 && value <= 5) setScore(value)
-                            else if(value < 0) setScore(0)
-                            else if(value > 5) setScore(5)
+                            if (isNaN(value)) setScore(0)
+                            else if (value >= 0 && value <= 5) setScore(value)
+                            else if (value < 0) setScore(0)
+                            else if (value > 5) setScore(5)
                         }}
                     />
                     <Input
                         className='w-full py-1 border-white border'
-                        placeholder='Author (optional)'
+                        placeholder='Author'
                         value={author}
                         onChange={(e) => setAuthor(e.target.value)}
                         maxLength={10}
@@ -95,9 +93,9 @@ export const DialogNewRating = ({
                     />
                     <Button.Box
                         text='create new rating!'
-                        disabled={isPending || isEmpty(selectedObjectId) || isEmpty(comment)}
+                        disabled={isPending || isEmpty(selectedObjectId) || isEmpty(comment) || isEmpty(author)}
                         onClick={async () => {
-                            if (isPending || !selectedType || isEmpty(selectedObjectId) || isEmpty(comment)) return
+                            if (isPending || !selectedType || isEmpty(selectedObjectId) || isEmpty(comment) || isEmpty(author)) return
                             const ratingData: RatingCreateRequest = {
                                 spotifyId: selectedObjectId,
                                 type: selectedType,
@@ -105,7 +103,6 @@ export const DialogNewRating = ({
                                 score,
                                 comment
                             }
-                            console.log('ratingData', ratingData)
                             await mutateAsync(ratingData)
                             onCloseAction()
                             setScore(5)

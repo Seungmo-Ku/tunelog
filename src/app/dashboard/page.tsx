@@ -9,8 +9,8 @@ const DashboardPage = () => {
             <TopSearchBar/>
             <div className='flex flex-col gap-y-10 w-full h-full overflow-y-scroll pt-5'>
                 
-                <div className='grid grid-cols-[5fr_3fr] gap-x-5 w-full h-[500px]'>
-                    <div className='bg-[#609EAF] rounded-[40px] flex justify-center items-center h-full'>
+                <div className='grid md:grid-cols-[5fr_3fr] gap-x-5 w-full md:h-[500px]'>
+                    <div className='bg-[#609EAF] rounded-[40px] flex justify-center items-center md:h-full h-[300px]'>
                         이건 내용물입니다
                     </div>
                     <div className='flex flex-col w-full gap-y-3 h-[500px]'>

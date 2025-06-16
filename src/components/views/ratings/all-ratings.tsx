@@ -11,6 +11,7 @@ import { Button } from '@/components/buttons'
 import { EllipsisVertical, Plus } from 'lucide-react'
 import { Dialogs } from '@/components/dialogs'
 
+
 export const AllRatings = () => {
     const [filterIndex, setFilterIndex] = useState(0)
     const [sortingIndex, setSortingIndex] = useState(0)
@@ -47,13 +48,13 @@ export const AllRatings = () => {
     
     //TODO. Rating 용 검색창 따로 만들기, grid 는 journal 탭에서 사용, rating 에서는 가로로 긴 컴포넌트에 누르면 disclosure 같은 거 사용
     return (
-        <div className='flex flex-col gap-y-10 relative'>
-            <div className='w-full flex gap-x-5'>
+        <div className='flex flex-col gap-y-10 relative w-full overflow-x-hidden'>
+            <div className='w-full flex md:flex-row flex-col  gap-x-5 gap-y-4'>
                 <FilterButtons filterIndex={filterIndex} setFilterIndexAction={setFilterIndex}/>
-                <div className='w-[1px] h-full bg-white'/>
+                <div className='w-[1px] h-full bg-white md:flex hidden'/>
                 <SortingButtons sortingIndex={sortingIndex} setSortingIndexAction={setSortingIndex}/>
-                <div className='w-[1px] h-full bg-white'/>
-                <Button.Box text='New Rating' leftIcon={PlusIcon} className='text-14-regular' onClick={() => setNewRatingOpen(true)}/>
+                <div className='w-[1px] h-full bg-white md:flex hidden'/>
+                <Button.Box text='New Rating' leftIcon={PlusIcon} className='text-14-regular w-fit' onClick={() => setNewRatingOpen(true)}/>
             </div>
             <div className='flex flex-col w-full'>
                 {

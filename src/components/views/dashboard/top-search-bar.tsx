@@ -14,13 +14,15 @@ export interface TopSearchBarProps {
     onArtistClick?: () => void
     onTrackClick?: () => void
     setSelectedObjectId?: React.Dispatch<React.SetStateAction<string>>
+    className?: string
 }
 
 export const TopSearchBar = ({
     onAlbumClick,
     onArtistClick,
     onTrackClick,
-    setSelectedObjectId
+    setSelectedObjectId,
+    className = ''
 }: TopSearchBarProps) => {
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>('')
@@ -53,7 +55,7 @@ export const TopSearchBar = ({
         }
     }, [searchQuery, debouncedFetch])
     
-    const { data, isLoading } = useSearchAllQuery(debouncedSearchQuery, 1)
+    const { data, isLoading } = useSearchAllQuery(debouncedSearchQuery, 2)
     const albums = useMemo(() => data?.albums.items.map(album => new Album(album)) || [], [data])
     const artists = useMemo(() => data?.artists.items.map(artist => new Artist(artist)) || [], [data])
     const tracks = useMemo(() => data?.tracks.items.map(track => new Track(track)) || [], [data])
@@ -63,12 +65,13 @@ export const TopSearchBar = ({
             <SearchBar.Default
                 value={searchQuery}
                 setValue={setSearchQuery}
-                className={openSearchResult ? 'border border-white' : 'border-none'}
+                className={`${className} ${openSearchResult ? 'border border-white' : 'border-none'}`}
                 onFocus={() => setOpenSearchResult(true)}
             />
             <div className={clsx('flex flex-col w-full bg-tunelog-dark-alt absolute top-[72px] z-10 transition-all duration-300 ease-in-out',
                 (openSearchResult && !isEmpty(debouncedSearchQuery) ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible pointer-events-none')
             )}>
+                <div className='text-white p-3 bg-tune-dark-alt/80'>Album Results:</div>
                 {
                     isLoading ? <SearchBar.ResultSkeleton/> : isEmpty(albums) ? null : albums.map((album, index) => {
                         return (
@@ -87,6 +90,7 @@ export const TopSearchBar = ({
                         )
                     })
                 }
+                <div className='text-white p-3 bg-tune-dark-alt/80'>Artist Results:</div>
                 {
                     isLoading ? <SearchBar.ResultSkeleton/> : isEmpty(artists) ? null : artists.map((artist, index) => {
                         return (
@@ -104,6 +108,7 @@ export const TopSearchBar = ({
                         )
                     })
                 }
+                <div className='text-white p-3 bg-tune-dark-alt/80'>Track Results:</div>
                 {
                     isLoading ? <SearchBar.ResultSkeleton/> : isEmpty(tracks) ? null : tracks.map((track, index) => {
                         return (
