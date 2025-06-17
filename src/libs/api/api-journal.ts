@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Journal } from '@/libs/interfaces/journal.interface'
-import { JournalResponse } from '@/libs/dto/journal.dto'
+import { JournalCreateRequest, JournalResponse } from '@/libs/dto/journal.dto'
 
 
 const ApiJournal = {
@@ -13,7 +13,27 @@ const ApiJournal = {
             console.error('ApiJournal._get_all_journals', e)
             return null
         }
-    }
+    },
+    _get_journal: async (id: string): Promise<Journal | null> => {
+        try {
+            const { data } = await axios.get<JournalResponse>(`/api/journals/${id}`)
+            if (!data) return null
+            return data
+        }catch (e) {
+            console.error('ApiJournal._get_journal', e)
+            return null
+        }
+    },
+    _post_journal: async (rating: JournalCreateRequest): Promise<Journal | null> => {
+        try {
+            const { data } = await axios.post<JournalResponse>('/api/journals', rating)
+            if (!data) return null
+            return new Journal(data)
+        } catch (e) {
+            console.error('ApiJournal._post_journal', e)
+            return null
+        }
+    },
 }
 
 export default ApiJournal

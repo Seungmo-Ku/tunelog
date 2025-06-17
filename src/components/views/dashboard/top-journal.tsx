@@ -9,10 +9,12 @@ import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { SearchType } from '@/libs/constants/spotify.constant'
 import { Tags } from '@/libs/interfaces/journal.interface'
 import { isEmpty } from 'lodash'
+import { useRouter } from 'next/navigation'
 
 
 export const TopJournal = () => {
     
+    const appRouter = useRouter()
     const { data: journals, isLoading: journalsLoading } = useGetAllJournals(4)
     
     const idsOfSubjects = useMemo(() => {
@@ -48,7 +50,7 @@ export const TopJournal = () => {
         return map
     }, [albums, artists, tracks])
     const tagsToString = useCallback((tags: Tags | undefined) => {
-        if(isEmpty(tags)) return ''
+        if (isEmpty(tags)) return ''
         const tagValues: string[] = Object.values(tags).filter(tag => !isEmpty(tag)).map(tag => `#${tag}`)
         return tagValues.join(' ')
     }, [])
@@ -72,15 +74,17 @@ export const TopJournal = () => {
                     const subjectData = subjectMap[subject.spotifyId]
                     const imgUrl = subject.type === SearchType.track ? (subjectData as Track)?.album.images[0].url : (subjectData as Artist | Album).images[0].url
                     return (
-                        <Cards.Chart
-                            key={index}
-                            imgUrl={imgUrl}
-                            title={journal.title}
-                            subtitle={new Date(journal.createdAt).toLocaleDateString()}
-                            additionalInfo={tagsToString(journal.tags)}
-                            icon={ArrowUpRightIcon}
-                            containerClassName='w-full'
-                        />
+                        <div onClick={() => appRouter.push(`/journals/${journal._id}`)} className='cursor-pointer' key={`TopJournal-${index}`}>
+                            <Cards.Chart
+                                key={index}
+                                imgUrl={imgUrl}
+                                title={journal.title}
+                                subtitle={new Date(journal.createdAt).toLocaleDateString()}
+                                additionalInfo={tagsToString(journal.tags)}
+                                icon={ArrowUpRightIcon}
+                                containerClassName='w-full'
+                            />
+                        </div>
                     )
                 })
             }

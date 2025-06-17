@@ -68,7 +68,7 @@ export const TopSearchBar = ({
                 className={`${className} ${openSearchResult ? 'border border-white' : 'border-none'}`}
                 onFocus={() => setOpenSearchResult(true)}
             />
-            <div className={clsx('flex flex-col w-full bg-tunelog-dark-alt absolute top-[72px] z-10 transition-all duration-300 ease-in-out overflow-y-scroll max-h-[450px]',
+            <div className={clsx('flex flex-col w-full bg-tunelog-dark-alt absolute top-[72px] z-10 transition-all duration-300 ease-in-out overflow-y-scroll max-h-[350px]',
                 (openSearchResult && !isEmpty(debouncedSearchQuery) ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible pointer-events-none')
             )}>
                 <div className='text-white p-3 bg-tune-dark-alt/80'>Album Results:</div>
