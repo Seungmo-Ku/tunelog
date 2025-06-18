@@ -6,3 +6,8 @@ export type RatingCreateRequest = Pick<IRating, 'type' | 'spotifyId' | 'score' |
 export type RatingUpdateRequest = Partial<Pick<IRating, 'score' | 'comment'>>
 
 export type RatingResponse = IRating
+
+export interface DataConnection<T> {
+    data: T[]
+    nextCursor?: string
+}

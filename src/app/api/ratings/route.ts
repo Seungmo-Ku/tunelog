@@ -7,9 +7,24 @@ import { isEmpty } from 'lodash'
 export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     const { searchParams } = new URL(req.url)
     const limit = !isEmpty(searchParams.get('limit')) ? parseInt(searchParams.get('limit')!) : 10
+    const cursor = searchParams.get('cursor') // updatedAt 값 (ISO string)
+    
     await connectDB()
-    const ratings = await Rating.find().sort({ updatedAt: -1 }).limit(limit) // find().limit() -> limit을 걸고 싶으면 쿼리 파라미터로 받아서 처리해야 함
-    return NextResponse.json(ratings)
+    
+    const query = cursor
+                  ? { updatedAt: { $lt: new Date(cursor) } }
+                  : {}
+    
+    const ratings = await Rating.find(query)
+                                .sort({ updatedAt: -1 })
+                                .limit(limit)
+    
+    const nextCursor = ratings.length === limit ? ratings[ratings.length - 1].updatedAt.toISOString() : null
+    
+    return NextResponse.json({
+        data: ratings,
+        nextCursor
+    })
 }
 
 export const POST = async (req: NextRequest) => {

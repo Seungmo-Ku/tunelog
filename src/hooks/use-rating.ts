@@ -1,12 +1,17 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import ApiRating from '@/libs/api/api-rating'
-import { RatingCreateRequest } from '@/libs/dto/rating.dto'
+import { DataConnection, RatingCreateRequest, RatingResponse } from '@/libs/dto/rating.dto'
 
 
-export const useGetAllRatings = (limit?: number) => {
-    return useQuery({
-        queryKey: ['rating-all', limit ?? 10],
-        queryFn: () => ApiRating._get_all_ratings(limit ?? 10)
+export const useGetAllRatings = (limit: number = 10) => {
+    return useInfiniteQuery<DataConnection<RatingResponse>, Error>({
+        queryKey: ['rating-all', limit],
+        queryFn: async ({ pageParam }) => {
+            const cursor = typeof pageParam === 'string' ? pageParam : ''
+            return await ApiRating._get_all_ratings(limit, cursor) ?? { data: [], nextCursor: undefined }
+        },
+        initialPageParam: '',
+        getNextPageParam: (lastPage) => lastPage?.nextCursor
     })
 }
 export const usePostRating = () => {

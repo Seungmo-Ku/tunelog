@@ -1,15 +1,20 @@
 import axios from 'axios'
 import { Rating } from '@/libs/interfaces/rating.interface'
-import { RatingCreateRequest, RatingResponse } from '@/libs/dto/rating.dto'
+import { DataConnection, RatingCreateRequest, RatingResponse } from '@/libs/dto/rating.dto'
 
 
 const ApiRating = {
-    _get_all_ratings: async (limit: number = 10): Promise<Rating[] | null> => {
+    _get_all_ratings: async (limit: number = 10, nextCursor?: string): Promise<DataConnection<RatingResponse> | null> => {
         try {
-            const { data } = await axios.get<RatingResponse[]>(`/api/ratings?limit=${limit}`)
+            // nextCursor가 있으면 쿼리스트링에 추가
+            const params = new URLSearchParams()
+            params.append('limit', limit.toString())
+            if (nextCursor) params.append('cursor', nextCursor)
+            
+            const { data } = await axios.get<DataConnection<RatingResponse>>(`/api/ratings?${params.toString()}`)
             if (!data) return null
-            return data.map(ratingResponse => new Rating(ratingResponse))
-        }catch (e) {
+            return data
+        } catch (e) {
             console.error('ApiRating._get_all_ratings', e)
             return null
         }
@@ -23,7 +28,7 @@ const ApiRating = {
             console.error('ApiRating._post_rating', e)
             return null
         }
-    },
+    }
 }
 
 export default ApiRating

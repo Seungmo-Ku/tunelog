@@ -5,11 +5,14 @@ import { useRatingWithObjects } from '@/hooks/use-rating-with-objects'
 import { Cards } from '@/components/cards'
 import { SearchType } from '@/libs/constants/spotify.constant'
 import { FilterButtons } from '@/components/views/ratings/filter-buttons'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { SortingButtons } from '@/components/views/ratings/sorting-buttons'
 import { Button } from '@/components/buttons'
 import { EllipsisVertical, Plus } from 'lucide-react'
 import { Dialogs } from '@/components/dialogs'
+import { Rating } from '@/libs/interfaces/rating.interface'
+import { useInView } from 'react-intersection-observer'
+import { isEmpty } from 'lodash'
 
 
 export const AllRatings = () => {
@@ -17,7 +20,21 @@ export const AllRatings = () => {
     const [sortingIndex, setSortingIndex] = useState(0)
     const [newRatingOpen, setNewRatingOpen] = useState(false)
     
-    const { data: ratings, isLoading: isRatingLoading } = useGetAllRatings(1000) // TODO. Pagination or infinite scroll
+    const { data: ratingsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isRatingLoading } = useGetAllRatings(10)
+    
+    const ratings = useMemo(() => {
+        if (isRatingLoading) return []
+        const ratingsArray = ratingsData?.pages.flatMap(page => page.data) ?? []
+        return ratingsArray?.map(rating => new Rating(rating)) ?? []
+    }, [isRatingLoading, ratingsData?.pages])
+    
+    const { ref, inView } = useInView()
+    
+    useEffect(() => {
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage()
+        }
+    }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage])
     
     const filteredRatings = useMemo(() => {
         if (!ratings) return []
@@ -40,7 +57,7 @@ export const AllRatings = () => {
         return sortingIndex === 0 ? base : [...base].reverse()
     }, [filterIndex, ratings, sortingIndex])
     
-    const { isLoading, albumsById, tracksById, artistsById } = useRatingWithObjects(filteredRatings, isRatingLoading)
+    const { albumsById, tracksById, artistsById } = useRatingWithObjects(filteredRatings)
     
     const PlusIcon = useMemo(() => <Plus className='w-5 h-5 text-tunelog-secondary'/>, [])
     
@@ -58,32 +75,38 @@ export const AllRatings = () => {
             </div>
             <div className='flex flex-col w-full'>
                 {
-                    isLoading ?
+                    isRatingLoading && isEmpty(filteredRatings) &&
                     Array.from({ length: 5 }).map((_, index) => (
                         <Cards.LongSkeleton key={`AllRatings-Skeleton-${index}`}/>
-                    )) :
+                    ))
+                }
+                {
+                    !isRatingLoading && !isEmpty(filteredRatings) &&
                     filteredRatings?.map((rating, index) => {
                         let imgUrl: string = '', title: string = ''
+                        if (!rating.spotifyId || !rating.type) {
+                            return <Cards.LongSkeleton key={`AllRatings-Skeleton-in-${index}`}/>
+                        }
                         switch (rating.type) {
                             case SearchType.album:
-                                const album = albumsById[rating.spotifyId]
-                                imgUrl = album.images[0].url
-                                title = album.name
+                                const album = albumsById[rating.spotifyId] ?? null
+                                imgUrl = album?.images[0].url ?? ''
+                                title = album?.name ?? ''
                                 break
                             case SearchType.artist:
-                                const artist = artistsById[rating.spotifyId]
-                                imgUrl = artist.images[0].url
-                                title = artist.name
+                                const artist = artistsById[rating.spotifyId] ?? null
+                                imgUrl = artist?.images[0].url ?? ''
+                                title = artist?.name ?? ''
                                 break
                             case SearchType.track:
-                                const track = tracksById[rating.spotifyId]
-                                imgUrl = track.album.images[0].url
-                                title = track.name
+                                const track = tracksById[rating.spotifyId] ?? null
+                                imgUrl = track?.album?.images[0].url ?? ''
+                                title = track?.name ?? ''
                         }
                         return (
                             <div key={`AllRatings-${index}`} className='mb-[10px] !w-full group transition active:scale-95'>
                                 <Cards.Long
-                                    imgUrl={imgUrl ?? ''}
+                                    imgUrl={isEmpty(imgUrl) ? '/src/app/favicon.ico' : imgUrl}
                                     title={`${title}`}
                                     type={rating.type}
                                     duration={`${rating.score}/5`}
@@ -99,7 +122,11 @@ export const AllRatings = () => {
                             </div>
                         )
                     })
-                    
+                }
+                <div ref={ref}/>
+                {
+                    isFetchingNextPage && hasNextPage &&
+                    <Cards.LongSkeleton/>
                 }
             </div>
             <Dialogs.NewRating open={newRatingOpen} onCloseAction={() => setNewRatingOpen(false)}/>

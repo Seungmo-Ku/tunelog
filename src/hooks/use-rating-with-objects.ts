@@ -7,7 +7,7 @@ import { useMemo } from 'react'
 import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 
 
-export const useRatingWithObjects = (ratings: Rating[] | null | undefined, isRatingLoading: boolean) => {
+export const useRatingWithObjects = (ratings: Rating[] | null | undefined) => {
     
     const idsOfRatings = useMemo(() => {
         if (!ratings) return {
@@ -55,7 +55,7 @@ export const useRatingWithObjects = (ratings: Rating[] | null | undefined, isRat
         }, {} as Record<string, Track>)
     }, [tracks])
     
-    const isLoading = useMemo(() => isRatingLoading || isAlbumLoading || isArtistLoading || isTrackLoading, [isAlbumLoading, isArtistLoading, isRatingLoading, isTrackLoading])
+    const isLoading = useMemo(() => isAlbumLoading || isArtistLoading || isTrackLoading, [isAlbumLoading, isArtistLoading, isTrackLoading])
     
     return {
         albumsById,

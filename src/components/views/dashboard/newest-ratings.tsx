@@ -5,18 +5,26 @@ import { Cards } from '@/components/cards'
 import { SearchType } from '@/libs/constants/spotify.constant'
 import { useRatingWithObjects } from '@/hooks/use-rating-with-objects'
 import { useRouter } from 'next/navigation'
+import { useMemo } from 'react'
+import { Rating } from '@/libs/interfaces/rating.interface'
 
 
 export const NewestRatings = () => {
     const appRoute = useRouter()
-    const { data: ratings, isLoading: isRatingLoading } = useGetAllRatings(10)
+    const { data: ratingsData, isLoading: isRatingLoading } = useGetAllRatings(10)
     
-    const { isLoading, albumsById, tracksById, artistsById } = useRatingWithObjects(ratings, isRatingLoading)
+    const ratings = useMemo(() => {
+        if (isRatingLoading) return []
+        const ratingsArray = ratingsData?.pages.flatMap(page => page.data) ?? []
+        return ratingsArray?.map(rating => new Rating(rating)) ?? []
+    }, [isRatingLoading, ratingsData?.pages])
+    
+    const { isLoading, albumsById, tracksById, artistsById } = useRatingWithObjects(ratings)
     
     return (
         <div className='flex flex-row gap-x-[30px] overflow-x-scroll'>
             {
-                isLoading ?
+                (isLoading || isRatingLoading) ?
                 Array.from({ length: 4 }).map((_, index) => (
                     <Cards.DefaultSkeleton key={`NewestRatings-Skeleton-${index}`}/>
                 )) :
