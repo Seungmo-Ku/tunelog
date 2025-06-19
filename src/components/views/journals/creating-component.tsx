@@ -153,7 +153,7 @@ export const CreatingComponent = () => {
     }, [albumsById, artistsById, isLoading, selectedObject, tracksById])
     
     return (
-        <div className='text-white w-full h-full overflow-hidden flex flex-col gap-y-3 p-3'>
+        <div className='text-white w-full h-full flex flex-col gap-y-3 p-3'>
             <div className='flex gap-x-3'>
                 <Input
                     className='w-full py-1 border-white border'
