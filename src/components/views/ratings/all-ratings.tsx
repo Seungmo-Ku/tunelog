@@ -103,10 +103,13 @@ export const AllRatings = () => {
                                 imgUrl = track?.album?.images[0].url ?? ''
                                 title = track?.name ?? ''
                         }
+                        if(isEmpty(imgUrl) || isEmpty(title)) {
+                            return <Cards.LongSkeleton key={`AllRatings-${index}`}/>
+                        }
                         return (
                             <div key={`AllRatings-${index}`} className='mb-[10px] !w-full group transition active:scale-95'>
                                 <Cards.Long
-                                    imgUrl={isEmpty(imgUrl) ? '/src/app/favicon.ico' : imgUrl}
+                                    imgUrl={imgUrl}
                                     title={`${title}`}
                                     type={rating.type}
                                     duration={`${rating.score}/5`}
