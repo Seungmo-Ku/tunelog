@@ -12,14 +12,14 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     await connectDB()
     
     const query = cursor
-                  ? { updatedAt: { $lt: new Date(cursor) } }
+                  ? { createdAt: { $lt: new Date(cursor) } }
                   : {}
     
     const ratings = await Rating.find(query)
-                                .sort({ updatedAt: -1 })
+                                .sort({ createdAt: -1 })
                                 .limit(limit)
     
-    const nextCursor = ratings.length === limit ? ratings[ratings.length - 1].updatedAt.toISOString() : null
+    const nextCursor = ratings.length === limit ? ratings[ratings.length - 1].createdAt.toISOString() : null
     
     return NextResponse.json({
         data: ratings,

@@ -58,3 +58,5 @@ export class Journal implements IJournal {
         this.deleted = data.deleted || false
     }
 }
+
+export type JournalByMonth = Record<string, Journal[]>

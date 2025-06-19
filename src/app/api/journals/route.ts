@@ -7,9 +7,20 @@ import { Journal } from '@/models/journal-schema.model'
 export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     const { searchParams } = new URL(req.url)
     const limit = !isEmpty(searchParams.get('limit')) ? parseInt(searchParams.get('limit')!) : 10
+    const cursor = searchParams.get('cursor')
+    
     await connectDB()
-    const journals = await Journal.find().sort({ updatedAt: -1 }).limit(limit) // find().limit() -> limit을 걸고 싶으면 쿼리 파라미터로 받아서 처리해야 함
-    return NextResponse.json(journals)
+    const query = cursor
+                  ? { createdAt: { $lt: new Date(cursor) } }
+                  : {}
+    const journals = await Journal.find(query).sort({ createdAt: -1 }).limit(limit)
+    
+    const nextCursor = journals.length === limit ? journals[journals.length - 1].createdAt.toISOString() : null
+    
+    return NextResponse.json({
+        data: journals,
+        nextCursor
+    })
 }
 
 export const POST = async (req: NextRequest) => {

@@ -1,12 +1,18 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import ApiJournal from '@/libs/api/api-journal'
-import { JournalCreateRequest } from '@/libs/dto/journal.dto'
+import { JournalCreateRequest, JournalResponse } from '@/libs/dto/journal.dto'
+import { DataConnection } from '@/libs/dto/rating.dto'
 
 
-export const useGetAllJournals = (limit?: number) => {
-    return useQuery({
-        queryKey: ['journal-all', limit ?? 10],
-        queryFn: () => ApiJournal._get_all_journals(limit ?? 10)
+export const useGetAllJournals = (limit: number = 10) => {
+    return useInfiniteQuery<DataConnection<JournalResponse>, Error>({
+        queryKey: ['journal-all', limit],
+        queryFn: async ({ pageParam }) => {
+            const cursor = typeof pageParam === 'string' ? pageParam : ''
+            return await ApiJournal._get_all_journals(limit, cursor) ?? { data: [], nextCursor: undefined }
+        },
+        initialPageParam: '',
+        getNextPageParam: (lastPage) => lastPage?.nextCursor
     })
 }
 export const useGetJournal = (id: string) => {
