@@ -287,6 +287,10 @@
     --text-64-bold--font-weight: 700;
 }
 
+.ProseMirror {
+    height: 500px;
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         --background: #1D2123;
