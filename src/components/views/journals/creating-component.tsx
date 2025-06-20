@@ -11,6 +11,7 @@ import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { Cards } from '@/components/cards'
 import { usePostJournal } from '@/hooks/use-journal'
 import { useRouter } from 'next/navigation'
+import { Tags } from '@/libs/interfaces/journal.interface'
 
 
 interface SelectedObjectProps {
@@ -22,6 +23,12 @@ export const CreatingComponent = () => {
     const editRef = useRef<TiptapRef>(null)
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
+    const [tags, setTags] = useState<Tags>({
+        weather: '',
+        mood: '',
+        scene: '',
+        custom: ''
+    })
     const [selectedObjectId, setSelectedObjectId] = useState<string>('')
     const [selectedObject, setSelectedObject] = useState<SelectedObjectProps[]>([])
     
@@ -43,12 +50,13 @@ export const CreatingComponent = () => {
             subjects,
             title,
             content: html ?? '',
-            author
+            author,
+            tags
         })
         if (res) {
             appRouter.replace(`/journals`)
         }
-    }, [appRouter, author, isPending, mutateAsync, selectedObject, title])
+    }, [appRouter, author, isPending, mutateAsync, selectedObject, tags, title])
     
     useEffect(() => {
         if (selectedObject.length > 0) {
@@ -115,7 +123,7 @@ export const CreatingComponent = () => {
                                             setSelectedObject(prev => prev.filter(o => o.id !== obj.id || o.type !== obj.type))
                                         }}
                                         key={index}>
-                                        <Cards.Default imgUrl={album.images[0].url} title={`${album.name} - ${obj.type}`} subtitle={''} />
+                                        <Cards.Default imgUrl={album.images[0].url} title={`${album.name} - ${obj.type}`} subtitle={''}/>
                                     </div>
                                 )
                             case 'artist':
@@ -127,7 +135,7 @@ export const CreatingComponent = () => {
                                             setSelectedObject(prev => prev.filter(o => o.id !== obj.id || o.type !== obj.type))
                                         }}
                                         key={index}>
-                                        <Cards.Default imgUrl={artist.images[0].url} title={`${artist.name} - ${obj.type}`} subtitle={''} />
+                                        <Cards.Default imgUrl={artist.images[0].url} title={`${artist.name} - ${obj.type}`} subtitle={''}/>
                                     </div>
                                 )
                             case 'track':
@@ -139,7 +147,7 @@ export const CreatingComponent = () => {
                                             setSelectedObject(prev => prev.filter(o => o.id !== obj.id || o.type !== obj.type))
                                         }}
                                         key={index}>
-                                        <Cards.Default imgUrl={track.album.images[0].url} title={`${track.name} - ${obj.type}`} subtitle={''} />
+                                        <Cards.Default imgUrl={track.album.images[0].url} title={`${track.name} - ${obj.type}`} subtitle={''}/>
                                     </div>
                                 )
                             default:
@@ -153,7 +161,7 @@ export const CreatingComponent = () => {
     }, [albumsById, artistsById, isLoading, selectedObject, tracksById])
     
     return (
-        <div className='text-white w-full h-full flex flex-col gap-y-3 p-3'>
+        <div className='text-white w-full h-full flex flex-col gap-y-3 p-3 '>
             <div className='flex gap-x-3'>
                 <Input
                     className='w-full py-1 border-white border'
@@ -188,8 +196,47 @@ export const CreatingComponent = () => {
             <div className='w-full h-[500px]'>
                 <Tiptap ref={editRef}/>
             </div>
-        
-        
+            <div className='w-full flex flex-col gap-y-5'>
+                <span className='text-18-regular'>Tags (Optional)</span>
+                <div className='w-full grid md:grid-cols-2 grid-cols-1 gap-3 pb-5'>
+                    <Input
+                        className='w-full py-1'
+                        placeholder='Weather? (e.g. Sunny, Rainy)'
+                        value={tags.weather}
+                        onChange={(e) => {
+                            setTags(prev => ({ ...prev, weather: e.target.value }))
+                        }}
+                        maxLength={10}
+                    />
+                    <Input
+                        className='w-full py-1'
+                        placeholder='Mood? (e.g. Happy, Sad)'
+                        value={tags.mood}
+                        onChange={(e) => {
+                            setTags(prev => ({ ...prev, mood: e.target.value }))
+                        }}
+                        maxLength={10}
+                    />
+                    <Input
+                        className='w-full py-1'
+                        placeholder='Scene? (e.g. Beach, Mountain)'
+                        value={tags.scene}
+                        onChange={(e) => {
+                            setTags(prev => ({ ...prev, scene: e.target.value }))
+                        }}
+                        maxLength={10}
+                    />
+                    <Input
+                        className='w-full py-1'
+                        placeholder='Anything else? (e.g. Custom Tag)'
+                        value={tags.custom}
+                        onChange={(e) => {
+                            setTags(prev => ({ ...prev, custom: e.target.value }))
+                        }}
+                        maxLength={10}
+                    />
+                </div>
+            </div>
         </div>
     )
 }

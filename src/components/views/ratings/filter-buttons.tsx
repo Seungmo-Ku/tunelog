@@ -15,7 +15,7 @@ export const FilterButtons = ({
 }: FilterButtonsProps) => {
     
     return (
-        <div className='flex gap-x-[10px] overflow-x-auto'>
+        <div className='flex gap-x-[10px] overflow-x-auto hide-sidebar'>
             <Button.Filter text='All' selected={filterIndex === 0} onClick={() => setFilterIndexAction(0)} className='h-10'/>
             <Button.Filter text='Album' selected={filterIndex === 1} onClick={() => setFilterIndexAction(1)} className='h-10'/>
             <Button.Filter text='Artist' selected={filterIndex === 2} onClick={() => setFilterIndexAction(2)} className='h-10'/>
