@@ -81,11 +81,13 @@ export const TopSearchBar = ({
                                 subtitle={album.artists.map(artist => artist.name).join(', ')}
                                 type={SearchType.album}
                                 key={`TopSearchBar-Album-${index}`}
-                                onClick={onAlbumClick ? () => {
-                                    setSelectedObjectId?.(album.id)
-                                    onAlbumClick()
-                                    setOpenSearchResult(false)
-                                } : undefined}
+                                onClick={
+                                    onAlbumClick ? () => {
+                                        setSelectedObjectId?.(album.id)
+                                        onAlbumClick()
+                                        setSearchQuery('')
+                                        setOpenSearchResult(false)
+                                    } : undefined}
                             />
                         )
                     })
@@ -102,6 +104,7 @@ export const TopSearchBar = ({
                                 onClick={onArtistClick ? () => {
                                     setSelectedObjectId?.(artist.id)
                                     onArtistClick()
+                                    setSearchQuery('')
                                     setOpenSearchResult(false)
                                 } : undefined}
                             />
@@ -121,6 +124,7 @@ export const TopSearchBar = ({
                                 onClick={onTrackClick ? () => {
                                     setSelectedObjectId?.(track.id)
                                     onTrackClick()
+                                    setSearchQuery('')
                                     setOpenSearchResult(false)
                                 } : undefined}
                             />
