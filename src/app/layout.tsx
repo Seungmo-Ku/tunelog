@@ -2,7 +2,7 @@
 
 import { Quicksand } from 'next/font/google'
 import './globals.css'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { QueryClient } from '@tanstack/query-core'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
@@ -17,7 +17,7 @@ const quicksand = Quicksand({
 export default function RootLayout({
     children
 }: Readonly<{
-    children: React.ReactNode;
+    children: React.ReactNode
 }>) {
     const [queryClient] = useState(() => new QueryClient())
     
@@ -36,9 +36,9 @@ export default function RootLayout({
         <html lang='en'>
         <body className={`${quicksand.variable} antialiased w-screen flex items-center justify-center overflow-hidden`} style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
         <QueryClientProvider client={queryClient}>
-            <div className='flex w-full h-full max-w-[1440px] md:px-4 p-1 overflow-hidden'>
+            <div className='flex md:flex-row flex-col w-full h-full max-w-[1440px] md:px-4 overflow-hidden'>
                 <Navbar/>
-                <main className='flex-1 max-h-full md:p-5 overflow-hidden'>
+                <main className='flex-1 max-h-full md:p-5 p-1 overflow-hidden'>
                     {children}
                 </main>
             </div>

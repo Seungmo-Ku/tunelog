@@ -16,24 +16,29 @@ export interface NavbarComponentProps {
     path: string
 }
 
+export const navbarMainComponents: NavbarComponentProps[] = [
+    { Icon: House, path: '/dashboard' },
+    { Icon: ListMusic, path: '/ratings' },
+    { Icon: NotebookPen, path: '/journals' },
+    { Icon: GalleryVerticalEnd, path: '/topsters' }
+]
+export const navbarDetailComponents: NavbarComponentProps[] = [
+    { Icon: DiscAlbum, path: '/detail/album' },
+    { Icon: Music, path: '/detail/track' },
+    { Icon: SquareUser, path: '/detail/artist' }
+]
+
 export default function Navbar() {
     
-    const navbarMainComponents: NavbarComponentProps[] = [
-        { Icon: House, path: '/dashboard' },
-        { Icon: ListMusic, path: '/ratings' },
-        { Icon: NotebookPen, path: '/journals' },
-        { Icon: GalleryVerticalEnd, path: '/topsters' }
-    ]
-    const navbarDetailComponents: NavbarComponentProps[] = [
-        { Icon: DiscAlbum, path: '/detail/album' },
-        { Icon: Music, path: '/detail/track' },
-        { Icon: SquareUser, path: '/detail/artist' }
-    ]
-    
     return (
-        <nav className='h-full shrink-0 pr-4 py-2 text-white flex flex-col gap-y-5 justify-start items-center'>
-            <NavigationBar.Group components={navbarMainComponents}/>
-            <NavigationBar.Group components={navbarDetailComponents}/>
-        </nav>
+        <div>
+            <nav className='h-full shrink-0 pr-4 py-2 text-white md:flex hidden flex-col gap-y-5 justify-start items-center'>
+                <NavigationBar.Group components={navbarMainComponents}/>
+                <NavigationBar.Group components={navbarDetailComponents}/>
+            </nav>
+            <nav className='w-full shrink-0 md:hidden flex'>
+                <NavigationBar.Mobile />
+            </nav>
+        </div>
     )
 }

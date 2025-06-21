@@ -13,7 +13,7 @@ const DashboardPage = () => {
                     <div className='bg-[#609EAF] rounded-[40px] flex justify-center items-center md:h-full h-[300px]'>
                         이건 내용물입니다
                     </div>
-                    <div className='flex flex-col w-full gap-y-3 h-[500px]'>
+                    <div className='flex flex-col w-full gap-y-3 md:h-[500px]'>
                         <p className='text-24-bold text-white'>Top Journal</p>
                         <TopJournal/>
                     </div>
