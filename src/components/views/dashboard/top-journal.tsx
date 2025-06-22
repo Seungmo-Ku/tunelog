@@ -63,7 +63,7 @@ export const TopJournal = () => {
                     )
                 })
             }
-            {!isJournalLoading && <div className='flex flex-col gap-y-[5px] w-full p-[17px] pr-[21px] shrink-0 justify-center rounded-[20px] bg-white/5 hover:bg-white/10 transition cursor-pointer items-center active:scale-95'>
+            {!isJournalLoading && <div className='flex flex-col gap-y-[5px] w-full p-[17px] pr-[21px] shrink-0 justify-center rounded-[20px] bg-white/5 hover:bg-white/10 transition cursor-pointer items-center active:scale-95' onClick={() => appRouter.push('/journals')}>
                 <p className='text-white text-14-bold text-center'>View more Journal</p>
             </div>}
         </div>
