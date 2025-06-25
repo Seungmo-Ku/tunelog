@@ -1,4 +1,5 @@
 'use client'
+
 import { Dialog, DialogPanel, DialogTitle, Input, Textarea } from '@headlessui/react'
 import { TopSearchBar } from '@/components/views/dashboard/top-search-bar'
 import { useMemo, useState } from 'react'
@@ -8,6 +9,7 @@ import { usePostRating } from '@/hooks/use-rating'
 import { Button } from '@/components/buttons'
 import { isEmpty } from 'lodash'
 import { RatingCreateRequest } from '@/libs/dto/rating.dto'
+import { Rating } from 'react-simple-star-rating'
 
 
 interface DialogNewRatingProps {
@@ -23,7 +25,7 @@ export const DialogNewRating = ({
     const [selectedType, setSelectedType] = useState<SearchType | null>(null)
     const [comment, setComment] = useState<string>('')
     const [author, setAuthor] = useState<string>('')
-    const [score, setScore] = useState<number>(5)
+    const [score, setScore] = useState<number>(0)
     
     const { mutateAsync, isPending } = usePostRating()
     
@@ -33,25 +35,31 @@ export const DialogNewRating = ({
     
     const isLoading = useMemo(() => albumLoading || artistLoading || trackLoading, [albumLoading, artistLoading, trackLoading])
     
-    const dialogTitle = useMemo(() => {
-        if (isLoading || !selectedType || !selectedObjectId) return 'New Rating'
-        switch (selectedType) {
-            case SearchType.album:
-                return `New Rating for Album: ${albumData?.name || 'Loading...'}`
-            case SearchType.artist:
-                return `New Rating for Artist: ${artistData?.name || 'Loading...'}`
-            case SearchType.track:
-                return `New Rating for Track: ${trackData?.name || 'Loading...'}`
-            default:
-                return 'New Rating'
-        }
-    }, [albumData?.name, artistData?.name, isLoading, selectedObjectId, selectedType, trackData?.name])
+    const objectImage = useMemo(() => {
+        if (!selectedType || !selectedObjectId) return null
+        if (isLoading) return (
+            <div className='flex items-center gap-x-3'>
+                <div className='size-[100px] shrink-0 aspect-square animate-pulse rounded-2xl'/>
+                <p className='text-14-regular'>Loading...</p>
+            </div>
+        )
+        const imgUrl = selectedType === SearchType.track ? trackData?.album.images[0].url : (selectedType === SearchType.artist ? artistData?.images[0].url : albumData?.images[0].url)
+        const title = selectedType === SearchType.track ? trackData?.name : (selectedType === SearchType.artist ? artistData?.name : albumData?.name)
+        if (!imgUrl || !title) return null
+        return (
+            <div className='flex items-center gap-x-3'>
+                <img src={imgUrl} alt='object_image' className='size-[100px] shrink-0 aspect-square rounded-2xl'/>
+                <p className='text-14-regular'>{title}</p>
+            </div>
+        )
+    }, [albumData?.images, albumData?.name, artistData?.images, artistData?.name, isLoading, selectedObjectId, selectedType, trackData?.album.images, trackData?.name])
     
     return (
         <Dialog transition open={open} onClose={onCloseAction} className='relative z-50 transition duration-300 ease-out data-closed:opacity-0'>
             <div className='fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/50'>
-                <DialogPanel className='w-3/4 space-y-4 bg-[#33373B] text-white md:p-12 p-4 rounded-2xl'>
-                    <DialogTitle className='font-bold'>{dialogTitle}</DialogTitle>
+                <DialogPanel className='w-3/4 space-y-4 bg-[#33373B] text-white md:p-12 p-4 rounded-2xl flex flex-col'>
+                    <DialogTitle className='font-bold'>New Rating</DialogTitle>
+                    {objectImage}
                     <TopSearchBar
                         onAlbumClick={() => {
                             setSelectedType(SearchType.album)
@@ -65,17 +73,10 @@ export const DialogNewRating = ({
                         setSelectedObjectId={setSelectedObjectId}
                         className={''}
                     />
-                    <Input
-                        placeholder='Score (0-5)'
-                        type='number'
-                        value={score}
-                        onChange={(e) => {
-                            const value = parseFloat(e.target.value)
-                            if (isNaN(value)) setScore(0)
-                            else if (value >= 0 && value <= 5) setScore(value)
-                            else if (value < 0) setScore(0)
-                            else if (value > 5) setScore(5)
-                        }}
+                    <Rating
+                        onClick={setScore}
+                        ratingValue={score}
+                        size={30}
                     />
                     <Input
                         className='w-full py-1 border-white border'
@@ -85,11 +86,11 @@ export const DialogNewRating = ({
                         maxLength={10}
                     />
                     <Textarea
-                        className='w-full py-1 border-white border'
+                        className='w-full py-1 border-white border min-h-[100px]'
                         placeholder='Comment'
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
-                        maxLength={500}
+                        maxLength={1000}
                     />
                     <Button.Box
                         text='create new rating!'
