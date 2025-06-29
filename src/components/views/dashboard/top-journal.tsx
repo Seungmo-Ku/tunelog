@@ -47,12 +47,12 @@ export const TopJournal = () => {
                 journals?.map((journal, index) => {
                     const subject = journal.subjects[0]
                     const subjectData = subjectMap[subject.spotifyId]
-                    const imgUrl = subject.type === SearchType.track ? (subjectData as Track)?.album.images[0].url : (subjectData as Artist | Album).images[0].url
+                    const imgUrl = subject.type === SearchType.track ? (subjectData as Track)?.album?.images[0].url : (subjectData as Artist | Album).images[0].url
                     return (
                         <div onClick={() => appRouter.push(`/journals/${journal._id}`)} className='cursor-pointer' key={`TopJournal-${index}`}>
                             <Cards.Chart
                                 key={index}
-                                imgUrl={imgUrl}
+                                imgUrl={imgUrl ?? '/favicon.ico'}
                                 title={journal.title}
                                 subtitle={new Date(journal.createdAt).toLocaleDateString()}
                                 additionalInfo={tagsToString(journal.tags)}
