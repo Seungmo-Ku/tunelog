@@ -79,11 +79,11 @@ export const AllJournals = () => {
                                                         <Cards.BigSkeleton key={`${yearMonth}-${index}`}/>
                                                     )
                                                 const subjectData = subjectMap[subject.spotifyId]
-                                                const imgUrl = subject.type === 'track' ? (subjectData as Track)?.album.images[0].url : (subjectData as Artist | Album).images[0].url
+                                                const imgUrl = subject.type === 'track' ? (subjectData as Track)?.album?.images[0].url : (subjectData as Artist | Album).images[0].url
                                                 return (
                                                     <div onClick={() => appRouter.push(`/journals/${journal._id}`)} key={`${yearMonth}-${index}`}>
                                                         <Cards.Big
-                                                            imgUrl={imgUrl}
+                                                            imgUrl={imgUrl ?? '/favicon.ico'}
                                                             title={journal.title}
                                                             subtitle={journal.author ?? 'Anonymous'}
                                                         />

@@ -38,7 +38,7 @@ export const NewestRatings = () => {
                             return <Cards.Default imgUrl={artist.images[0].url} title={`${artist.name} - ${rating.type}`} periphery={`${rating.score}/5`} subtitle={rating.comment.split('\\n')[0]} key={`NewestRatings-${index}`}/>
                         case SearchType.track:
                             const track = tracksById[rating.spotifyId]
-                            return <Cards.Default imgUrl={track.album.images[0].url} title={`${track.name} - ${rating.type}`} periphery={`${rating.score}/5`} subtitle={rating.comment.split('\\n')[0]} key={`NewestRatings-${index}`}/>
+                            return <Cards.Default imgUrl={track.album?.images[0].url ?? '/favicon.ico'} title={`${track.name} - ${rating.type}`} periphery={`${rating.score}/5`} subtitle={rating.comment.split('\\n')[0]} key={`NewestRatings-${index}`}/>
                     }
                 })
             }

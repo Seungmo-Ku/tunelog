@@ -50,9 +50,9 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                     journal?.subjects.map((subject, index) => {
                         const subjectData = subjectMap[subject.spotifyId]
                         if (!subjectData) return null
-                        const imgUrl = subject.type === 'track' ? (subjectData as Track)?.album.images[0].url : (subjectData as Artist | Album).images[0].url
+                        const imgUrl = subject.type === 'track' ? (subjectData as Track)?.album?.images[0].url : (subjectData as Artist | Album).images[0].url
                         return (
-                            <Cards.Default key={`${journal._id}-${index}`} imgUrl={imgUrl} title={subjectData.name} subtitle={subject.type}/>
+                            <Cards.Default key={`${journal._id}-${index}`} imgUrl={imgUrl ?? '/favicon.ico'} title={subjectData.name} subtitle={subject.type}/>
                         )
                     })
                 }
