@@ -10,7 +10,7 @@ import { clsx } from 'clsx'
 
 
 export interface TopSearchBarProps {
-    onAlbumClick?: () => void
+    onAlbumClick?: (id?: string) => void
     onArtistClick?: () => void
     onTrackClick?: () => void
     setSelectedObjectId?: React.Dispatch<React.SetStateAction<string>>
@@ -84,7 +84,7 @@ export const TopSearchBar = ({
                                 onClick={
                                     onAlbumClick ? () => {
                                         setSelectedObjectId?.(album.id)
-                                        onAlbumClick()
+                                        onAlbumClick(album.id)
                                         setSearchQuery('')
                                         setOpenSearchResult(false)
                                     } : undefined}
@@ -116,7 +116,7 @@ export const TopSearchBar = ({
                     isLoading ? <SearchBar.ResultSkeleton/> : isEmpty(tracks) ? null : tracks.map((track, index) => {
                         return (
                             <SearchBar.Result
-                                imgUrl={track.album.images[0]?.url ?? ''}
+                                imgUrl={track.album?.images[0]?.url ?? ''}
                                 title={track.name}
                                 subtitle={track.artists.map(artist => artist.name).join(', ')}
                                 type={SearchType.track}

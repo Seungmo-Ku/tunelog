@@ -147,7 +147,7 @@ export const CreatingComponent = () => {
                                             setSelectedObject(prev => prev.filter(o => o.id !== obj.id || o.type !== obj.type))
                                         }}
                                         key={index}>
-                                        <Cards.Default imgUrl={track.album.images[0].url} title={`${track.name} - ${obj.type}`} subtitle={''}/>
+                                        <Cards.Default imgUrl={track.album?.images[0].url ?? '/favicon.ico'} title={`${track.name} - ${obj.type}`} subtitle={''}/>
                                     </div>
                                 )
                             default:

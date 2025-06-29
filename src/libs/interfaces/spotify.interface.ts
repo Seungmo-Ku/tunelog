@@ -6,13 +6,13 @@ export interface ExternalUrls {
 }
 
 export interface ITrack {
-    album: Album
+    album?: Album
     artists: Artist[]
     available_markets: string[]
     disc_number: number
     duration_ms: number
     explicit: boolean
-    external_ids: {
+    external_ids?: {
         isrc: string
         ean: string
         upc: string
@@ -22,7 +22,7 @@ export interface ITrack {
     id: string
     is_playable: boolean
     name: string
-    popularity: number
+    popularity?: number
     track_number: number
     type: SearchType
     uri: string
@@ -34,13 +34,13 @@ export interface ITrack {
 }
 
 export class Track implements ITrack {
-    album: Album
+    album?: Album
     artists: Artist[]
     available_markets: string[]
     disc_number: number
     duration_ms: number
     explicit: boolean
-    external_ids: {
+    external_ids?: {
         isrc: string
         ean: string
         upc: string
@@ -50,7 +50,7 @@ export class Track implements ITrack {
     id: string
     is_playable: boolean
     name: string
-    popularity: number
+    popularity?: number
     track_number: number
     type: SearchType
     uri: string
@@ -58,9 +58,9 @@ export class Track implements ITrack {
     restrictions?: {
         reason: string
     }
-
+    
     constructor(track: ITrack) {
-        this.album = new Album(track.album)
+        this.album = track.album ? new Album(track?.album) : undefined
         this.artists = track.artists.map(artist => new Artist(artist))
         this.available_markets = track.available_markets
         this.disc_number = track.disc_number
@@ -118,7 +118,7 @@ export class Artist implements IArtist {
     popularity: number
     type: string
     uri: string
-
+    
     constructor(artist: IArtist) {
         this.external_urls = artist.external_urls
         this.followers = artist.followers
@@ -153,7 +153,17 @@ export interface IAlbum {
     }
     type: string
     uri: string
-    artists: Artist[]
+    artists: IArtist[]
+    tracks: {
+        href: string
+        limit: number
+        next: string | null
+        offset: number
+        previous: string | null
+        total: number
+        items: ITrack[]
+    }
+    popularity: number
 }
 
 export class Album implements IAlbum {
@@ -177,6 +187,16 @@ export class Album implements IAlbum {
     type: string
     uri: string
     artists: Artist[]
+    tracks: {
+        href: string
+        limit: number
+        next: string | null
+        offset: number
+        previous: string | null
+        total: number
+        items: Track[]
+    }
+    popularity: number
     
     constructor(album: IAlbum) {
         this.album_type = album.album_type
@@ -193,5 +213,23 @@ export class Album implements IAlbum {
         this.type = album.type
         this.uri = album.uri
         this.artists = album.artists.map(artist => new Artist(artist))
+        this.tracks = album.tracks ? {
+            href: album.tracks.href,
+            limit: album.tracks.limit,
+            next: album.tracks.next,
+            offset: album.tracks.offset,
+            previous: album.tracks.previous,
+            total: album.tracks.total,
+            items: album.tracks.items.map(track => new Track(track))
+        } : {
+            href: '',
+            limit: 0,
+            next: null,
+            offset: 0,
+            previous: null,
+            total: 0,
+            items: []
+        }
+        this.popularity = album.popularity
     }
 }

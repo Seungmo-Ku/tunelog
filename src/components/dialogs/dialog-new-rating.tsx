@@ -43,7 +43,7 @@ export const DialogNewRating = ({
                 <p className='text-14-regular'>Loading...</p>
             </div>
         )
-        const imgUrl = selectedType === SearchType.track ? trackData?.album.images[0].url : (selectedType === SearchType.artist ? artistData?.images[0].url : albumData?.images[0].url)
+        const imgUrl = selectedType === SearchType.track ? trackData?.album?.images[0].url : (selectedType === SearchType.artist ? artistData?.images[0].url : albumData?.images[0].url)
         const title = selectedType === SearchType.track ? trackData?.name : (selectedType === SearchType.artist ? artistData?.name : albumData?.name)
         if (!imgUrl || !title) return null
         return (
@@ -52,7 +52,7 @@ export const DialogNewRating = ({
                 <p className='text-14-regular'>{title}</p>
             </div>
         )
-    }, [albumData?.images, albumData?.name, artistData?.images, artistData?.name, isLoading, selectedObjectId, selectedType, trackData?.album.images, trackData?.name])
+    }, [albumData?.images, albumData?.name, artistData?.images, artistData?.name, isLoading, selectedObjectId, selectedType, trackData?.album?.images, trackData?.name])
     
     return (
         <Dialog transition open={open} onClose={onCloseAction} className='relative z-50 transition duration-300 ease-out data-closed:opacity-0'>
