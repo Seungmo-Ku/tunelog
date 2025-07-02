@@ -14,7 +14,6 @@ import { Journal } from '@/libs/interfaces/journal.interface'
 import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { useJournalWithObjects } from '@/hooks/use-journal-with-objects'
 import { useRouter } from 'next/navigation'
-import { log } from 'node:util'
 
 
 const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) => {
