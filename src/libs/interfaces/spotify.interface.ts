@@ -60,7 +60,7 @@ export class Track implements ITrack {
     }
     
     constructor(track: ITrack) {
-        this.album = track.album ? new Album(track?.album) : undefined
+        this.album = track.album ? new Album(track.album) : undefined
         this.artists = track.artists.map(artist => new Artist(artist))
         this.available_markets = track.available_markets
         this.disc_number = track.disc_number

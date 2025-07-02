@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import isEmpty from 'lodash/isEmpty'
 import { connectDB } from '@/libs/api-server/mongoose'
 import { Rating } from '@/models/rating-schema.model'
+import { isEmpty } from 'lodash'
 
 
 export const GET = async (req: NextRequest) => {
