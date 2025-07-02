@@ -28,6 +28,22 @@ const ApiRating = {
             console.error('ApiRating._post_rating', e)
             return null
         }
+    },
+    _get_ratings_by_spotify_id: async (spotifyId: string, limit: number = 10, nextCursor?: string): Promise<DataConnection<RatingResponse> | null> => {
+        try {
+            // nextCursor가 있으면 쿼리스트링에 추가
+            const params = new URLSearchParams()
+            params.append('spotifyId', spotifyId)
+            params.append('limit', limit.toString())
+            if (nextCursor) params.append('cursor', nextCursor)
+            
+            const { data } = await axios.get<DataConnection<RatingResponse>>(`/api/ratings/by-spotify-id?${params.toString()}`)
+            if (!data) return null
+            return data
+        } catch (e) {
+            console.error('ApiRating._get_ratings_by_spotify_id', e)
+            return null
+        }
     }
 }
 

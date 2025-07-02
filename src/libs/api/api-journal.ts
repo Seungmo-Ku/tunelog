@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Journal } from '@/libs/interfaces/journal.interface'
 import { JournalCreateRequest, JournalResponse } from '@/libs/dto/journal.dto'
-import { DataConnection } from '@/libs/dto/rating.dto'
+import { DataConnection, RatingResponse } from '@/libs/dto/rating.dto'
 
 
 const ApiJournal = {
@@ -36,6 +36,22 @@ const ApiJournal = {
             return new Journal(data)
         } catch (e) {
             console.error('ApiJournal._post_journal', e)
+            return null
+        }
+    },
+    _get_journals_by_spotify_id: async (spotifyId: string, limit: number = 10, nextCursor?: string): Promise<DataConnection<JournalResponse> | null> => {
+        try {
+            // nextCursor가 있으면 쿼리스트링에 추가
+            const params = new URLSearchParams()
+            params.append('spotifyId', spotifyId)
+            params.append('limit', limit.toString())
+            if (nextCursor) params.append('cursor', nextCursor)
+            
+            const { data } = await axios.get<DataConnection<JournalResponse>>(`/api/journals/by-spotify-id?${params.toString()}`)
+            if (!data) return null
+            return data
+        } catch (e) {
+            console.error('ApiJournal._get_journals_by_spotify_id', e)
             return null
         }
     }
