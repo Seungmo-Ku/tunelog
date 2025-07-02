@@ -1,12 +1,23 @@
+'use client'
+
 import { TopJournal } from '@/components/views/dashboard/top-journal'
 import { NewestRatings } from '@/components/views/dashboard/newest-ratings'
 import { TopSearchBar } from '@/components/views/dashboard/top-search-bar'
+import React from 'react'
+import { useRouter } from 'next/navigation'
 
 
 const DashboardPage = () => {
+    const appRouter = useRouter()
+    
     return (
         <div className='flex flex-col w-full h-full'>
-            <TopSearchBar/>
+            <TopSearchBar
+                onAlbumClick={(id?: string) => {
+                    if (!id) return
+                    appRouter.push(`/detail/album/${id}`)
+                }}
+            />
             <div className='flex flex-col gap-y-10 w-full h-full overflow-y-scroll pt-5'>
                 
                 <div className='grid md:grid-cols-[5fr_3fr] gap-x-5 w-full md:h-[500px]'>

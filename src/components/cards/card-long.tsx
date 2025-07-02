@@ -10,6 +10,7 @@ export interface CardLongProps {
     duration?: string
     rightIcon?: React.ReactNode
     containerClassName?: string
+    showTransitionOnClick?: boolean
 }
 
 export const CardLong = ({
@@ -19,10 +20,11 @@ export const CardLong = ({
     type = '',
     duration = '',
     rightIcon,
-    containerClassName = ''
+    containerClassName = '',
+    showTransitionOnClick = false
 }: CardLongProps) => {
     return (
-        <div className={clsx('grid w-[1125px] shrink-0 grid-cols-[2fr_4fr_4fr_4fr_1fr] backdrop-blur-[5px] bg-[#33373B] rounded-[15px] p-[10px] items-center cursor-pointer transition', containerClassName)}>
+        <div className={clsx('grid w-[1125px] shrink-0 grid-cols-[2fr_4fr_4fr_4fr_1fr] backdrop-blur-[5px] bg-[#33373B] rounded-[15px] p-[10px] items-center cursor-pointer transition', showTransitionOnClick ? 'active:scale-[0.98]' : '', containerClassName)}>
             <div className='flex gap-x-[18px] items-center'>
                 <img src={imgUrl} className='rounded-[8px] w-10 h-10 shrink-0 aspect-square'/>
                 {leftIcon && <div className='shrink-0'>{leftIcon}</div>}
