@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Journal } from '@/libs/interfaces/journal.interface'
 import { JournalCreateRequest, JournalResponse } from '@/libs/dto/journal.dto'
-import { DataConnection, RatingResponse } from '@/libs/dto/rating.dto'
+import { DataConnection } from '@/libs/dto/rating.dto'
 
 
 const ApiJournal = {
