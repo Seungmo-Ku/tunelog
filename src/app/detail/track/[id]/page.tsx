@@ -60,8 +60,7 @@ const TrackDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
                                 if (track?.external_urls.spotify) {
                                     window.open(track.external_urls.spotify, '_blank')
                                 }
-                                {/*Spotify Icon 넣기*/
-                                }
+                                //TODO. Spotify icon
                             }}
                         />
                         {

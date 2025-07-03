@@ -109,7 +109,7 @@ export const AllRatings = () => {
                             return <Cards.LongSkeleton key={`AllRatings-${index}`}/>
                         }
                         return (
-                            <div
+                            <button
                                 key={`AllRatings-${index}`}
                                 className='mb-[10px] !w-full group transition active:scale-95'
                                 onClick={() => {
@@ -130,7 +130,7 @@ export const AllRatings = () => {
                                     <span className='text-12-regular'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anynomous'}`}</span>
                                     {rating.createdAt !== rating.updatedAt && <span className='text-12-regular'>Last Edited: {new Date(rating.updatedAt).toLocaleDateString()}</span>}
                                 </div>
-                            </div>
+                            </button>
                         )
                     })
                 }

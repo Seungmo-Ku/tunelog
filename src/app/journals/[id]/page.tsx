@@ -54,14 +54,14 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                         if (!subjectData) return null
                         const imgUrl = subject.type === 'track' ? (subjectData as Track)?.album?.images[0].url : (subjectData as Artist | Album).images[0].url
                         return (
-                            <div
+                            <button
                                 key={`${journal._id}-${index}`}
                                 onClick={() => {
                                     appRouter.push(`/detail/${subject.type}/${subject.spotifyId}`)
                                 }}
                             >
                                 <Cards.Default imgUrl={imgUrl ?? '/favicon.ico'} title={subjectData.name} subtitle={subject.type}/>
-                            </div>
+                            </button>
                         )
                     })
                 }
