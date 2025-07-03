@@ -13,9 +13,11 @@ import { Dialogs } from '@/components/dialogs'
 import { Rating } from '@/libs/interfaces/rating.interface'
 import { useInView } from 'react-intersection-observer'
 import { isEmpty } from 'lodash'
+import { useRouter } from 'next/navigation'
 
 
 export const AllRatings = () => {
+    const appRouter = useRouter()
     const [filterIndex, setFilterIndex] = useState(0)
     const [sortingIndex, setSortingIndex] = useState(0)
     const [newRatingOpen, setNewRatingOpen] = useState(false)
@@ -103,11 +105,17 @@ export const AllRatings = () => {
                                 imgUrl = track?.album?.images[0].url ?? ''
                                 title = track?.name ?? ''
                         }
-                        if(isEmpty(imgUrl) || isEmpty(title)) {
+                        if (isEmpty(imgUrl) || isEmpty(title)) {
                             return <Cards.LongSkeleton key={`AllRatings-${index}`}/>
                         }
                         return (
-                            <div key={`AllRatings-${index}`} className='mb-[10px] !w-full group transition active:scale-95'>
+                            <div
+                                key={`AllRatings-${index}`}
+                                className='mb-[10px] !w-full group transition active:scale-95'
+                                onClick={() => {
+                                    appRouter.push(`/detail/${rating.type}/${rating.spotifyId}`)
+                                }}
+                            >
                                 <Cards.Long
                                     imgUrl={imgUrl}
                                     title={`${title}`}

@@ -17,6 +17,10 @@ const DashboardPage = () => {
                     if (!id) return
                     appRouter.push(`/detail/album/${id}`)
                 }}
+                onTrackClick={(id?: string) => {
+                    if (!id) return
+                    appRouter.push(`/detail/track/${id}`)
+                }}
             />
             <div className='flex flex-col gap-y-10 w-full h-full overflow-y-scroll pt-5'>
                 
