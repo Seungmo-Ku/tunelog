@@ -11,8 +11,8 @@ import { clsx } from 'clsx'
 
 export interface TopSearchBarProps {
     onAlbumClick?: (id?: string) => void
-    onArtistClick?: () => void
-    onTrackClick?: () => void
+    onArtistClick?: (id?: string) => void
+    onTrackClick?: (id?: string) => void
     setSelectedObjectId?: React.Dispatch<React.SetStateAction<string>>
     className?: string
 }
@@ -103,7 +103,7 @@ export const TopSearchBar = ({
                                 key={`TopSearchBar-Artist-${index}`}
                                 onClick={onArtistClick ? () => {
                                     setSelectedObjectId?.(artist.id)
-                                    onArtistClick()
+                                    onArtistClick(artist.id)
                                     setSearchQuery('')
                                     setOpenSearchResult(false)
                                 } : undefined}
@@ -123,7 +123,7 @@ export const TopSearchBar = ({
                                 key={`TopSearchBar-Track-${index}`}
                                 onClick={onTrackClick ? () => {
                                     setSelectedObjectId?.(track.id)
-                                    onTrackClick()
+                                    onTrackClick(track.id)
                                     setSearchQuery('')
                                     setOpenSearchResult(false)
                                 } : undefined}

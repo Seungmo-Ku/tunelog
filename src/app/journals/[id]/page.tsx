@@ -6,9 +6,11 @@ import { useGetAlbumsQuery, useGetArtistsQuery, useGetTracksQuery } from '@/hook
 import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { Cards } from '@/components/cards'
 import { isEmpty } from 'lodash'
+import { useRouter } from 'next/navigation'
 
 
 const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
+    const appRouter = useRouter()
     const { id } = React.use(params)
     const { data: journal, isLoading: isJournalLoading } = useGetJournal(id)
     
@@ -52,7 +54,14 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                         if (!subjectData) return null
                         const imgUrl = subject.type === 'track' ? (subjectData as Track)?.album?.images[0].url : (subjectData as Artist | Album).images[0].url
                         return (
-                            <Cards.Default key={`${journal._id}-${index}`} imgUrl={imgUrl ?? '/favicon.ico'} title={subjectData.name} subtitle={subject.type}/>
+                            <button
+                                key={`${journal._id}-${index}`}
+                                onClick={() => {
+                                    appRouter.push(`/detail/${subject.type}/${subject.spotifyId}`)
+                                }}
+                            >
+                                <Cards.Default imgUrl={imgUrl ?? '/favicon.ico'} title={subjectData.name} subtitle={subject.type}/>
+                            </button>
                         )
                     })
                 }

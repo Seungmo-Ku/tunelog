@@ -1,29 +1,28 @@
 'use client'
 
 import React, { useMemo } from 'react'
-import { useGetAlbumQuery } from '@/hooks/use-spotify'
-import { Button } from '@/components/buttons'
-import _, { isEmpty } from 'lodash'
-import { Cards } from '@/components/cards'
-import { ArrowUpRight, EllipsisVertical } from 'lucide-react'
-import { formatDuration } from '@/libs/utils/time-format'
+import { useGetTrackQuery } from '@/hooks/use-spotify'
 import { useGetRatingsBySpotifyId } from '@/hooks/use-rating'
 import { useGetJournalsBySpotifyId } from '@/hooks/use-journal'
+import _, { isEmpty } from 'lodash'
 import { Rating } from '@/libs/interfaces/rating.interface'
 import { Journal } from '@/libs/interfaces/journal.interface'
-import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { useJournalWithObjects } from '@/hooks/use-journal-with-objects'
+import { Button } from '@/components/buttons'
+import { Cards } from '@/components/cards'
+import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
+import { Disc, EllipsisVertical } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 
-const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) => {
-    
+const TrackDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) => {
     const appRouter = useRouter()
     const { id } = React.use(params)
-    const { data: album, isLoading: isAlbumLoading } = useGetAlbumQuery(id)
-    const { data: ratingsData, isLoading: isRatingLoading } = useGetRatingsBySpotifyId(album?.id ?? '', 10)
-    const { data: journalsData, isLoading: isJournalLoading } = useGetJournalsBySpotifyId(album?.id ?? '', 10)
+    const { data: track, isLoading: isTrackLoading } = useGetTrackQuery(id)
+    const { data: ratingsData, isLoading: isRatingLoading } = useGetRatingsBySpotifyId(track?.id ?? '', 10)
+    const { data: journalsData, isLoading: isJournalLoading } = useGetJournalsBySpotifyId(track?.id ?? '', 10)
     
+    // noinspection DuplicatedCode
     const ratings = useMemo(() => {
         if (isRatingLoading) return []
         const ratingsArray = _.compact(ratingsData?.pages.flatMap(page => page.data) ?? [])
@@ -38,69 +37,46 @@ const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
     
     const { subjectMap } = useJournalWithObjects(journals)
     
-    const arrowUpRight = useMemo(() => {
-        return <ArrowUpRight className='text-white shrink-0'/>
-    }, [])
     const ratingsComponent = useMemo(() => <EllipsisVertical className='text-tunelog-secondary w-5 h-5'/>, [])
-    
-    if (isAlbumLoading) {
+    const albumComponent = useMemo(() => <Disc className='text-tunelog-secondary w-5 h-5'/>, [])
+    if (isTrackLoading) {
         return <div className='text-white'>Loading...</div>
     }
-    
     return (
         <div className='w-full h-full flex flex-col overflow-y-auto hide-sidebar gap-y-10'>
             <div className='flex gap-x-[27px] justify-start'>
-                <img src={album?.images[0].url ?? '/favicon.ico'} alt={album?.name} className='w-[284px] h-[284px] shrink-0 aspect-square rounded-[35px]'/>
+                <img src={track?.album?.images[0].url ?? '/favicon.ico'} alt={track?.name} className='w-[284px] h-[284px] shrink-0 aspect-square rounded-[35px]'/>
                 <div className='flex flex-col justify-end gap-y-10'>
                     <div className='flex flex-col gap-y-2.5'>
-                        <span className='text-36-bold text-[#A4C7C6]'>{`${album?.name ?? ''} - ${album?.type}`}</span>
-                        <span className='text-14-regular text-[#EFEEE0]'>{`${album?.artists.map(artist => artist.name).join(', ')} | Released At ${album?.release_date}`}</span>
-                        <span className='text-14-regular text-[#EFEEE0]'>{`Total ${album?.total_tracks ?? 0} tracks`}</span>
-                        <span className='text-14-regular text-[#EFEEE0]'>{`${album?.popularity ?? 0} Popularity`}</span>
+                        <span className='text-36-bold text-[#A4C7C6]'>{`${track?.name ?? ''}`}</span>
+                        {track?.album?.album_type !== 'single' && <span className='text-14-regular text-[#EFEEE0]'>{`At ${track?.album?.name ?? ''}`}</span>}
+                        <span className='text-14-regular text-[#EFEEE0]'>{`${track?.artists.map(artist => artist.name).join(', ')} | Released At ${track?.album?.release_date}`}</span>
+                        <span className='text-14-regular text-[#EFEEE0]'>{`${track?.popularity ?? 0} Popularity`}</span>
                     </div>
                     <div className='flex gap-x-3'>
                         <Button.Box
                             text='View On Spotify'
                             onClick={() => {
-                                if (album?.external_urls.spotify) {
-                                    window.open(album.external_urls.spotify, '_blank')
+                                if (track?.external_urls.spotify) {
+                                    window.open(track.external_urls.spotify, '_blank')
                                 }
-                                {/*Spotify Icon 넣기*/
-                                }
+                                //TODO. Spotify icon
                             }}
                         />
+                        {
+                            track?.album?.album_type !== 'single' && (
+                                <Button.Box
+                                    leftIcon={albumComponent}
+                                    text='View Album'
+                                    onClick={() => {
+                                        appRouter.push(`/detail/album/${track?.album?.id}`)
+                                    }}
+                                />
+                            )
+                        }
                     </div>
                 </div>
             </div>
-            {
-                !isEmpty(album?.tracks.items) && (
-                    <div className='flex flex-col gap-y-3 w-full'>
-                        <span className='text-20-semibold text-white'>Tracks</span>
-                        {
-                            album?.tracks.items.map((track, index) => {
-                                return (
-                                    <div
-                                        key={`${track.id} - ${index}`}
-                                        onClick={() => {
-                                            appRouter.push(`/detail/track/${track.id}`)
-                                        }}
-                                    >
-                                        <Cards.Long
-                                            imgUrl={album?.images[0].url ?? '/favicon.ico'}
-                                            containerClassName='w-full'
-                                            title={track.name}
-                                            duration={formatDuration(track.duration_ms)}
-                                            type={track.artists.map(artist => artist.name).join(', ')}
-                                            rightIcon={arrowUpRight}
-                                            showTransitionOnClick
-                                        />
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
-                )
-            }
             {
                 !isEmpty(ratings) && (
                     <div className='flex flex-col gap-y-3 w-full'>
@@ -110,8 +86,8 @@ const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
                                 return (
                                     <div key={`Ratings-${index}`} className='mb-[10px] !w-full group transition active:scale-95'>
                                         <Cards.Long
-                                            imgUrl={album?.images[0].url ?? '/favicon.ico'}
-                                            title={`${album?.name ?? ''}`}
+                                            imgUrl={track?.album?.images[0].url ?? '/favicon.ico'}
+                                            title={`${track?.name ?? ''}`}
                                             type={rating.type}
                                             duration={`${rating.score}/5`}
                                             rightIcon={ratingsComponent}
@@ -163,4 +139,4 @@ const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
     )
 }
 
-export default AlbumDetailWithIdPage
+export default TrackDetailWithIdPage
