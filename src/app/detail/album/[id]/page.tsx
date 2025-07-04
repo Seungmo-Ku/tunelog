@@ -49,8 +49,8 @@ const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
     
     return (
         <div className='w-full h-full flex flex-col overflow-y-auto hide-sidebar gap-y-10'>
-            <div className='flex gap-x-[27px] justify-start'>
-                <img src={album?.images[0].url ?? '/favicon.ico'} alt={album?.name} className='w-[284px] h-[284px] shrink-0 aspect-square rounded-[35px]'/>
+            <div className='flex md:flex-row flex-col gap-[27px] justify-start'>
+                <img src={album?.images[0].url ?? '/favicon.ico'} alt={album?.name} className='md:w-[284px] md:h-[284px] w-full shrink-0 aspect-square rounded-[35px]'/>
                 <div className='flex flex-col justify-end gap-y-10'>
                     <div className='flex flex-col gap-y-2.5'>
                         <span className='text-36-bold text-[#A4C7C6]'>{`${album?.name ?? ''} - ${album?.type}`}</span>
