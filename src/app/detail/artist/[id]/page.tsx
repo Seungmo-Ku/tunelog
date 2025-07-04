@@ -14,8 +14,8 @@ const ArtistDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> })
         if (isAlbumLoading) return []
         return albumsData?.items.map(album => new Album(album)) || []
     }, [albumsData?.items, isAlbumLoading])
-    console.log('albums', albums)
-    console.log('tracks', tracks)
+    console.log('albums', albums, isAlbumLoading)
+    console.log('tracks', tracks, isTrackLoading)
     if (isArtistLoading) {
         return <div className='text-white'>Loading...</div>
     }
