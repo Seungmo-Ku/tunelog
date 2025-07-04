@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSpotifyToken } from '@/libs/api-server/api-server-spotify'
 import axios from 'axios'
-import { ArtistResponse } from '@/libs/dto/spotify.dto'
+import { SearchAlbumResponse } from '@/libs/dto/spotify.dto'
 
 
 export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
@@ -12,7 +12,7 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
     
     const token = await getSpotifyToken()
     
-    const res = await axios.get<ArtistResponse>(`${process.env.SPOTIFY_ENDPOINT!}/artists/${id}/albums?include_groups=album,compilation`, {
+    const res = await axios.get<SearchAlbumResponse>(`${process.env.SPOTIFY_ENDPOINT!}/artists/${id}/albums?include_groups=album,compilation`, {
         headers: {
             Authorization: `Bearer ${token}`
         }
