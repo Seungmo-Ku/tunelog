@@ -29,17 +29,45 @@ export const NewestRatings = () => {
                     <Cards.DefaultSkeleton key={`NewestRatings-Skeleton-${index}`}/>
                 )) :
                 ratings?.map((rating, index) => {
+                    let imgUrl = ''
+                    let title = ''
                     switch (rating.type) {
-                        case SearchType.album:
+                        case SearchType.album: {
                             const album = albumsById[rating.spotifyId]
-                            return <Cards.Default imgUrl={album.images[0].url} title={`${album.name} - ${rating.type}`} periphery={`${rating.score}/5`} subtitle={rating.comment.split('\\n')[0]} key={`NewestRatings-${index}`}/>
-                        case SearchType.artist:
+                            if (!album) return null
+                            imgUrl = album.images[0].url
+                            title = `${album.name} - ${rating.type}`
+                            break
+                        }
+                        case SearchType.artist: {
                             const artist = artistsById[rating.spotifyId]
-                            return <Cards.Default imgUrl={artist.images[0].url} title={`${artist.name} - ${rating.type}`} periphery={`${rating.score}/5`} subtitle={rating.comment.split('\\n')[0]} key={`NewestRatings-${index}`}/>
-                        case SearchType.track:
+                            if (!artist) return null
+                            imgUrl = artist.images[0].url
+                            title = `${artist.name} - ${rating.type}`
+                            break
+                        }
+                        case SearchType.track: {
                             const track = tracksById[rating.spotifyId]
-                            return <Cards.Default imgUrl={track.album?.images[0].url ?? '/favicon.ico'} title={`${track.name} - ${rating.type}`} periphery={`${rating.score}/5`} subtitle={rating.comment.split('\\n')[0]} key={`NewestRatings-${index}`}/>
+                            if (!track) return null
+                            imgUrl = track.album?.images[0].url ?? '/favicon.ico'
+                            title = `${track.name} - ${rating.type}`
+                            break
+                        }
                     }
+                    return (
+                        <div
+                            key={`NewestRatings-${index}`}
+                            className='cursor-pointer active:scale-95 transition'
+                            onClick={() => appRoute.push(`/detail/${rating.type}/${rating.spotifyId}`)}
+                        >
+                            <Cards.Default
+                                imgUrl={imgUrl}
+                                title={title}
+                                periphery={`${rating.score}/5`}
+                                subtitle={rating.comment.split('\n')[0]}
+                            />
+                        </div>
+                    )
                 })
             }
             {!isLoading && (

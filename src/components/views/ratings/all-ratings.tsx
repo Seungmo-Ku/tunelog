@@ -126,9 +126,9 @@ export const AllRatings = () => {
                                 />
                                 <div className='w-full bg-white/50 h-[1px]'/>
                                 <div className='w-full flex flex-col bg-[#33373B] overflow-hidden rounded-b-[15px] p-[10px] text-white text-13-regular gap-y-1'>
-                                    <span className='whitespace-pre-line break-keep'>{rating.comment}</span>
-                                    <span className='text-12-regular'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anynomous'}`}</span>
-                                    {rating.createdAt !== rating.updatedAt && <span className='text-12-regular'>Last Edited: {new Date(rating.updatedAt).toLocaleDateString()}</span>}
+                                    <span className='whitespace-pre-line break-keep text-left'>{rating.comment}</span>
+                                    <span className='text-12-regular text-left'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anynomous'}`}</span>
+                                    {rating.createdAt !== rating.updatedAt && <span className='text-12-regular text-left'>Last Edited: {new Date(rating.updatedAt).toLocaleDateString()}</span>}
                                 </div>
                             </button>
                         )

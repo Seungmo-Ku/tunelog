@@ -53,6 +53,20 @@ export const useGetArtistQuery = (id: string) => {
         enabled: !isEmpty(id)
     })
 }
+export const useGetArtistAlbumsQuery = (id: string) => {
+    return useQuery({
+        queryKey: ['artist-album', id],
+        queryFn: () => ApiSpotify._get_artist_albums(id),
+        enabled: !isEmpty(id)
+    })
+}
+export const useGetArtistTopTracksQuery = (id: string) => {
+    return useQuery({
+        queryKey: ['artist-top-tracks', id],
+        queryFn: () => ApiSpotify._get_artist_top_tracks(id),
+        enabled: !isEmpty(id)
+    })
+}
 export const useGetTracksQuery = (ids: string[]) => {
     return useQuery({
         queryKey: ['tracks', ...ids],
