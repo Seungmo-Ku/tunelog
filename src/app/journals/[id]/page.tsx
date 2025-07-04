@@ -47,7 +47,7 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                 <p className='text-14-regular'>{`Created At ${new Date(journal?.createdAt ?? '').toLocaleDateString()}`}</p>
                 {(journal?.updatedAt ?? 0) > (journal?.createdAt ?? 0) && <p className='text-14-regular'>{`Updated At ${new Date(journal?.updatedAt ?? '').toLocaleDateString()}`}</p>}
             </div>
-            <div className='flex gap-x-3 overflow-x-auto hide-sidebar shrink-0'>
+            <div className='flex gap-x-3 overflow-x-auto hide-sidebar shrink-0 items-start'>
                 {
                     journal?.subjects.map((subject, index) => {
                         const subjectData = subjectMap[subject.spotifyId]
