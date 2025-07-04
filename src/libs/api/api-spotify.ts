@@ -71,6 +71,16 @@ const ApiSpotify = {
             return null
         }
     },
+    _get_artist_albums: async (id: string): Promise<SearchAlbumResponse | null> => {
+        try {
+            const { data } = await axios.get<SearchAlbumResponse>(`/api/spotify/artists/${id}/albums`)
+            if (!data) return null
+            return data
+        }catch (e) {
+            console.error('ApiSpotify._get_artist_albums', e)
+            return null
+        }
+    },
     _get_tracks: async (ids: string[]): Promise<Track[] | null> => {
         try {
             const { data } = await axios.get<TracksResponse>(`/api/spotify/tracks?ids=${ids.join(',')}`)
