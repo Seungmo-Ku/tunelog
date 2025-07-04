@@ -36,8 +36,8 @@ export const NavigationBarMobile = () => {
                             })
                         }
                     </div>
-                    <div className='h-[1px] w-full bg-white'/>
-                    <div className='w-full flex flex-col gap-y-1 items-start'>
+                    {/*<div className='h-[1px] w-full bg-white'/>*/}
+                    {/*<div className='w-full flex flex-col gap-y-1 items-start'>
                         {
                             navbarDetailComponents.map((component, index) => {
                                 return (
@@ -54,7 +54,7 @@ export const NavigationBarMobile = () => {
                                 )
                             })
                         }
-                    </div>
+                    </div>*/}
                 </MenuItems>
             </Menu>
         

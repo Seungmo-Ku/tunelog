@@ -34,7 +34,7 @@ export default function Navbar() {
         <div>
             <nav className='h-full shrink-0 pr-4 py-2 text-white md:flex hidden flex-col gap-y-5 justify-start items-center'>
                 <NavigationBar.Group components={navbarMainComponents}/>
-                <NavigationBar.Group components={navbarDetailComponents}/>
+                {/*<NavigationBar.Group components={navbarDetailComponents}/>*/}
             </nav>
             <nav className='w-full shrink-0 md:hidden flex'>
                 <NavigationBar.Mobile />
