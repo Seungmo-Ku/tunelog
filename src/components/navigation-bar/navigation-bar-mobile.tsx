@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { AlignJustify } from 'lucide-react'
 import React from 'react'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { navbarDetailComponents, navbarMainComponents } from '@/components/navigation-bar/navitaion-bar-default'
+import { navbarMainComponents } from '@/components/navigation-bar/navitaion-bar-default'
 
 
 export const NavigationBarMobile = () => {
