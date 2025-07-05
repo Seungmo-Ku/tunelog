@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 
 const recommendedSchema = new mongoose.Schema({
-    type: { type: String, enum: ['album', 'artist', 'track'], required: true },
+    type: { type: String, enum: ['album', 'artist', 'track', 'journal'], required: true },
     spotifyId: { type: String, required: true },
     validUntil: { type: Date, default: 0 },
     validFrom: { type: Date, default: 0 },

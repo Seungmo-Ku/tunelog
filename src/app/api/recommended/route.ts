@@ -21,9 +21,7 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     
     const recommended = await Recommended.find(query).sort({ createdAt: -1 }).limit(limit)
     
-    return NextResponse.json({
-        recommended
-    })
+    return NextResponse.json(recommended, { status: 200 }) // 200 OK
 }
 
 export const POST = async (req: NextRequest) => {
