@@ -15,7 +15,7 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
         deleted: false,
         $or: [
             { validUntil: { $gt: new Date() } }, // 유효 기간이 아직 남았거나
-            { validUntil: null }                // 유효 기간이 null (무제한)인 경우
+            { validUntil: 0 }                // 유효 기간이 0 (무제한)인 경우
         ]
     }
     
