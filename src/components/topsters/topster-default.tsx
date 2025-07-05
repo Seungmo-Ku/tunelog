@@ -1,45 +1,61 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Input } from '@headlessui/react'
+import React, { useState, useMemo, useEffect } from 'react'
+import { ResizableGridDefault } from '@/components/resizable-grid/resizeable-grid-default'
+import { isEmpty } from 'lodash'
 
 
 export const TopsterDefault = () => {
-    const [size, setSize] = useState({ lg: 5, md: 5, sm: 5, xs: 5, xxs: 5 })
+    const [gridSize, setGridSize] = useState(3) // 기본 그리드 사이즈 3x3
+    const [items, setItems] = useState<string[]>(Array(100).fill(''))
+    
+    useEffect(() => {
+        setItems((prev) => {
+            const newItems = [...prev]
+            newItems[3] = 'https://i.scdn.co/image/ab67616d0000b2736f578b21bce56056473da7e6'
+            return newItems
+        })
+    }, [])
+    
+    const initialItems = useMemo(() => {
+        return Array.from({ length: gridSize * gridSize }, (_, i) => ({
+            id: (i + 1).toString(),
+            content: (
+                !isEmpty(items[i]) ? (
+                    <img className='w-full h-full' alt={`image-${i + 1}`} src={items[i]}/>
+                ) : (
+                    <button className='w-full h-full flex items-center justify-center text-white cursor-pointer'>
+                        Add item
+                    </button>
+                )
+            
+            )
+        }))
+    }, [gridSize, items])
     
     return (
         <div className='w-full flex flex-col overflow-hidden'>
-            <Input
-                value={size.lg}
-                onChange={(e) => {
-                    const value = parseInt(e.target.value, 10)
-                    if (!isNaN(value)) {
-                        setSize({ lg: value, md: value, sm: value, xs: value, xxs: value })
-                    }
-                }}
-            />
-            <div
-                className='w-full flex items-start justify-start overflow-y-auto hide-sidebar max-h-[500px]'
-                // style={{ height: size.lg * 100 + 'px' }}
-            >
-                {/*<ReactGridLayout
-                 layouts={layout}
-                 cols={size}
-                 rowHeight={100}
-                 maxRows={size.lg}
-                 className=''
-                 compactType={null}
-                 preventCollision
-                 style={{ width: size.lg * 100 + 'px' }}
-                 >
-                 {layout.lg.map(item => (
-                 <div key={item.i} className="bg-gray-300 border border-gray-400 rounded-lg flex items-center justify-center">
-                 <span>{item.i}</span>
-                 </div>
-                 ))}
-                 </ReactGridLayout>*/}
+            {/* 그리드 사이즈 조절 input 예시 (필요하면 주석 해제하여 사용) */}
+            <div>
+                <label htmlFor='gridSizeInput'>Grid Size: </label>
+                <input
+                    id='gridSizeInput'
+                    type='range'
+                    min='1'
+                    max='10'
+                    value={gridSize}
+                    onChange={(e) => setGridSize(Number(e.target.value))}
+                />
+                <span>{gridSize}x{gridSize}</span>
             </div>
-        
+            <div
+                className='w-full flex items-start justify-start overflow-y-auto hide-sidebar'
+            >
+                <ResizableGridDefault
+                    initialItems={initialItems}
+                    gridSize={gridSize}
+                />
+            </div>
         </div>
     )
 }

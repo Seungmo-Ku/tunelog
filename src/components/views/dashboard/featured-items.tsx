@@ -72,11 +72,11 @@ export const FeaturedItem= ({ item, imageUrl: externalImageUrl }: FeaturedItemPr
             </div>
             
             {/* 컨텐츠 */}
-            <div className='relative z-[1] flex flex-col justify-end h-full p-8 text-white'>
-                <h3 className='text-14-semibold tracking-wider uppercase opacity-80'>
+            <div className='relative z-[1] flex flex-col justify-end h-full p-8 text-white w-full'>
+                <h3 className='text-14-semibold tracking-wider uppercase opacity-80 line-clamp-2'>
                     Recommended {type.charAt(0).toUpperCase() + type.slice(1)} For Today
                 </h3>
-                <h2 className='text-36-bold mt-1 truncate line-clamp-1'>{name}</h2>
+                <h2 className='text-36-bold mt-1 text-ellipsis line-clamp-2 break-keep'>{name}</h2>
                 <p className='text-18-regular mt-1 opacity-90 truncate'>{details}</p>
                 
                 <div className='mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
