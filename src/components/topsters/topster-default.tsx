@@ -1,11 +1,13 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import { ResizableGridDefault } from '@/components/resizable-grid/resizeable-grid-default'
 import { SearchType } from '@/libs/constants/spotify.constant'
 import { Dialogs } from '@/components/dialogs'
 import { isEmpty } from 'lodash'
 import { Input, Switch } from '@headlessui/react'
+import { usePostTopster } from '@/hooks/use-topster'
+import { Button } from '@/components/buttons'
 
 
 export interface TopsterItem {
@@ -17,6 +19,7 @@ export interface TopsterItem {
 
 export const TopsterDefault = () => {
     const [title, setTitle] = useState<string>('')
+    const [author, setAuthor] = useState<string>('')
     const [showTitle, setShowTitle] = useState<boolean>(true)
     const [showType, setShowType] = useState<boolean>(true)
     const [gridSize, setGridSize] = useState(3)
@@ -28,6 +31,8 @@ export const TopsterDefault = () => {
         url: '',
         title: ''
     }))
+    
+    const { mutateAsync, isPending } = usePostTopster()
     
     const initialItems = useMemo(() => {
         return Array.from({ length: gridSize * gridSize }, (_, i) => ({
@@ -53,6 +58,47 @@ export const TopsterDefault = () => {
             )
         }))
     }, [gridSize, items])
+    
+    const makeTopster = useCallback(async () => {
+        if (isPending) return
+        if (isEmpty(title) || isEmpty(author)) return
+        try {
+            const itemNumber = gridSize * gridSize
+            const res = await mutateAsync({
+                title,
+                author,
+                components: items.splice(0, itemNumber).map((item, index) => (
+                    {
+                        spotifyId: item.id,
+                        type: item.type ?? SearchType.album,
+                        width: 1,
+                        height: 1,
+                        x: index % gridSize,
+                        y: Math.floor(index / gridSize)
+                    })),
+                showTitles: showTitle,
+                showTypes: showType,
+                size: gridSize
+            })
+            if (res) {
+                setTitle('')
+                setAuthor('')
+                setItems(Array(100).fill({
+                    id: '',
+                    type: null,
+                    url: '',
+                    title: ''
+                }))
+                setGridSize(3)
+                setShowTitle(true)
+                setShowType(true)
+                setOpenDialog(false)
+            }
+        } catch (e) {
+            console.error('Error creating topster:', e)
+            return
+        }
+    }, [author, gridSize, isPending, items, mutateAsync, showTitle, showType, title])
     
     return (
         <div className='w-full flex md:flex-row flex-col gap-3 overflow-y-auto hide-sidebar'>
@@ -89,6 +135,15 @@ export const TopsterDefault = () => {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         placeholder='Enter title'
+                    />
+                </div>
+                <div className='flex flex-col gap-y-2'>
+                    <label htmlFor='authorInput' className='text-white'>Author</label>
+                    <Input
+                        id='authorInput'
+                        value={author}
+                        onChange={(e) => setAuthor(e.target.value)}
+                        placeholder='Enter Author'
                     />
                 </div>
                 <div className='flex flex-col gap-y-2'>
@@ -138,6 +193,12 @@ export const TopsterDefault = () => {
                         </div>
                     )
                 }
+                <Button.Box
+                    text='Create Topster'
+                    disabled={isEmpty(title) || isEmpty(author) || isPending}
+                    onClick={makeTopster}
+                    className='w-full'
+                />
             </div>
             <Dialogs.TopsterItem
                 open={openDialog}
