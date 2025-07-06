@@ -102,14 +102,14 @@ export const TopsterDefault = () => {
     
     return (
         <div className='w-full flex md:flex-row flex-col gap-3 overflow-y-auto hide-sidebar'>
-            <div className='w-full flex grow items-start justify-start gap-x-2'>
+            <div className='w-full flex md:flex-row flex-col grow items-start justify-start gap-2'>
                 <ResizableGridDefault
                     initialItems={initialItems}
                     gridSize={gridSize}
                 />
                 {
                     showTitle && (
-                        <div className='flex flex-col gap-y-2 w-[200px]'>
+                        <div className='flex flex-col gap-y-2 md:w-[200px] w-full'>
                             {
                                 Array.from({ length: gridSize * gridSize }, (_, i) => {
                                     const isLastInRow = (i + 1) % gridSize === 0
