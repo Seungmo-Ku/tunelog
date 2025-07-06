@@ -1,61 +1,150 @@
 'use client'
 
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo } from 'react'
 import { ResizableGridDefault } from '@/components/resizable-grid/resizeable-grid-default'
+import { SearchType } from '@/libs/constants/spotify.constant'
+import { Dialogs } from '@/components/dialogs'
 import { isEmpty } from 'lodash'
+import { Input, Switch } from '@headlessui/react'
 
+
+export interface TopsterItem {
+    id: string
+    type: SearchType | null
+    url: string
+    title: string
+}
 
 export const TopsterDefault = () => {
-    const [gridSize, setGridSize] = useState(3) // 기본 그리드 사이즈 3x3
-    const [items, setItems] = useState<string[]>(Array(100).fill(''))
-    
-    useEffect(() => {
-        setItems((prev) => {
-            const newItems = [...prev]
-            newItems[3] = 'https://i.scdn.co/image/ab67616d0000b2736f578b21bce56056473da7e6'
-            return newItems
-        })
-    }, [])
+    const [title, setTitle] = useState<string>('')
+    const [showTitle, setShowTitle] = useState<boolean>(true)
+    const [showType, setShowType] = useState<boolean>(true)
+    const [gridSize, setGridSize] = useState(3)
+    const [index, setIndex] = useState<number>(0)
+    const [openDialog, setOpenDialog] = useState<boolean>(false)
+    const [items, setItems] = useState<TopsterItem[]>(Array(100).fill({
+        id: '',
+        type: null,
+        url: '',
+        title: ''
+    }))
     
     const initialItems = useMemo(() => {
         return Array.from({ length: gridSize * gridSize }, (_, i) => ({
             id: (i + 1).toString(),
             content: (
-                !isEmpty(items[i]) ? (
-                    <img className='w-full h-full' alt={`image-${i + 1}`} src={items[i]}/>
-                ) : (
-                    <button className='w-full h-full flex items-center justify-center text-white cursor-pointer'>
-                        Add item
-                    </button>
-                )
-            
+                <div
+                    className='flex w-full h-full items-center justify-center'
+                    onClick={() => {
+                        setIndex(i)
+                        setOpenDialog(true)
+                    }}
+                >
+                    {
+                        items[i].type !== null && !isEmpty(items[i].url) ? (
+                            <img className='w-full h-full aspect-square' alt={`image-${i + 1}`} src={items[i].url}/>
+                        ) : (
+                            <div className='w-full h-full flex items-center justify-center text-white cursor-pointer'>
+                                Add item
+                            </div>
+                        )
+                    }
+                </div>
             )
         }))
     }, [gridSize, items])
     
     return (
-        <div className='w-full flex flex-col overflow-hidden'>
-            {/* 그리드 사이즈 조절 input 예시 (필요하면 주석 해제하여 사용) */}
-            <div>
-                <label htmlFor='gridSizeInput'>Grid Size: </label>
-                <input
-                    id='gridSizeInput'
-                    type='range'
-                    min='1'
-                    max='10'
-                    value={gridSize}
-                    onChange={(e) => setGridSize(Number(e.target.value))}
-                />
-                <span>{gridSize}x{gridSize}</span>
-            </div>
-            <div
-                className='w-full flex items-start justify-start overflow-y-auto hide-sidebar'
-            >
+        <div className='w-full flex md:flex-row flex-col gap-3 overflow-y-auto hide-sidebar'>
+            <div className='w-full flex grow items-start justify-start gap-x-2'>
                 <ResizableGridDefault
                     initialItems={initialItems}
                     gridSize={gridSize}
                 />
+                {
+                    showTitle && (
+                        <div className='flex flex-col gap-y-2 w-[200px]'>
+                            {
+                                Array.from({ length: gridSize * gridSize }, (_, i) => {
+                                    const isLastInRow = (i + 1) % gridSize === 0
+                                    const isLastItem = i === (gridSize * gridSize) - 1
+                                    return (
+                                        <span
+                                            key={`topster-item-title-${i}`}
+                                            className={`text-white text-left text-14-regular whitespace-pre-wrap ${isLastInRow && !isLastItem ? 'mb-4' : ''}`}>
+                                            {items[i].type ? `${items[i].title}${showType ? ` - ${items[i].type}` : ''}` : '(Empty Slot)'}
+                                        </span>
+                                    )
+                                })
+                            }
+                        </div>
+                    )
+                }
             </div>
+            <div className='flex flex-col gap-y-3 md:w-[300px] w-full'>
+                <div className='flex flex-col gap-y-2'>
+                    <label htmlFor='titleInput' className='text-white'>Title</label>
+                    <Input
+                        id='titleInput'
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder='Enter title'
+                    />
+                </div>
+                <div className='flex flex-col gap-y-2'>
+                    <label htmlFor='gridSizeInput' className='text-white'>Size</label>
+                    <div className='flex gap-x-2 w-full items-center'>
+                        <input
+                            id='gridSizeInput'
+                            type='range'
+                            min='1'
+                            max='10'
+                            value={gridSize}
+                            onChange={(e) => setGridSize(Number(e.target.value))}
+                            className='w-full'
+                        />
+                        <span>{gridSize}x{gridSize}</span>
+                    </div>
+                </div>
+                <div className='flex flex-col gap-y-2'>
+                    <label htmlFor='showTitleSwitch' className='text-white'>Show item titles</label>
+                    <Switch
+                        id='showTitleSwitch'
+                        checked={showTitle}
+                        onChange={setShowTitle}
+                        className='group relative flex h-7 w-14 cursor-pointer rounded-full bg-white/10 p-1 ease-in-out focus:not-data-focus:outline-none data-checked:bg-white/10 data-focus:outline data-focus:outline-white'
+                    >
+                        <span
+                            aria-hidden='true'
+                            className='pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7'
+                        />
+                    </Switch>
+                </div>
+                {
+                    showTitle && (
+                        <div className='flex flex-col gap-y-2'>
+                            <label htmlFor='showTypeSwitch' className='text-white'>Show item types</label>
+                            <Switch
+                                id='showTypeSwitch'
+                                checked={showType}
+                                onChange={setShowType}
+                                className='group relative flex h-7 w-14 cursor-pointer rounded-full bg-white/10 p-1 ease-in-out focus:not-data-focus:outline-none data-checked:bg-white/10 data-focus:outline data-focus:outline-white'
+                            >
+                                <span
+                                    aria-hidden='true'
+                                    className='pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7'
+                                />
+                            </Switch>
+                        </div>
+                    )
+                }
+            </div>
+            <Dialogs.TopsterItem
+                open={openDialog}
+                onCloseAction={() => setOpenDialog(false)}
+                index={index}
+                setItemsAction={setItems}
+            />
         </div>
     )
 }

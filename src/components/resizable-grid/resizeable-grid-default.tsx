@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core'
-import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
 
@@ -49,27 +49,32 @@ export function ResizableGridDefault({ initialItems, gridSize }: ResizableGridDe
     }, [initialItems])
     
     const sensors = useSensors(
-        useSensor(PointerSensor),
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 5
+            }
+        }),
         useSensor(KeyboardSensor)
     )
     
-    const handleDragEnd = (event: DragEndEvent) => {
-        const { active, over } = event
-        
-        if (active.id !== over?.id) {
-            setItems((items) => {
-                const oldIndex = items.findIndex((item) => item.id === active.id)
-                const newIndex = items.findIndex((item) => item.id === over?.id)
-                return arrayMove(items, oldIndex, newIndex)
-            })
-        }
-    }
+    // const handleDragEnd = (event: DragEndEvent) => {
+    //     const { active, over } = event
+    //
+    //     if (active.id !== over?.id) {
+    //         setItems((items) => {
+    //             const oldIndex = items.findIndex((item) => item.id === active.id)
+    //             const newIndex = items.findIndex((item) => item.id === over?.id)
+    //             return arrayMove(items, oldIndex, newIndex)
+    //         })
+    //     }
+    // }
+    // TODO. 나중에 드래그 다시 추가
     
     return (
         <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
+            onDragEnd={/*handleDragEnd*/ () => null}
         >
             <SortableContext
                 items={items.map(item => item.id)}
