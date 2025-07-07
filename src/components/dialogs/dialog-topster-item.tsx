@@ -7,7 +7,7 @@ import { SearchType } from '@/libs/constants/spotify.constant'
 import { useGetAlbumQuery, useGetArtistQuery, useGetTrackQuery } from '@/hooks/use-spotify'
 import { Button } from '@/components/buttons'
 import { isEmpty } from 'lodash'
-import { TopsterItem } from '@/components/topsters/topster-default'
+import { TopsterItem } from '@/components/views/topsters/topster-create'
 
 
 interface DialogTopsterItemProps {

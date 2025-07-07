@@ -17,7 +17,7 @@ export interface TopsterItem {
     title: string
 }
 
-export const TopsterDefault = () => {
+export const TopsterCreate = () => {
     const [title, setTitle] = useState<string>('')
     const [author, setAuthor] = useState<string>('')
     const [showTitle, setShowTitle] = useState<boolean>(true)

@@ -6,6 +6,8 @@ import { CardDefaultSkeleton } from '@/components/cards/card-default-skeleton'
 import { CardChartSkeleton } from '@/components/cards/card-chart-skeleton'
 import { CardBigSkeleton } from '@/components/cards/card-big-skeleton'
 import { CardLongSkeleton } from '@/components/cards/card-long-skeleton'
+import { CardTopster } from '@/components/cards/card-topster'
+import { CardTopsterSkeleton } from '@/components/cards/card-topster-skeleton'
 
 
 export const Cards = {
@@ -16,5 +18,7 @@ export const Cards = {
     Chart: CardChart,
     ChartSkeleton: CardChartSkeleton,
     Long: CardLong,
-    LongSkeleton: CardLongSkeleton
+    LongSkeleton: CardLongSkeleton,
+    Topster: CardTopster,
+    TopsterSkeleton: CardTopsterSkeleton
 }
