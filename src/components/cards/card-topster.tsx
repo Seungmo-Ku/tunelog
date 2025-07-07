@@ -27,7 +27,7 @@ export const CardTopster = ({
         return (
             <div className='grid grid-cols-2 grid-rows-2 w-full h-full gap-1'>
                 {imageComponents.map((component, index) => (
-                    <img key={index} src={component.imageUrl} className='w-full h-full object-cover first:rounded-tl-[8px] second:rounded-tr-[8px] third:rounded-bl-[8px] fourth:rounded-br-[8px]'/>
+                    <img key={index} src={component.imageUrl} className='w-full h-full object-cover'/>
                 ))}
             </div>
         )
