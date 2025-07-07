@@ -5,6 +5,8 @@ import { IReply } from '@/libs/interfaces/rating.interface'
 export interface TopsterComponent {
     type: SearchType,
     spotifyId: string,
+    imageUrl: string,
+    title: string,
     x: number,
     y: number,
     width: number,

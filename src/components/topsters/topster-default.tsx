@@ -74,7 +74,9 @@ export const TopsterDefault = () => {
                         width: 1,
                         height: 1,
                         x: index % gridSize,
-                        y: Math.floor(index / gridSize)
+                        y: Math.floor(index / gridSize),
+                        imageUrl: item.url,
+                        title: item.title
                     })),
                 showTitles: showTitle,
                 showTypes: showType,
