@@ -8,6 +8,7 @@ import { isEmpty } from 'lodash'
 import { Input, Switch } from '@headlessui/react'
 import { usePostTopster } from '@/hooks/use-topster'
 import { Button } from '@/components/buttons'
+import { useRouter } from 'next/navigation'
 
 
 export interface TopsterItem {
@@ -18,6 +19,8 @@ export interface TopsterItem {
 }
 
 export const TopsterCreate = () => {
+    
+    const appRouter = useRouter()
     const [title, setTitle] = useState<string>('')
     const [author, setAuthor] = useState<string>('')
     const [showTitle, setShowTitle] = useState<boolean>(true)
@@ -95,12 +98,13 @@ export const TopsterCreate = () => {
                 setShowTitle(true)
                 setShowType(true)
                 setOpenDialog(false)
+                appRouter.push('/topsters')
             }
         } catch (e) {
             console.error('Error creating topster:', e)
             return
         }
-    }, [author, gridSize, isPending, items, mutateAsync, showTitle, showType, title])
+    }, [appRouter, author, gridSize, isPending, items, mutateAsync, showTitle, showType, title])
     
     return (
         <div className='w-full flex md:flex-row flex-col gap-3 overflow-y-auto hide-sidebar'>
