@@ -38,6 +38,7 @@ const TopstersPage = () => {
                         key={topster._id}
                         topster={topster}
                         showTransitionOnClick
+                        onClick={() => appRouter.push(`/topsters/${topster._id}`)}
                     />
                 ))}
                 {isTopsterLoading && (

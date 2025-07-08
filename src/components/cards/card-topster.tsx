@@ -7,12 +7,15 @@ export interface CardTopsterProps {
     topster: Topster
     containerClassName?: string
     showTransitionOnClick?: boolean
+    onClick?: () => void
 }
 
 export const CardTopster = ({
     topster,
     containerClassName = '',
-    showTransitionOnClick = false
+    showTransitionOnClick = false,
+    onClick = () => {
+    }
 }: CardTopsterProps) => {
     const { title, size, author, createdAt, updatedAt, components } = topster
     
@@ -34,7 +37,14 @@ export const CardTopster = ({
     }
     
     return (
-        <div className={clsx('grid w-full shrink-0 grid-cols-[1fr_2fr_1fr_1fr_2fr] backdrop-blur-[5px] bg-[#33373B] rounded-[15px] p-[10px] items-center cursor-pointer transition', showTransitionOnClick ? 'active:scale-[0.98]' : '', containerClassName)}>
+        <div
+            className={
+                clsx(
+                    'grid w-full shrink-0 grid-cols-[1fr_2fr_1fr_1fr_2fr] backdrop-blur-[5px] bg-[#33373B] rounded-[15px] p-[10px] items-center cursor-pointer transition'
+                    , showTransitionOnClick ? 'active:scale-[0.98]' : '', containerClassName)
+            }
+            onClick={onClick}
+        >
             <div className='w-20 h-20 shrink-0'>
                 {getPreviewImages()}
             </div>

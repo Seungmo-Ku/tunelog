@@ -19,6 +19,16 @@ const apiTopster = {
             return null
         }
     },
+    _get_topster: async (id: string): Promise<Topster | null> => {
+        try {
+            const { data } = await axios.get<TopsterResponse>(`/api/topsters/${id}`)
+            if (!data) return null
+            return new Topster(data)
+        } catch (e) {
+            console.error('ApiTopster._get_topster', e)
+            return null
+        }
+    },
     _post_topster: async (topster: TopsterCreateRequest): Promise<Topster | null> => {
         try {
             const { data } = await axios.post<TopsterResponse>('/api/topsters', topster)
