@@ -5,6 +5,8 @@ import { replySchema } from '@/models/rating-schema.model'
 const componentSchema = new mongoose.Schema({
     type: { type: String, enum: ['album', 'artist', 'track'], required: true },
     spotifyId: { type: String, required: true },
+    imageUrl: { type: String, required: true },
+    title: { type: String, required: true },
     x: { type: Number, required: true },
     y: { type: Number, required: true },
     width: { type: Number, required: true },

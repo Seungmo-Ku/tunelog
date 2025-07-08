@@ -29,8 +29,8 @@ export const CardLong = ({
                 <img src={imgUrl} className='rounded-[8px] w-10 h-10 shrink-0 aspect-square'/>
                 {leftIcon && <div className='shrink-0'>{leftIcon}</div>}
             </div>
-            <div className='text-12-regular text-white line-clamp-2 md:col-span-1 col-span-2'>{title}</div>
-            <div className='text-12-regular text-white md:flex hidden'>{type}</div>
+            <div className='text-12-regular text-white text-left line-clamp-2 md:col-span-1 col-span-2'>{title}</div>
+            <div className='text-12-regular text-white text-left md:flex hidden'>{type}</div>
             <div className='text-12-bold text-tunelog-secondary'>{duration}</div>
             {!!rightIcon ? rightIcon : <div/>}
         </div>
