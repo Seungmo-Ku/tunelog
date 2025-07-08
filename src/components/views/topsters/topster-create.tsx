@@ -70,7 +70,7 @@ export const TopsterCreate = () => {
             const res = await mutateAsync({
                 title,
                 author,
-                components: items.splice(0, itemNumber).map((item, index) => (
+                components: items.slice(0, itemNumber).map((item, index) => (
                     {
                         spotifyId: item.id,
                         type: item.type ?? SearchType.album,
