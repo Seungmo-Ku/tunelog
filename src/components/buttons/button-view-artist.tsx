@@ -44,7 +44,7 @@ export const ButtonViewArtist = ({
                     {
                         artists.map((artist, index) => {
                             return (
-                                <MenuItem key={`artist-menu-${index}`}>
+                                <MenuItem key={`artist-menu-${artist.id}`}>
                                     <button
                                         className='text-white text-16-regular cursor-pointer rounded-xl'
                                         onClick={() => {
