@@ -26,9 +26,11 @@ export const ButtonViewArtist = ({
     
     if (artists.length === 1) {
         return (
-            <button onClick={() => appRouter.push(`/detail/artist/${artists[0].id}`)}>
-                <Button.Box text='View Artist' leftIcon={micIcon}/>
-            </button>
+            <Button.Box
+                text='View Artist'
+                leftIcon={micIcon}
+                onClick={() => appRouter.push(`/detail/artist/${artists[0].id}`)}
+            />
         )
     }
     
