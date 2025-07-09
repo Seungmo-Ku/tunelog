@@ -1,0 +1,47 @@
+import { Meta, StoryObj } from '@storybook/nextjs'
+import { Button } from '@/components/buttons/index'
+
+
+const meta = {
+    title: 'buttons/view-artist',
+    component: Button.ViewArtist,
+    parameters: {
+        // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
+        layout: 'centered'
+    },
+    // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
+    tags: ['autodocs'],
+    // More on argTypes: https://storybook.js.org/docs/api/argtypes
+    argTypes: {
+        // backgroundColor: { control: 'color' },
+    }
+    // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
+    // args: { onClick: fn() },
+} satisfies Meta<typeof Button.ViewArtist>
+
+export default meta
+type Story = StoryObj<typeof meta>;
+
+// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
+export const Primary: Story = {
+    args: {
+        artists: [
+            {
+                id: '123',
+                external_urls: {
+                    spotify: 'https://open.spotify.com/artist/123'
+                },
+                followers: {
+                    total: 1000
+                },
+                genres: [],
+                href: 'https://api.spotify.com/v1/artists/123',
+                images: [],
+                name: 'Test Artist',
+                popularity: 50,
+                type: 'artist',
+                uri: 'spotify:artist:123'
+            }
+        ]
+    }
+}
