@@ -30,7 +30,7 @@ const TopstersPage = () => {
     const PlusIcon = useMemo(() => <Plus className='w-5 h-5 text-tunelog-secondary'/>, [])
     
     return (
-        <div className='text-white w-full h-full flex flex-col gap-y-10'>
+        <div className='text-white w-full h-full flex flex-col gap-y-10 overflow-y-auto hide-sidebar'>
             <Button.Box text='New Topster' leftIcon={PlusIcon} className='text-14-regular w-fit h-10' onClick={() => appRouter.push('/topsters/create')}/>
             <div className='w-full flex flex-col gap-y-2.5'>
                 {topsters.map(topster => (
