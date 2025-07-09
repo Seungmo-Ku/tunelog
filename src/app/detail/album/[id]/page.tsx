@@ -69,6 +69,7 @@ const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
                                 }
                             }}
                         />
+                        <Button.ViewArtist artists={album?.artists} />
                     </div>
                 </div>
             </div>

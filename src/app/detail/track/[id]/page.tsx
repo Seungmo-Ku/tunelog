@@ -74,6 +74,7 @@ const TrackDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
                                 />
                             )
                         }
+                        <Button.ViewArtist artists={track?.artists}/>
                     </div>
                 </div>
             </div>
