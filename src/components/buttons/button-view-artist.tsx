@@ -42,7 +42,7 @@ export const ButtonViewArtist = ({
             <MenuItems transition anchor='bottom end' className='bg-tunelog-dark-alt border border-white/50 rounded-2xl p-4 flex flex-col gap-y-2 transition duration-200 ease-out data-closed:scale-95 data-closed:opacity-0'>
                 <div className='w-full flex flex-col gap-y-1 items-start'>
                     {
-                        artists.map((artist, index) => {
+                        artists.map(artist => {
                             return (
                                 <MenuItem key={`artist-menu-${artist.id}`}>
                                     <button
