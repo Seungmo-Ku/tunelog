@@ -30,9 +30,9 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
 export const POST = async (req: NextRequest) => {
     await connectDB()
     const body = await req.json()
-    if (body.password) {
+    if (body.password && !isEmpty(body.password)) {
         body.password = await hashPassword(body.password)
-    }
+    } else delete body.password
     const newTopster = await Topster.create(body)
     const object = newTopster.toObject()
     delete object.password

@@ -34,7 +34,7 @@ export const POST = async (req: NextRequest) => {
     const body = await req.json()
     if (body.password && !isEmpty(body.password)) {
         body.password = await hashPassword(body.password)
-    }
+    } else delete body.password
     const newRating = await Rating.create(body)
     const object = newRating.toObject()
     delete object.password
