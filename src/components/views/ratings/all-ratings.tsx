@@ -44,7 +44,7 @@ export const AllRatings = () => {
     useEffect(() => {
         if (typeof window !== 'undefined') {
             if (!makeRating) {
-                history.replaceState(null, '', ' ')
+                history.replaceState(null, '', window.location.pathname)
                 return
             }
             
