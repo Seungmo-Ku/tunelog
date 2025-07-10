@@ -10,6 +10,7 @@ import { Button } from '@/components/buttons'
 import { isEmpty } from 'lodash'
 import { RatingCreateRequest } from '@/libs/dto/rating.dto'
 import { Rating } from 'react-simple-star-rating'
+import { useRatingHash } from '@/libs/utils/rating'
 
 
 interface DialogNewRatingProps {
@@ -33,20 +34,12 @@ export const DialogNewRating = ({
     const { data: artistData, isLoading: artistLoading } = useGetArtistQuery(selectedType === SearchType.artist ? selectedObjectId : '')
     const { data: trackData, isLoading: trackLoading } = useGetTrackQuery(selectedType === SearchType.track ? selectedObjectId : '')
     
+    const { objectId, objectType } = useRatingHash()
+    
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            
-            const hash = window.location.hash.substring(1)
-            if (hash) {
-                const params = new URLSearchParams(hash)
-                const objectId = params.get('initialSelectedObjectId') ?? undefined
-                const objectType = params.get('initialSelectedType') as SearchType | null
-                
-                if (objectId) setSelectedObjectId(objectId)
-                if (objectType) setSelectedType(objectType)
-            }
-        }
-    }, [])
+        if (objectId) setSelectedObjectId(objectId)
+        if (objectType) setSelectedType(objectType)
+    }, [objectId, objectType])
     
     const isLoading = useMemo(() => albumLoading || artistLoading || trackLoading, [albumLoading, artistLoading, trackLoading])
     

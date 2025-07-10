@@ -16,6 +16,7 @@ import { isEmpty } from 'lodash'
 import { useRouter } from 'next/navigation'
 import { useAtom } from 'jotai'
 import { MakeRatingAtom } from '@/components/buttons/button-make-rating'
+import { useRatingHash } from '@/libs/utils/rating'
 
 
 export const AllRatings = () => {
@@ -41,28 +42,22 @@ export const AllRatings = () => {
         }
     }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage])
     
+    const { objectId, objectType } = useRatingHash()
+    
     useEffect(() => {
         if (typeof window !== 'undefined') {
             if (!makeRating) {
                 history.replaceState(null, '', window.location.pathname)
                 return
             }
-            
-            const hash = window.location.hash.substring(1)
-            if (hash) {
-                const params = new URLSearchParams(hash)
-                const objectId = params.get('initialSelectedObjectId') ?? undefined
-                const objectType = params.get('initialSelectedType') as SearchType | null
-                
-                if (objectId && objectType && makeRating) {
-                    setMakeRating(false)
-                    setTimeout(() => {
-                        setNewRatingOpen(true)
-                    }, 500)
-                }
+            if (objectId && objectType && makeRating) {
+                setMakeRating(false)
+                setTimeout(() => {
+                    setNewRatingOpen(true)
+                }, 500)
             }
         }
-    }, [makeRating, setMakeRating])
+    }, [makeRating, objectId, objectType, setMakeRating])
     
     const filteredRatings = useMemo(() => {
         if (!ratings) return []
