@@ -29,6 +29,7 @@ export const CreatingComponent = () => {
         scene: '',
         custom: ''
     })
+    const [password, setPassword] = useState('')
     const [selectedObjectId, setSelectedObjectId] = useState<string>('')
     const [selectedObject, setSelectedObject] = useState<SelectedObjectProps[]>([])
     
@@ -51,12 +52,13 @@ export const CreatingComponent = () => {
             title,
             content: html ?? '',
             author,
-            tags
+            tags,
+            password
         })
         if (res) {
             appRouter.replace(`/journals`)
         }
-    }, [appRouter, author, isPending, mutateAsync, selectedObject, tags, title])
+    }, [appRouter, author, isPending, mutateAsync, password, selectedObject, tags, title])
     
     useEffect(() => {
         if (selectedObject.length > 0) {
@@ -236,6 +238,13 @@ export const CreatingComponent = () => {
                         maxLength={10}
                     />
                 </div>
+                <Input
+                    className='w-full py-1 border-white border'
+                    placeholder='Password'
+                    type='password'
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
             </div>
         </div>
     )

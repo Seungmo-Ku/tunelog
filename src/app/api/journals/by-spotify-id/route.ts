@@ -24,6 +24,7 @@ export const GET = async (req: NextRequest) => {
         } : baseQuery
     
     const journals = await Journal.find(query)
+                                  .select('-password')
                                   .sort({ createdAt: -1 })
                                   .limit(limit)
     
