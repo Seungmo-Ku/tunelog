@@ -29,7 +29,7 @@ export const CreatingComponent = () => {
         scene: '',
         custom: ''
     })
-    const [password, setPassword] = useState('')
+    const [password, setPassword] = useState<string>('')
     const [selectedObjectId, setSelectedObjectId] = useState<string>('')
     const [selectedObject, setSelectedObject] = useState<SelectedObjectProps[]>([])
     
