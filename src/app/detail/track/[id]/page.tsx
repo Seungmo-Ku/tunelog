@@ -87,22 +87,12 @@ const TrackDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
                         {
                             ratings.map((rating, index) => {
                                 return (
-                                    <div key={`Ratings-${index}`} className='mb-[10px] !w-full group transition active:scale-95'>
-                                        <Cards.Long
-                                            imgUrl={track?.album?.images[0].url ?? '/favicon.ico'}
-                                            title={`${track?.name ?? ''}`}
-                                            type={rating.type}
-                                            duration={`${rating.score}/5`}
-                                            rightIcon={ratingsComponent}
-                                            containerClassName='!w-full rounded-none rounded-t-[15px]'
-                                        />
-                                        <div className='w-full bg-white/50 h-[1px]'/>
-                                        <div className='w-full flex flex-col bg-[#33373B] overflow-hidden rounded-b-[15px] p-[10px] text-white text-13-regular gap-y-1'>
-                                            <span className='whitespace-pre-line break-keep'>{rating.comment}</span>
-                                            <span className='text-12-regular'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anynomous'}`}</span>
-                                            {rating.createdAt !== rating.updatedAt && <span className='text-12-regular'>Last Edited: {new Date(rating.updatedAt).toLocaleDateString()}</span>}
-                                        </div>
-                                    </div>
+                                    <Cards.RatingWithContent
+                                        key={`Ratings-${index}`}
+                                        imgUrl={track?.album?.images[0].url ?? '/favicon.ico'}
+                                        title={`${track?.name ?? ''}`}
+                                        rating={rating}
+                                    />
                                 )
                             })
                         }

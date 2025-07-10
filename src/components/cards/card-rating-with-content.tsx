@@ -4,8 +4,7 @@ import { Rating } from '@/libs/interfaces/rating.interface'
 
 
 export interface CardRatingWithContentProps {
-    rating: Rating
-    key: string
+    rating: Rating | null | undefined
     imgUrl?: string
     title: string
     onClickAction?: () => void
@@ -13,15 +12,18 @@ export interface CardRatingWithContentProps {
 
 export const CardRatingWithContent = ({
     rating,
-    key,
     imgUrl,
     title,
-    onClickAction
+    onClickAction,
+    ...props
 }: CardRatingWithContentProps) => {
     const ratingsComponent = <EllipsisVertical className='text-tunelog-secondary w-5 h-5'/>
+    if (!rating) return (
+        <Cards.RatingWithContentSkeleton {...props}/>
+    )
     return (
         <button
-            key={key}
+            {...props}
             className='mb-[10px] !w-full group transition active:scale-95'
             onClick={onClickAction}
         >

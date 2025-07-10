@@ -127,31 +127,18 @@ export const AllRatings = () => {
                                 title = track?.name ?? ''
                         }
                         if (isEmpty(imgUrl) || isEmpty(title)) {
-                            return <Cards.LongSkeleton key={`AllRatings-${index}`}/>
+                            return <Cards.RatingWithContentSkeleton key={`AllRatings-${index}`}/>
                         }
                         return (
-                            <button
+                            <Cards.RatingWithContent
                                 key={`AllRatings-${index}`}
-                                className='mb-[10px] !w-full group transition active:scale-95'
-                                onClick={() => {
+                                rating={rating}
+                                imgUrl={imgUrl}
+                                title={title}
+                                onClickAction={() => {
                                     appRouter.push(`/detail/${rating.type}/${rating.spotifyId}`)
                                 }}
-                            >
-                                <Cards.Long
-                                    imgUrl={imgUrl}
-                                    title={`${title}`}
-                                    type={rating.type}
-                                    duration={`${rating.score}/5`}
-                                    rightIcon={ratingsComponent}
-                                    containerClassName='!w-full rounded-none rounded-t-[15px]'
-                                />
-                                <div className='w-full bg-white/50 h-[1px]'/>
-                                <div className='w-full flex flex-col bg-[#33373B] overflow-hidden rounded-b-[15px] p-[10px] text-white text-13-regular gap-y-1'>
-                                    <span className='whitespace-pre-line break-keep text-left'>{rating.comment}</span>
-                                    <span className='text-12-regular text-left'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anynomous'}`}</span>
-                                    {rating.createdAt !== rating.updatedAt && <span className='text-12-regular text-left'>Last Edited: {new Date(rating.updatedAt).toLocaleDateString()}</span>}
-                                </div>
-                            </button>
+                            />
                         )
                     })
                 }
