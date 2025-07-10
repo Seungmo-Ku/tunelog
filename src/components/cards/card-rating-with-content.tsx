@@ -1,6 +1,11 @@
+'use client'
+
 import { Cards } from '@/components/cards/index'
 import { EllipsisVertical } from 'lucide-react'
 import { Rating } from '@/libs/interfaces/rating.interface'
+import { Menu, MenuButton, MenuItems } from '@headlessui/react'
+import { useState } from 'react'
+import { Dialogs } from '@/components/dialogs'
 
 
 export interface CardRatingWithContentProps {
@@ -17,14 +22,35 @@ export const CardRatingWithContent = ({
     onClickAction,
     ...props
 }: CardRatingWithContentProps) => {
-    const ratingsComponent = <EllipsisVertical className='text-tunelog-secondary w-5 h-5'/>
+    const [deleteRatingOpen, setDeleteRatingOpen] = useState<boolean>(false)
+    const ratingsComponent = (
+        <Menu>
+            <MenuButton
+                className='flex p-2 items-center justify-center cursor-pointer'
+                onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                }}>
+                <EllipsisVertical className='text-tunelog-secondary w-5 h-5'/>
+            </MenuButton>
+            <MenuItems transition anchor='bottom end' className='bg-tunelog-dark-alt border border-white/50 rounded-2xl p-4 flex flex-col gap-y-2 transition duration-200 ease-out data-closed:scale-95 data-closed:opacity-0 z-[5]'>
+                <div className='w-full flex flex-col gap-y-1 items-start text-white cursor-pointer' onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setDeleteRatingOpen(true)
+                }}>
+                    Delete
+                </div>
+            </MenuItems>
+        </Menu>
+    )
     if (!rating) return (
         <Cards.RatingWithContentSkeleton {...props}/>
     )
     return (
-        <button
+        <div
             {...props}
-            className='mb-[10px] !w-full group transition active:scale-95'
+            className='mb-[10px] !w-full group'
             onClick={onClickAction}
         >
             <Cards.Long
@@ -41,6 +67,7 @@ export const CardRatingWithContent = ({
                 <span className='text-12-regular text-left'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anynomous'}`}</span>
                 {rating.createdAt !== rating.updatedAt && <span className='text-12-regular text-left'>Last Edited: {new Date(rating.updatedAt).toLocaleDateString()}</span>}
             </div>
-        </button>
+            <Dialogs.DeleteRating open={deleteRatingOpen} onCloseAction={() => setDeleteRatingOpen(false)} rating={rating}/>
+        </div>
     )
 }
