@@ -14,6 +14,9 @@ import { Rating } from '@/libs/interfaces/rating.interface'
 import { useInView } from 'react-intersection-observer'
 import { isEmpty } from 'lodash'
 import { useRouter } from 'next/navigation'
+import { useAtom } from 'jotai'
+import { MakeRatingAtom } from '@/components/buttons/button-make-rating'
+import { useRatingHash } from '@/libs/utils/rating'
 
 
 export const AllRatings = () => {
@@ -21,6 +24,7 @@ export const AllRatings = () => {
     const [filterIndex, setFilterIndex] = useState(0)
     const [sortingIndex, setSortingIndex] = useState(0)
     const [newRatingOpen, setNewRatingOpen] = useState(false)
+    const [makeRating, setMakeRating] = useAtom(MakeRatingAtom)
     
     const { data: ratingsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isRatingLoading } = useGetAllRatings(20)
     
@@ -37,6 +41,23 @@ export const AllRatings = () => {
             fetchNextPage()
         }
     }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage])
+    
+    const { objectId, objectType } = useRatingHash()
+    
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            if (!makeRating) {
+                history.replaceState(null, '', window.location.pathname)
+                return
+            }
+            if (objectId && objectType && makeRating) {
+                setMakeRating(false)
+                setTimeout(() => {
+                    setNewRatingOpen(true)
+                }, 500)
+            }
+        }
+    }, [makeRating, objectId, objectType, setMakeRating])
     
     const filteredRatings = useMemo(() => {
         if (!ratings) return []
@@ -140,7 +161,10 @@ export const AllRatings = () => {
                     <Cards.LongSkeleton/>
                 }
             </div>
-            <Dialogs.NewRating open={newRatingOpen} onCloseAction={() => setNewRatingOpen(false)}/>
+            <Dialogs.NewRating
+                open={newRatingOpen}
+                onCloseAction={() => setNewRatingOpen(false)}
+            />
         </div>
     
     )

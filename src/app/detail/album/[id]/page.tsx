@@ -14,6 +14,7 @@ import { Journal } from '@/libs/interfaces/journal.interface'
 import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { useJournalWithObjects } from '@/hooks/use-journal-with-objects'
 import { useRouter } from 'next/navigation'
+import { SearchType } from '@/libs/constants/spotify.constant'
 
 
 const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -69,7 +70,8 @@ const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
                                 }
                             }}
                         />
-                        <Button.ViewArtist artists={album?.artists} />
+                        <Button.ViewArtist artists={album?.artists}/>
+                        <Button.MakeRating id={album?.id} type={SearchType.album}/>
                     </div>
                 </div>
             </div>

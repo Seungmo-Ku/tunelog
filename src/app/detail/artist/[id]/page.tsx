@@ -13,6 +13,7 @@ import { EllipsisVertical } from 'lucide-react'
 import { Button } from '@/components/buttons'
 import { Cards } from '@/components/cards'
 import { useRouter } from 'next/navigation'
+import { SearchType } from '@/libs/constants/spotify.constant'
 
 
 const ArtistDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -71,6 +72,7 @@ const ArtistDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> })
                                 //TODO. Spotify icon
                             }}
                         />
+                        <Button.MakeRating id={artist?.id} type={SearchType.artist}/>
                     </div>
                 </div>
             </div>

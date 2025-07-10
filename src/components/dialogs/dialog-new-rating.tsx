@@ -2,7 +2,7 @@
 
 import { Dialog, DialogPanel, DialogTitle, Input, Textarea } from '@headlessui/react'
 import { TopSearchBar } from '@/components/views/dashboard/top-search-bar'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { SearchType } from '@/libs/constants/spotify.constant'
 import { useGetAlbumQuery, useGetArtistQuery, useGetTrackQuery } from '@/hooks/use-spotify'
 import { usePostRating } from '@/hooks/use-rating'
@@ -10,6 +10,7 @@ import { Button } from '@/components/buttons'
 import { isEmpty } from 'lodash'
 import { RatingCreateRequest } from '@/libs/dto/rating.dto'
 import { Rating } from 'react-simple-star-rating'
+import { useRatingHash } from '@/libs/utils/rating'
 
 
 interface DialogNewRatingProps {
@@ -32,6 +33,13 @@ export const DialogNewRating = ({
     const { data: albumData, isLoading: albumLoading } = useGetAlbumQuery(selectedType === SearchType.album ? selectedObjectId : '')
     const { data: artistData, isLoading: artistLoading } = useGetArtistQuery(selectedType === SearchType.artist ? selectedObjectId : '')
     const { data: trackData, isLoading: trackLoading } = useGetTrackQuery(selectedType === SearchType.track ? selectedObjectId : '')
+    
+    const { objectId, objectType } = useRatingHash()
+    
+    useEffect(() => {
+        if (objectId) setSelectedObjectId(objectId)
+        if (objectType) setSelectedType(objectType)
+    }, [objectId, objectType])
     
     const isLoading = useMemo(() => albumLoading || artistLoading || trackLoading, [albumLoading, artistLoading, trackLoading])
     
