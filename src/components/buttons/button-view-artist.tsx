@@ -36,8 +36,9 @@ export const ButtonViewArtist = ({
     
     return (
         <Menu>
-            <MenuButton>
-                <Button.Box text='View Artist' leftIcon={micIcon}/>
+            <MenuButton className='flex p-[10px] gap-x-[10px] items-center justify-center active:scale-[0.95] transition-transform rounded-[32px] bg-white/10 backdrop-blur-[5px] cursor-pointer text-12-regular'>
+                {micIcon}
+                <span className='text-white'>View Artist</span>
             </MenuButton>
             <MenuItems transition anchor='bottom end' className='bg-tunelog-dark-alt border border-white/50 rounded-2xl p-4 flex flex-col gap-y-2 transition duration-200 ease-out data-closed:scale-95 data-closed:opacity-0'>
                 <div className='w-full flex flex-col gap-y-1 items-start'>

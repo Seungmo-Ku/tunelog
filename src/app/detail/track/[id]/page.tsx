@@ -13,6 +13,7 @@ import { Cards } from '@/components/cards'
 import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { Disc, EllipsisVertical } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { SearchType } from '@/libs/constants/spotify.constant'
 
 
 const TrackDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -75,6 +76,7 @@ const TrackDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
                             )
                         }
                         <Button.ViewArtist artists={track?.artists}/>
+                        <Button.MakeRating id={track?.id} type={SearchType.track}/>
                     </div>
                 </div>
             </div>

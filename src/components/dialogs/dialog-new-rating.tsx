@@ -2,7 +2,7 @@
 
 import { Dialog, DialogPanel, DialogTitle, Input, Textarea } from '@headlessui/react'
 import { TopSearchBar } from '@/components/views/dashboard/top-search-bar'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { SearchType } from '@/libs/constants/spotify.constant'
 import { useGetAlbumQuery, useGetArtistQuery, useGetTrackQuery } from '@/hooks/use-spotify'
 import { usePostRating } from '@/hooks/use-rating'
@@ -32,6 +32,21 @@ export const DialogNewRating = ({
     const { data: albumData, isLoading: albumLoading } = useGetAlbumQuery(selectedType === SearchType.album ? selectedObjectId : '')
     const { data: artistData, isLoading: artistLoading } = useGetArtistQuery(selectedType === SearchType.artist ? selectedObjectId : '')
     const { data: trackData, isLoading: trackLoading } = useGetTrackQuery(selectedType === SearchType.track ? selectedObjectId : '')
+    
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            
+            const hash = window.location.hash.substring(1)
+            if (hash) {
+                const params = new URLSearchParams(hash)
+                const objectId = params.get('initialSelectedObjectId') ?? undefined
+                const objectType = params.get('initialSelectedType') as SearchType | null
+                
+                if (objectId) setSelectedObjectId(objectId)
+                if (objectType) setSelectedType(objectType)
+            }
+        }
+    }, [])
     
     const isLoading = useMemo(() => albumLoading || artistLoading || trackLoading, [albumLoading, artistLoading, trackLoading])
     
