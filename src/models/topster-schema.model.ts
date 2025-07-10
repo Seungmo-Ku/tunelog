@@ -23,7 +23,8 @@ const topsterSchema = new mongoose.Schema({
     isEdited: { type: Boolean, default: false },
     likes: { type: Number, default: 0 },
     replies: [replySchema],
-    deleted: { type: Boolean, default: false }
+    deleted: { type: Boolean, default: false },
+    password: { type: String, required: false, default: '' }
 }, { timestamps: true })
 
 export const Topster = mongoose.models.Topster || mongoose.model('Topster', topsterSchema)

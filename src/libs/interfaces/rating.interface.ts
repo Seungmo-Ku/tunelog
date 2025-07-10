@@ -25,6 +25,7 @@ export interface IRating {
     likes?: number
     replies?: IReply[]
     deleted?: boolean
+    password?: string
 } // Rating
 
 export class Reply implements IReply {
@@ -36,7 +37,7 @@ export class Reply implements IReply {
     isEdited?: boolean
     likes?: number
     deleted?: boolean
-
+    
     constructor(reply: IReply) {
         this._id = reply._id
         this.comment = reply.comment
@@ -62,7 +63,7 @@ export class Rating implements IRating {
     likes?: number
     replies?: IReply[]
     deleted?: boolean
-
+    
     constructor(rating: IRating) {
         this._id = rating._id
         this.type = rating.type

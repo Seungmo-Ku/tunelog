@@ -27,6 +27,7 @@ export interface IJournal {
     likes?: number
     replies?: IReply[]
     deleted?: boolean
+    password?: string
 }
 
 export class Journal implements IJournal {

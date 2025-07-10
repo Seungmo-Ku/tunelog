@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import { replySchema } from '@/models/rating-schema.model'
 
+
 const subjectSchema = new mongoose.Schema({
     type: { type: String, enum: ['album', 'artist', 'track'], required: true },
     spotifyId: { type: String, required: true }
@@ -22,7 +23,8 @@ const journalSchema = new mongoose.Schema({
     isEdited: { type: Boolean, default: false },
     likes: { type: Number, default: 0 },
     replies: [replySchema],
-    deleted: { type: Boolean, default: false }
+    deleted: { type: Boolean, default: false },
+    password: { type: String, required: false, default: '' }
 }, { timestamps: true })
 
 export const Journal = mongoose.models.Journal || mongoose.model('Journal', journalSchema)

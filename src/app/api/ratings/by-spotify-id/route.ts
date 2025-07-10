@@ -18,6 +18,7 @@ export const GET = async (req: NextRequest) => {
                   : { spotifyId }
     
     const ratings = await Rating.find(query)
+                                .select('-password') // 비밀번호는 제외
                                 .sort({ createdAt: -1 })
                                 .limit(limit)
     

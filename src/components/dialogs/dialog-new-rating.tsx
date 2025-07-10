@@ -27,6 +27,7 @@ export const DialogNewRating = ({
     const [comment, setComment] = useState<string>('')
     const [author, setAuthor] = useState<string>('')
     const [score, setScore] = useState<number>(0)
+    const [password, setPassword] = useState<string>('')
     
     const { mutateAsync, isPending } = usePostRating()
     
@@ -100,6 +101,13 @@ export const DialogNewRating = ({
                         onChange={(e) => setComment(e.target.value)}
                         maxLength={1000}
                     />
+                    <Input
+                        className='w-full py-1 border-white border'
+                        placeholder='Password'
+                        type='password'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
                     <Button.Box
                         text='create new rating!'
                         disabled={isPending || isEmpty(selectedObjectId) || isEmpty(comment) || isEmpty(author)}
@@ -110,7 +118,8 @@ export const DialogNewRating = ({
                                 type: selectedType,
                                 author,
                                 score,
-                                comment
+                                comment,
+                                password: isEmpty(password) ? undefined : password
                             }
                             await mutateAsync(ratingData)
                             onCloseAction()
@@ -119,6 +128,7 @@ export const DialogNewRating = ({
                             setAuthor('')
                             setSelectedObjectId('')
                             setSelectedType(null)
+                            setPassword('')
                         }}
                     />
                 </DialogPanel>

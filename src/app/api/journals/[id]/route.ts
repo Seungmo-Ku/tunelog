@@ -10,6 +10,6 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
     }
     await connectDB()
     
-    const journal = await Journal.findById(id)
+    const journal = await Journal.findById(id).select('-password')
     return NextResponse.json(journal, { status: 200 }) // 200 OK
 }
