@@ -36,6 +36,8 @@ export const POST = async (req: NextRequest) => {
         body.password = await hashPassword(body.password)
     }
     const newRating = await Rating.create(body)
-    return NextResponse.json(newRating, { status: 201 }) // 201 Created
+    const object = newRating.toObject()
+    delete object.password
+    return NextResponse.json(object, { status: 201 }) // 201 Created
 }
 

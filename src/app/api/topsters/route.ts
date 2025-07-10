@@ -34,5 +34,7 @@ export const POST = async (req: NextRequest) => {
         body.password = await hashPassword(body.password)
     }
     const newTopster = await Topster.create(body)
-    return NextResponse.json(newTopster, { status: 201 }) // 201 Created
+    const object = newTopster.toObject()
+    delete object.password
+    return NextResponse.json(object, { status: 201 }) // 201 Created
 }
