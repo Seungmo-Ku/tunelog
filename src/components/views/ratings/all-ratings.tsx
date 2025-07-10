@@ -8,7 +8,7 @@ import { FilterButtons } from '@/components/views/ratings/filter-buttons'
 import { useEffect, useMemo, useState } from 'react'
 import { SortingButtons } from '@/components/views/ratings/sorting-buttons'
 import { Button } from '@/components/buttons'
-import { EllipsisVertical, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { Dialogs } from '@/components/dialogs'
 import { Rating } from '@/libs/interfaces/rating.interface'
 import { useInView } from 'react-intersection-observer'
@@ -83,8 +83,6 @@ export const AllRatings = () => {
     const { albumsById, tracksById, artistsById } = useRatingWithObjects(filteredRatings)
     
     const PlusIcon = useMemo(() => <Plus className='w-5 h-5 text-tunelog-secondary'/>, [])
-    
-    const ratingsComponent = useMemo(() => <EllipsisVertical className='text-tunelog-secondary w-5 h-5'/>, [])
     
     //TODO. Rating 용 검색창 따로 만들기, grid 는 journal 탭에서 사용, rating 에서는 가로로 긴 컴포넌트에 누르면 disclosure 같은 거 사용
     return (

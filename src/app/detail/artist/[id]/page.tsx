@@ -9,7 +9,6 @@ import _, { isEmpty } from 'lodash'
 import { Rating } from '@/libs/interfaces/rating.interface'
 import { Journal } from '@/libs/interfaces/journal.interface'
 import { useJournalWithObjects } from '@/hooks/use-journal-with-objects'
-import { EllipsisVertical } from 'lucide-react'
 import { Button } from '@/components/buttons'
 import { Cards } from '@/components/cards'
 import { useRouter } from 'next/navigation'
@@ -44,8 +43,6 @@ const ArtistDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> })
     }, [isJournalLoading, journalsData])
     
     const { subjectMap } = useJournalWithObjects(journals)
-    
-    const ratingsComponent = useMemo(() => <EllipsisVertical className='text-tunelog-secondary w-5 h-5'/>, [])
     
     const isLoading = useMemo(() => isArtistLoading || isAlbumLoading || isTrackLoading, [isArtistLoading, isAlbumLoading, isTrackLoading])
     if (isLoading) {

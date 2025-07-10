@@ -5,7 +5,7 @@ import { useGetAlbumQuery } from '@/hooks/use-spotify'
 import { Button } from '@/components/buttons'
 import _, { isEmpty } from 'lodash'
 import { Cards } from '@/components/cards'
-import { ArrowUpRight, EllipsisVertical } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { formatDuration } from '@/libs/utils/time-format'
 import { useGetRatingsBySpotifyId } from '@/hooks/use-rating'
 import { useGetJournalsBySpotifyId } from '@/hooks/use-journal'
@@ -42,7 +42,6 @@ const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
     const arrowUpRight = useMemo(() => {
         return <ArrowUpRight className='text-white shrink-0'/>
     }, [])
-    const ratingsComponent = useMemo(() => <EllipsisVertical className='text-tunelog-secondary w-5 h-5'/>, [])
     
     if (isAlbumLoading) {
         return <div className='text-white'>Loading...</div>
