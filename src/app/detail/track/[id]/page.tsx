@@ -11,7 +11,7 @@ import { useJournalWithObjects } from '@/hooks/use-journal-with-objects'
 import { Button } from '@/components/buttons'
 import { Cards } from '@/components/cards'
 import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
-import { Disc, EllipsisVertical } from 'lucide-react'
+import { Disc } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { SearchType } from '@/libs/constants/spotify.constant'
 
@@ -38,7 +38,6 @@ const TrackDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
     
     const { subjectMap } = useJournalWithObjects(journals)
     
-    const ratingsComponent = useMemo(() => <EllipsisVertical className='text-tunelog-secondary w-5 h-5'/>, [])
     const albumComponent = useMemo(() => <Disc className='text-tunelog-secondary w-5 h-5'/>, [])
     if (isTrackLoading) {
         return <div className='text-white'>Loading...</div>
