@@ -34,6 +34,7 @@ export const TopsterCreate = () => {
         url: '',
         title: ''
     }))
+    const [password, setPassword] = useState<string>('')
     
     const { mutateAsync, isPending } = usePostTopster()
     
@@ -83,7 +84,8 @@ export const TopsterCreate = () => {
                     })),
                 showTitles: showTitle,
                 showTypes: showType,
-                size: gridSize
+                size: gridSize,
+                password
             })
             if (res) {
                 setTitle('')
@@ -98,13 +100,14 @@ export const TopsterCreate = () => {
                 setShowTitle(true)
                 setShowType(true)
                 setOpenDialog(false)
+                setPassword('')
                 appRouter.push('/topsters')
             }
         } catch (e) {
             console.error('Error creating topster:', e)
             return
         }
-    }, [appRouter, author, gridSize, isPending, items, mutateAsync, showTitle, showType, title])
+    }, [appRouter, author, gridSize, isPending, items, mutateAsync, password, showTitle, showType, title])
     
     return (
         <div className='w-full flex md:flex-row flex-col gap-3 overflow-y-auto hide-sidebar'>
@@ -199,6 +202,16 @@ export const TopsterCreate = () => {
                         </div>
                     )
                 }
+                <div className='flex flex-col gap-y-2'>
+                    <label htmlFor='passwordInput' className='text-white'>Password</label>
+                    <Input
+                        id='passwordInput'
+                        value={password}
+                        type='password'
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder='Enter Password'
+                    />
+                </div>
                 <Button.Box
                     text='Create Topster'
                     disabled={isEmpty(title) || isEmpty(author) || isPending}

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { connectDB } from '@/libs/api-server/mongoose'
 import { Topster } from '@/models/topster-schema.model'
 import { isEmpty } from 'lodash'
+import { hashPassword } from '@/libs/utils/password'
 
 
 export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
@@ -13,7 +14,10 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     const query = cursor
                   ? { createdAt: { $lt: new Date(cursor) } }
                   : {}
-    const topsters = await Topster.find(query).sort({ createdAt: -1 }).limit(limit)
+    const topsters = await Topster.find(query)
+                                  .select('-password')
+                                  .sort({ createdAt: -1 })
+                                  .limit(limit)
     
     const nextCursor = topsters.length === limit ? topsters[topsters.length - 1].createdAt.toISOString() : null
     
@@ -26,6 +30,9 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
 export const POST = async (req: NextRequest) => {
     await connectDB()
     const body = await req.json()
+    if (body.password) {
+        body.password = await hashPassword(body.password)
+    }
     const newTopster = await Topster.create(body)
     return NextResponse.json(newTopster, { status: 201 }) // 201 Created
 }

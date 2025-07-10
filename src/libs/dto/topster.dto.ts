@@ -1,7 +1,7 @@
 import { ITopster } from '@/libs/interfaces/topster.interface'
 
 
-export type TopsterCreateRequest = Pick<ITopster, 'components' | 'title' | 'size' | 'author' | 'showTitles' | 'showTypes'>
+export type TopsterCreateRequest = Pick<ITopster, 'components' | 'title' | 'size' | 'author' | 'showTitles' | 'showTypes' | 'password'>
 
 export type TopsterUpdateRequest = Partial<Pick<ITopster, 'components' | 'title' | 'size' | 'showTitles' | 'showTypes'>>
 

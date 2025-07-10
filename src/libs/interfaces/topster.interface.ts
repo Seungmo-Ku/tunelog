@@ -26,7 +26,8 @@ export interface ITopster {
     replies?: IReply[],
     deleted?: boolean,
     createdAt: Date,
-    updatedAt: Date
+    updatedAt: Date,
+    password?: string
 }
 
 export class Topster implements ITopster {
