@@ -27,7 +27,6 @@ export const Primary: Story = {
     args: {
         imgUrl: 'https://i.scdn.co/image/ab67616d0000b273124e9249fada4ff3c3a0739c',
         title: 'Like Him',
-        key: 'rating-1',
         rating: {
             _id: '231',
             type: 'album',
