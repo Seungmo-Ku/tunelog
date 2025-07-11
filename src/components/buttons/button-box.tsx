@@ -20,7 +20,7 @@ export const ButtonBox = ({
     ...props
 }: ButtonBoxProps) => {
     return (
-        <Button className={clsx('flex p-[10px] gap-x-[10px] items-center justify-center active:scale-[0.95] transition-transform rounded-[32px] bg-white/10 backdrop-blur-[5px] cursor-pointer text-12-regular', disabled ? 'transition-none active:scale-100 bg-black/20' : '', className)} {...props} disabled={disabled}>
+        <Button className={clsx('flex p-[10px] gap-x-[10px] items-center justify-center active:scale-[0.95] transition-transform rounded-[32px] bg-white/10 backdrop-blur-[5px] cursor-pointer text-12-regular', disabled ? '!transition-none active:!scale-100 !bg-black/20 !text-white/50 !cursor-default' : '', className)} {...props} disabled={disabled}>
             {leftIcon}
             <span className='text-white'>{text}</span>
             {rightIcon}

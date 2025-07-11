@@ -8,6 +8,8 @@ import { CardBigSkeleton } from '@/components/cards/card-big-skeleton'
 import { CardLongSkeleton } from '@/components/cards/card-long-skeleton'
 import { CardTopster } from '@/components/cards/card-topster'
 import { CardTopsterSkeleton } from '@/components/cards/card-topster-skeleton'
+import { CardRatingWithContent } from '@/components/cards/card-rating-with-content'
+import { CardRatingWithContentSkeleton } from '@/components/cards/card-rating-with-content-skeleton'
 
 
 export const Cards = {
@@ -20,5 +22,7 @@ export const Cards = {
     Long: CardLong,
     LongSkeleton: CardLongSkeleton,
     Topster: CardTopster,
-    TopsterSkeleton: CardTopsterSkeleton
+    TopsterSkeleton: CardTopsterSkeleton,
+    RatingWithContent: CardRatingWithContent,
+    RatingWithContentSkeleton: CardRatingWithContentSkeleton
 }

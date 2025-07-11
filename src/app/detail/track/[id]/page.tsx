@@ -11,7 +11,7 @@ import { useJournalWithObjects } from '@/hooks/use-journal-with-objects'
 import { Button } from '@/components/buttons'
 import { Cards } from '@/components/cards'
 import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
-import { Disc, EllipsisVertical } from 'lucide-react'
+import { Disc } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { SearchType } from '@/libs/constants/spotify.constant'
 
@@ -38,7 +38,6 @@ const TrackDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
     
     const { subjectMap } = useJournalWithObjects(journals)
     
-    const ratingsComponent = useMemo(() => <EllipsisVertical className='text-tunelog-secondary w-5 h-5'/>, [])
     const albumComponent = useMemo(() => <Disc className='text-tunelog-secondary w-5 h-5'/>, [])
     if (isTrackLoading) {
         return <div className='text-white'>Loading...</div>
@@ -87,22 +86,12 @@ const TrackDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
                         {
                             ratings.map((rating, index) => {
                                 return (
-                                    <div key={`Ratings-${index}`} className='mb-[10px] !w-full group transition active:scale-95'>
-                                        <Cards.Long
-                                            imgUrl={track?.album?.images[0].url ?? '/favicon.ico'}
-                                            title={`${track?.name ?? ''}`}
-                                            type={rating.type}
-                                            duration={`${rating.score}/5`}
-                                            rightIcon={ratingsComponent}
-                                            containerClassName='!w-full rounded-none rounded-t-[15px]'
-                                        />
-                                        <div className='w-full bg-white/50 h-[1px]'/>
-                                        <div className='w-full flex flex-col bg-[#33373B] overflow-hidden rounded-b-[15px] p-[10px] text-white text-13-regular gap-y-1'>
-                                            <span className='whitespace-pre-line break-keep'>{rating.comment}</span>
-                                            <span className='text-12-regular'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anynomous'}`}</span>
-                                            {rating.createdAt !== rating.updatedAt && <span className='text-12-regular'>Last Edited: {new Date(rating.updatedAt).toLocaleDateString()}</span>}
-                                        </div>
-                                    </div>
+                                    <Cards.RatingWithContent
+                                        key={`Ratings-${index}`}
+                                        imgUrl={track?.album?.images[0].url ?? '/favicon.ico'}
+                                        title={`${track?.name ?? ''}`}
+                                        rating={rating}
+                                    />
                                 )
                             })
                         }

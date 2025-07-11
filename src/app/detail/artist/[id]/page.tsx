@@ -9,7 +9,6 @@ import _, { isEmpty } from 'lodash'
 import { Rating } from '@/libs/interfaces/rating.interface'
 import { Journal } from '@/libs/interfaces/journal.interface'
 import { useJournalWithObjects } from '@/hooks/use-journal-with-objects'
-import { EllipsisVertical } from 'lucide-react'
 import { Button } from '@/components/buttons'
 import { Cards } from '@/components/cards'
 import { useRouter } from 'next/navigation'
@@ -44,8 +43,6 @@ const ArtistDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> })
     }, [isJournalLoading, journalsData])
     
     const { subjectMap } = useJournalWithObjects(journals)
-    
-    const ratingsComponent = useMemo(() => <EllipsisVertical className='text-tunelog-secondary w-5 h-5'/>, [])
     
     const isLoading = useMemo(() => isArtistLoading || isAlbumLoading || isTrackLoading, [isArtistLoading, isAlbumLoading, isTrackLoading])
     if (isLoading) {
@@ -127,22 +124,12 @@ const ArtistDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> })
                         {
                             ratings.map((rating, index) => {
                                 return (
-                                    <div key={`Ratings-${index}`} className='mb-[10px] !w-full group transition active:scale-95'>
-                                        <Cards.Long
-                                            imgUrl={artist?.images[0].url ?? '/favicon.ico'}
-                                            title={`${artist?.name ?? ''}`}
-                                            type={rating.type}
-                                            duration={`${rating.score}/5`}
-                                            rightIcon={ratingsComponent}
-                                            containerClassName='!w-full rounded-none rounded-t-[15px]'
-                                        />
-                                        <div className='w-full bg-white/50 h-[1px]'/>
-                                        <div className='w-full flex flex-col bg-[#33373B] overflow-hidden rounded-b-[15px] p-[10px] text-white text-13-regular gap-y-1'>
-                                            <span className='whitespace-pre-line break-keep text-left'>{rating.comment}</span>
-                                            <span className='text-12-regular'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anynomous'}`}</span>
-                                            {rating.createdAt !== rating.updatedAt && <span className='text-12-regular'>Last Edited: {new Date(rating.updatedAt).toLocaleDateString()}</span>}
-                                        </div>
-                                    </div>
+                                    <Cards.RatingWithContent
+                                        key={`Ratings-${index}`}
+                                        imgUrl={artist?.images[0].url ?? '/favicon.ico'}
+                                        title={`${artist?.name ?? ''}`}
+                                        rating={rating}
+                                    />
                                 )
                             })
                         }
