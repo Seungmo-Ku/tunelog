@@ -7,6 +7,7 @@ import { QueryClient } from '@tanstack/query-core'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Navbar from '@/components/navigation-bar/navitaion-bar-default'
+import { Toaster } from 'react-hot-toast'
 
 
 const quicksand = Quicksand({
@@ -39,6 +40,7 @@ export default function RootLayout({
             <div className='flex md:flex-row flex-col w-full h-full max-w-[1440px] md:px-4 overflow-hidden'>
                 <Navbar/>
                 <main className='flex-1 max-h-full md:p-5 p-1 overflow-hidden'>
+                    <Toaster/>
                     {children}
                 </main>
             </div>

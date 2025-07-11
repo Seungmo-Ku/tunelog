@@ -67,7 +67,13 @@ export const CardRatingWithContent = ({
                 <span className='text-12-regular text-left'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anynomous'}`}</span>
                 {rating.createdAt !== rating.updatedAt && <span className='text-12-regular text-left'>Last Edited: {new Date(rating.updatedAt).toLocaleDateString()}</span>}
             </div>
-            <Dialogs.DeleteRating open={deleteRatingOpen} onCloseAction={() => setDeleteRatingOpen(false)} rating={rating}/>
+            <div
+                onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                }}>
+                <Dialogs.DeleteRating open={deleteRatingOpen} onCloseAction={() => setDeleteRatingOpen(false)} rating={rating}/>
+            </div>
         </div>
     )
 }

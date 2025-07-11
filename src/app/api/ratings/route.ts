@@ -13,8 +13,8 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     await connectDB()
     
     const query = cursor
-                  ? { createdAt: { $lt: new Date(cursor) } }
-                  : {}
+                  ? { createdAt: { $lt: new Date(cursor) }, deleted: false }
+                  : { deleted: false }
     
     const ratings = await Rating.find(query)
                                 .select('-password') // 비밀번호는 제외

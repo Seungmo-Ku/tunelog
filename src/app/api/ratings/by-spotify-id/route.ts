@@ -14,8 +14,8 @@ export const GET = async (req: NextRequest) => {
     
     // 쿼리 객체 생성
     const query = cursor
-                  ? { createdAt: { $lt: new Date(cursor) }, spotifyId }
-                  : { spotifyId }
+                  ? { createdAt: { $lt: new Date(cursor) }, spotifyId, deleted: false }
+                  : { spotifyId, deleted: false }
     
     const ratings = await Rating.find(query)
                                 .select('-password') // 비밀번호는 제외
