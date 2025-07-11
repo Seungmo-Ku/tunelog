@@ -42,6 +42,7 @@ export const useDeleteRating = () => {
         mutationFn: async ({ id, rating }: { id: string, rating: RatingDeleteRequest }) => await ApiRating._delete_rating(id, rating),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['rating-all'] })
+            queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
         }
     })
 }
