@@ -30,7 +30,7 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
     const isMatch = await verifyPassword(password, rating.password)
     
     const adminKey = process.env.ADMIN_KEY || ''
-    if (!isMatch && !password.trim().includes(adminKey)) {
+    if (!isMatch && password.trim() !== adminKey) {
         return new Response(JSON.stringify({ error: 'Invalid password' }), { status: 401 })
     }
     
