@@ -11,6 +11,7 @@ import { Journal } from '@/libs/interfaces/journal.interface'
 import { Topster } from '@/libs/interfaces/topster.interface'
 import { useDeleteJournal } from '@/hooks/use-journal'
 import { useRouter } from 'next/navigation'
+import { capitalizeFirstLetter } from '@/libs/utils/string'
 
 
 export interface DialogDeleteObjectProps {
@@ -74,7 +75,7 @@ export const DialogDeleteObject = ({
             <div className='fixed inset-0 bg-black/50' aria-hidden='true'/>
             <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
                 <DialogPanel className='w-3/4 space-y-4 bg-[#33373B] text-white md:p-12 p-4 rounded-2xl flex flex-col'>
-                    <DialogTitle className='font-bold'>{`Delete ${type}`}</DialogTitle>
+                    <DialogTitle className='font-bold'>{`Delete ${capitalizeFirstLetter(type)}`}</DialogTitle>
                     <Input
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -83,7 +84,7 @@ export const DialogDeleteObject = ({
                         className='w-full py-1 border-white border'
                     />
                     <Button.Box
-                        text={`Delete ${type}`}
+                        text={`Delete ${capitalizeFirstLetter(type)}`}
                         disabled={isEmpty(password)}
                         onClick={() => {
                             handleDelete().then(noop)
