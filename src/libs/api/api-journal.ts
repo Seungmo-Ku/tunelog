@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Journal } from '@/libs/interfaces/journal.interface'
-import { JournalCreateRequest, JournalResponse } from '@/libs/dto/journal.dto'
+import { JournalCreateRequest, JournalDeleteRequest, JournalResponse } from '@/libs/dto/journal.dto'
 import { DataConnection } from '@/libs/dto/rating.dto'
 
 
@@ -53,6 +53,18 @@ const ApiJournal = {
         } catch (e) {
             console.error('ApiJournal._get_journals_by_spotify_id', e)
             return null
+        }
+    },
+    _delete_journal: async (id: string, journal: JournalDeleteRequest): Promise<boolean> => {
+        try {
+            const response = await axios.delete(`/api/journals/${id}`, {
+                headers: {
+                    'x-delete-journal-password': journal.password || ''
+                }
+            })
+            return response.status === 200
+        } catch {
+            return false
         }
     }
 }

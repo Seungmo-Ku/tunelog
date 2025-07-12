@@ -14,7 +14,8 @@ export const GET = async (req: NextRequest) => {
     
     // 쿼리 조건 구성
     const baseQuery = {
-        'subjects.spotifyId': spotifyId
+        'subjects.spotifyId': spotifyId,
+        deleted: false
     }
     
     const query = cursor ?

@@ -72,7 +72,7 @@ export const CardRatingWithContent = ({
                     e.preventDefault()
                     e.stopPropagation()
                 }}>
-                <Dialogs.DeleteRating open={deleteRatingOpen} onCloseAction={() => setDeleteRatingOpen(false)} rating={rating}/>
+                <Dialogs.DeleteObject open={deleteRatingOpen} onCloseAction={() => setDeleteRatingOpen(false)} object={rating}/>
             </div>
         </div>
     )
