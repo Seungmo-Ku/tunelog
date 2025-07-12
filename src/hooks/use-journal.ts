@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import ApiJournal from '@/libs/api/api-journal'
-import { JournalCreateRequest, JournalResponse } from '@/libs/dto/journal.dto'
+import { JournalCreateRequest, JournalDeleteRequest, JournalResponse } from '@/libs/dto/journal.dto'
 import { DataConnection } from '@/libs/dto/rating.dto'
 import { isEmpty } from 'lodash'
 
@@ -41,5 +41,16 @@ export const useGetJournalsBySpotifyId = (spotifyId: string, limit: number = 10)
         initialPageParam: '',
         getNextPageParam: (lastPage) => lastPage?.nextCursor,
         enabled: !isEmpty(spotifyId)
+    })
+}
+export const useDeleteJournal = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async ({ id, journal }: { id: string, journal: JournalDeleteRequest }) => await ApiJournal._delete_journal(id, journal),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['journal-all'] })
+            queryClient.invalidateQueries({ queryKey: ['journal-by-spotify-id'] })
+            queryClient.invalidateQueries({ queryKey: ['journal'] })
+        }
     })
 }

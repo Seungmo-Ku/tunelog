@@ -1,12 +1,15 @@
 'use client'
 
 import { useGetJournal } from '@/hooks/use-journal'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useGetAlbumsQuery, useGetArtistsQuery, useGetTracksQuery } from '@/hooks/use-spotify'
 import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { Cards } from '@/components/cards'
 import { isEmpty } from 'lodash'
 import { useRouter } from 'next/navigation'
+import { Button } from '@/components/buttons'
+import { Dialogs } from '@/components/dialogs'
+import { Delete, Pencil } from 'lucide-react'
 
 
 const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -17,6 +20,8 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     const { data: albums, isLoading: isAlbumLoading } = useGetAlbumsQuery(journal?.subjects.filter((subject) => subject.type === 'album').map(subject => subject.spotifyId) || [])
     const { data: artists, isLoading: isArtistLoading } = useGetArtistsQuery(journal?.subjects.filter((subject) => subject.type === 'artist').map(subject => subject.spotifyId) || [])
     const { data: tracks, isLoading: isTrackLoading } = useGetTracksQuery(journal?.subjects.filter((subject) => subject.type === 'track').map(subject => subject.spotifyId) || [])
+    
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
     
     // noinspection DuplicatedCode
     const subjectMap = useMemo(() => {
@@ -35,6 +40,10 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     }, [journal?.tags])
     
     const isLoading = useMemo(() => isJournalLoading || isAlbumLoading || isArtistLoading || isTrackLoading, [isJournalLoading, isAlbumLoading, isArtistLoading, isTrackLoading])
+    
+    const deleteComponent = useMemo(() => <Delete className='text-tunelog-secondary w-4 h-4 shrink-0'/>, [])
+    const editComponent = useMemo(() => <Pencil className='text-tunelog-secondary w-4 h-4 shrink-0'/>, [])
+    
     if (isLoading) {
         return <div className='text-white'>Loading...</div>
     }
@@ -70,6 +79,27 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
             <div className='text-14-regular text-white/50'>
                 {tagList}
             </div>
+            <div className='flex w-full gap-x-2'>
+                <Button.Box
+                    text='Delete'
+                    onClick={() => setDeleteDialogOpen(true)}
+                    leftIcon={deleteComponent}
+                />
+                <Button.Box
+                    text='Edit'
+                    onClick={() => {
+                        //TODO. Implement edit functionality
+                    }}
+                    disabled
+                    leftIcon={editComponent}
+                />
+            </div>
+            <Dialogs.DeleteObject
+                open={deleteDialogOpen}
+                onCloseAction={() => setDeleteDialogOpen(false)}
+                object={journal}
+                type='journal'
+            />
         </div>
     )
 }

@@ -12,8 +12,8 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     
     await connectDB()
     const query = cursor
-                  ? { createdAt: { $lt: new Date(cursor) } }
-                  : {}
+                  ? { createdAt: { $lt: new Date(cursor) }, deleted: false }
+                  : { deleted: false }
     const journals = await Journal.find(query)
                                   .select('-password')
                                   .sort({ createdAt: -1 })
