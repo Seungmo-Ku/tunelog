@@ -12,6 +12,7 @@ import { Topster } from '@/libs/interfaces/topster.interface'
 import { useDeleteJournal } from '@/hooks/use-journal'
 import { useRouter } from 'next/navigation'
 import { capitalizeFirstLetter } from '@/libs/utils/string'
+import { useDeleteTopster } from '@/hooks/use-topster'
 
 
 export interface DialogDeleteObjectProps {
@@ -32,33 +33,45 @@ export const DialogDeleteObject = ({
     const [password, setPassword] = useState<string>('')
     const { mutateAsync: deleteRating, isPending: isRatingPending } = useDeleteRating()
     const { mutateAsync: deleteJournal, isPending: isJournalPending } = useDeleteJournal()
+    const { mutateAsync: deleteTopster, isPending: isTopsterPending } = useDeleteTopster()
     
-    const isPending = useMemo(() => isRatingPending || isJournalPending, [isRatingPending, isJournalPending])
+    const isPending = useMemo(() => isRatingPending || isJournalPending || isTopsterPending, [isRatingPending, isJournalPending, isTopsterPending])
     
     const handleDelete = useCallback(async () => {
         if (!object || isEmpty(password) || isPending) return
         try {
             let response
-            if (type === 'rating') {
-                response = await deleteRating({
-                    id: object._id,
-                    rating: {
-                        password
-                    }
-                })
-            } else {
-                response = await deleteJournal({
-                    id: object._id,
-                    journal: {
-                        password
-                    }
-                })
+            switch (type) {
+                case 'rating':
+                    response = await deleteRating({
+                        id: object._id,
+                        rating: {
+                            password
+                        }
+                    })
+                    break
+                case 'journal':
+                    response = await deleteJournal({
+                        id: object._id,
+                        journal: {
+                            password
+                        }
+                    })
+                    break
+                case 'topster':
+                    response = await deleteTopster({
+                        id: object._id,
+                        topster: {
+                            password
+                        }
+                    })
+                    break
             }
             if (response) {
                 setPassword('')
                 onCloseAction()
                 toast.success(`${type} deleted successfully.`)
-                if (type === 'journal') {
+                if (type === 'journal' || type === 'topster') {
                     appRouter.back()
                 }
             } else {
@@ -67,7 +80,7 @@ export const DialogDeleteObject = ({
         } catch {
             toast.error(`Failed to delete ${type}. Please check your password and try again.`)
         }
-    }, [object, password, isPending, type, deleteRating, deleteJournal, onCloseAction, appRouter])
+    }, [object, password, isPending, type, deleteRating, deleteJournal, deleteTopster, onCloseAction, appRouter])
     
     if (!object) return null
     return (
