@@ -1,12 +1,14 @@
 'use client'
 
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { useGetTopster } from '@/hooks/use-topster'
 import { isEmpty } from 'lodash'
 import { ResizableGridDefault } from '@/components/resizable-grid/resizeable-grid-default'
 import { useRouter } from 'next/navigation'
 import html2canvas from 'html2canvas'
 import { Button } from '@/components/buttons'
+import { Delete, Pencil } from 'lucide-react'
+import { Dialogs } from '@/components/dialogs'
 
 
 const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -14,6 +16,8 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     const appRouter = useRouter()
     const { data: topster, isLoading } = useGetTopster(id)
     const topsterRef = useRef<HTMLDivElement>(null)
+    
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
     
     const handleSaveAsImage = () => {
         const element = topsterRef.current
@@ -81,19 +85,40 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     
     const gridSize = useMemo(() => topster ? topster.size : 0, [topster])
     
+    const deleteComponent = useMemo(() => <Delete className='text-tunelog-secondary w-4 h-4 shrink-0'/>, [])
+    const editComponent = useMemo(() => <Pencil className='text-tunelog-secondary w-4 h-4 shrink-0'/>, [])
+    
     if (isLoading) {
         return <div className='text-white'>Loading...</div>
     }
     
     return (
         <div className='w-full h-full flex flex-col overflow-y-auto hide-sidebar gap-y-10 text-white p-4'>
-            <div className='flex justify-between items-start'>
+            <div className='flex md:flex-row flex-col md:justify-between items-start gap-2'>
                 <div className='flex flex-col gap-y-2.5'>
                     <h1 className='text-36-bold text-[#A4C7C6]'>{topster?.title ?? ''}</h1>
                     <p className='text-14-regular text-[#EFEEE0]'>{`Made By ${topster?.author ?? ''}`}</p>
                     <p className='text-14-regular text-[#EFEEE0]'>{`Created At ${new Date(topster?.createdAt ?? 0).toLocaleDateString() ?? ''}`}</p>
                 </div>
-                <Button.Box text='Save as Image' onClick={handleSaveAsImage}/>
+                <div className='flex overflow-x-auto hide-sidebar gap-x-2'>
+                    <Button.Box
+                        text='Save as Image'
+                        onClick={handleSaveAsImage}
+                    />
+                    <Button.Box
+                        text='Delete'
+                        onClick={() => setDeleteDialogOpen(true)}
+                        leftIcon={deleteComponent}
+                    />
+                    <Button.Box
+                        text='Edit'
+                        onClick={() => {
+                            //TODO. Implement edit functionality
+                        }}
+                        disabled
+                        leftIcon={editComponent}
+                    />
+                </div>
             </div>
             
             <div className='flex md:flex-row flex-col gap-x-8 gap-y-4'>
@@ -128,6 +153,12 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                     </div>
                 </div>
             </div>
+            <Dialogs.DeleteObject
+                open={deleteDialogOpen}
+                onCloseAction={() => setDeleteDialogOpen(false)}
+                object={topster}
+                type='topster'
+            />
         </div>
     )
 }

@@ -5,4 +5,6 @@ export type TopsterCreateRequest = Pick<ITopster, 'components' | 'title' | 'size
 
 export type TopsterUpdateRequest = Partial<Pick<ITopster, 'components' | 'title' | 'size' | 'showTitles' | 'showTypes'>>
 
+export type TopsterDeleteRequest = { password: string }
+
 export type TopsterResponse = ITopster

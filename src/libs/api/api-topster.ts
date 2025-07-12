@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { TopsterCreateRequest, TopsterResponse } from '@/libs/dto/topster.dto'
+import { TopsterCreateRequest, TopsterDeleteRequest, TopsterResponse } from '@/libs/dto/topster.dto'
 import { Topster } from '@/libs/interfaces/topster.interface'
 import { DataConnection } from '@/libs/dto/rating.dto'
 
@@ -37,6 +37,18 @@ const apiTopster = {
         } catch (e) {
             console.error('ApiTopster._post_topster', e)
             return null
+        }
+    },
+    _delete_topster: async (id: string, topster: TopsterDeleteRequest): Promise<boolean> => {
+        try {
+            const response = await axios.delete(`/api/topsters/${id}`, {
+                headers: {
+                    'x-delete-topster-password': topster.password || ''
+                }
+            })
+            return response.status === 200
+        } catch {
+            return false
         }
     }
 }
