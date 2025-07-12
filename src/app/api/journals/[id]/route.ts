@@ -11,7 +11,7 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
     }
     await connectDB()
     
-    const journal = await Journal.find({ deleted: false }).findById(id).select('-password')
+    const journal = await Journal.findOne({ _id: id, deleted: false }).select('-password')
     return NextResponse.json(journal, { status: 200 }) // 200 OK
 }
 
