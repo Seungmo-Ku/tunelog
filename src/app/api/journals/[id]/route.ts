@@ -72,7 +72,7 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
     
     const journal = await Journal.findById(id).select('+password')
     if (!journal) {
-        return new Response(JSON.stringify({ error: 'Topster not found' }), { status: 404 })
+        return new Response(JSON.stringify({ error: 'Journal not found' }), { status: 404 })
     }
     
     const isMatch = await verifyPassword(password, journal.password)
