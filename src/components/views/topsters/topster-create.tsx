@@ -254,8 +254,11 @@ export const TopsterCreate = ({
                     text={`${topster ? 'Update' : 'Create'} Topster`}
                     disabled={isEmpty(title) || isEmpty(author) || isPending}
                     onClick={() => {
-                        if (!topster) makeTopster().then(noop) // 탑스터 생성
-                        setOpenEditDialog(true)
+                        if (!topster) {
+                            makeTopster().then(noop) // 탑스터 생성
+                        } else {
+                            setOpenEditDialog(true)
+                        }
                     }}
                     className='w-full'
                 />
