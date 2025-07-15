@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { TopsterCreateRequest, TopsterDeleteRequest, TopsterResponse } from '@/libs/dto/topster.dto'
+import { TopsterCreateRequest, TopsterDeleteRequest, TopsterResponse, TopsterUpdateRequest } from '@/libs/dto/topster.dto'
 import { Topster } from '@/libs/interfaces/topster.interface'
 import { DataConnection } from '@/libs/dto/rating.dto'
 
@@ -49,6 +49,20 @@ const apiTopster = {
             return response.status === 200
         } catch {
             return false
+        }
+    },
+    _update_topster: async (id: string, topster: TopsterUpdateRequest): Promise<Topster | null> => {
+        try {
+            const { password, ...rest } = topster
+            const response = await axios.patch<TopsterResponse>(`/api/topsters/${id}`, rest, {
+                headers: {
+                    'x-update-topster-password': password || ''
+                }
+            })
+            if (!response.data || response.status !== 200) return null
+            return new Topster(response.data)
+        } catch {
+            return null
         }
     }
 }

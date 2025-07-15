@@ -1,14 +1,15 @@
 'use client'
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { ResizableGridDefault } from '@/components/resizable-grid/resizeable-grid-default'
 import { SearchType } from '@/libs/constants/spotify.constant'
 import { Dialogs } from '@/components/dialogs'
-import { isEmpty } from 'lodash'
+import { isEmpty, noop } from 'lodash'
 import { Input, Switch } from '@headlessui/react'
 import { usePostTopster } from '@/hooks/use-topster'
 import { Button } from '@/components/buttons'
 import { useRouter } from 'next/navigation'
+import { Topster } from '@/libs/interfaces/topster.interface'
 
 
 export interface TopsterItem {
@@ -18,7 +19,13 @@ export interface TopsterItem {
     title: string
 }
 
-export const TopsterCreate = () => {
+export interface TopsterCreateProps {
+    topster?: Topster | null | undefined
+}
+
+export const TopsterCreate = ({
+    topster = null
+}: TopsterCreateProps) => {
     
     const appRouter = useRouter()
     const [title, setTitle] = useState<string>('')
@@ -28,6 +35,7 @@ export const TopsterCreate = () => {
     const [gridSize, setGridSize] = useState(3)
     const [index, setIndex] = useState<number>(0)
     const [openDialog, setOpenDialog] = useState<boolean>(false)
+    const [openEditDialog, setOpenEditDialog] = useState<boolean>(false)
     const [items, setItems] = useState<TopsterItem[]>(Array(100).fill({
         id: '',
         type: null,
@@ -35,6 +43,34 @@ export const TopsterCreate = () => {
         title: ''
     }))
     const [password, setPassword] = useState<string>('')
+    
+    useEffect(() => {
+        if (!topster) return
+        setTitle(topster.title)
+        setAuthor(topster.author)
+        setShowTitle(topster.showTitles ?? true)
+        setShowType(topster.showTypes ?? true)
+        setGridSize(topster.size)
+        setItems(() => {
+            const newItems = Array(100).fill({
+                id: '',
+                type: null,
+                url: '',
+                title: ''
+            })
+            topster.components.forEach((component, index) => {
+                if (index < newItems.length) {
+                    newItems[index] = {
+                        id: component.spotifyId,
+                        type: component.type,
+                        url: component.imageUrl,
+                        title: component.title
+                    }
+                }
+            })
+            return newItems
+        })
+    }, [topster])
     
     const { mutateAsync, isPending } = usePostTopster()
     
@@ -146,15 +182,17 @@ export const TopsterCreate = () => {
                         placeholder='Enter title'
                     />
                 </div>
-                <div className='flex flex-col gap-y-2'>
-                    <label htmlFor='authorInput' className='text-white'>Author</label>
-                    <Input
-                        id='authorInput'
-                        value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
-                        placeholder='Enter Author'
-                    />
-                </div>
+                {
+                    !topster && <div className='flex flex-col gap-y-2'>
+                        <label htmlFor='authorInput' className='text-white'>Author</label>
+                        <Input
+                            id='authorInput'
+                            value={author}
+                            onChange={(e) => setAuthor(e.target.value)}
+                            placeholder='Enter Author'
+                        />
+                    </div>
+                }
                 <div className='flex flex-col gap-y-2'>
                     <label htmlFor='gridSizeInput' className='text-white'>Size</label>
                     <div className='flex gap-x-2 w-full items-center'>
@@ -202,7 +240,7 @@ export const TopsterCreate = () => {
                         </div>
                     )
                 }
-                <div className='flex flex-col gap-y-2'>
+                {!topster && <div className='flex flex-col gap-y-2'>
                     <label htmlFor='passwordInput' className='text-white'>Password</label>
                     <Input
                         id='passwordInput'
@@ -211,11 +249,17 @@ export const TopsterCreate = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder='Enter Password'
                     />
-                </div>
+                </div>}
                 <Button.Box
-                    text='Create Topster'
+                    text={`${topster ? 'Update' : 'Create'} Topster`}
                     disabled={isEmpty(title) || isEmpty(author) || isPending}
-                    onClick={makeTopster}
+                    onClick={() => {
+                        if (!topster) {
+                            makeTopster().then(noop) // 탑스터 생성
+                        } else {
+                            setOpenEditDialog(true)
+                        }
+                    }}
                     className='w-full'
                 />
             </div>
@@ -224,6 +268,29 @@ export const TopsterCreate = () => {
                 onCloseAction={() => setOpenDialog(false)}
                 index={index}
                 setItemsAction={setItems}
+            />
+            <Dialogs.DeleteObject
+                open={openEditDialog}
+                onCloseAction={() => setOpenEditDialog(false)}
+                object={topster}
+                type='topster'
+                action='edit'
+                updateObject={{
+                    title,
+                    showTitles: showTitle,
+                    showTypes: showType,
+                    size: gridSize,
+                    components: items.slice(0, gridSize * gridSize).map((item, idx) => ({
+                        spotifyId: item.id,
+                        type: item.type ?? SearchType.album,
+                        width: 1,
+                        height: 1,
+                        x: idx % gridSize,
+                        y: Math.floor(idx / gridSize),
+                        imageUrl: item.url,
+                        title: item.title
+                    }))
+                }}
             />
         </div>
     )
