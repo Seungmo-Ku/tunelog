@@ -152,7 +152,7 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                     </div>
                 </div>
             </div>
-            <Dialogs.DeleteObject
+            <Dialogs.MutationObject
                 open={deleteDialogOpen}
                 onCloseAction={() => setDeleteDialogOpen(false)}
                 object={topster}

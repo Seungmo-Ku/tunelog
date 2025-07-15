@@ -1,10 +1,10 @@
 import { DialogNewRating } from '@/components/dialogs/dialog-new-rating'
 import { DialogTopsterItem } from '@/components/dialogs/dialog-topster-item'
-import { DialogDeleteObject } from '@/components/dialogs/dialog-delete-object'
+import { DialogMutationObject } from '@/components/dialogs/dialog-mutation-object'
 
 
 export const Dialogs = {
     NewRating: DialogNewRating,
     TopsterItem: DialogTopsterItem,
-    DeleteObject: DialogDeleteObject
+    MutationObject: DialogMutationObject
 }

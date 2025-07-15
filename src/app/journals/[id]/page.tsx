@@ -88,13 +88,12 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                 <Button.Box
                     text='Edit'
                     onClick={() => {
-                        //TODO. Implement edit functionality
+                        appRouter.push(`/journals/edit/${journal?._id}`)
                     }}
-                    disabled
                     leftIcon={editComponent}
                 />
             </div>
-            <Dialogs.DeleteObject
+            <Dialogs.MutationObject
                 open={deleteDialogOpen}
                 onCloseAction={() => setDeleteDialogOpen(false)}
                 object={journal}

@@ -4,13 +4,19 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { forwardRef, useImperativeHandle } from 'react'
 
+
 export type TiptapRef = {
     getHTML: () => string
 }
-const Tiptap = forwardRef<TiptapRef>((props, ref) => {
+
+type TiptapProps = {
+    initialContent?: string
+}
+
+const Tiptap = forwardRef<TiptapRef, TiptapProps>(({ initialContent }, ref) => {
     const editor = useEditor({
         extensions: [StarterKit],
-        content: '<p></p>'
+        content: initialContent || '<p></p>'
     })
     
     useImperativeHandle(ref, () => ({

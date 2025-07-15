@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import ApiJournal from '@/libs/api/api-journal'
-import { JournalCreateRequest, JournalDeleteRequest, JournalResponse } from '@/libs/dto/journal.dto'
+import { JournalCreateRequest, JournalDeleteRequest, JournalResponse, JournalUpdateRequest } from '@/libs/dto/journal.dto'
 import { DataConnection } from '@/libs/dto/rating.dto'
 import { isEmpty } from 'lodash'
 
@@ -47,6 +47,17 @@ export const useDeleteJournal = () => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: async ({ id, journal }: { id: string, journal: JournalDeleteRequest }) => await ApiJournal._delete_journal(id, journal),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['journal-all'] })
+            queryClient.invalidateQueries({ queryKey: ['journal-by-spotify-id'] })
+            queryClient.invalidateQueries({ queryKey: ['journal'] })
+        }
+    })
+}
+export const useUpdateJournal = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async ({ id, journal }: { id: string, journal: JournalUpdateRequest }) => await ApiJournal._update_journal(id, journal),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['journal-all'] })
             queryClient.invalidateQueries({ queryKey: ['journal-by-spotify-id'] })
