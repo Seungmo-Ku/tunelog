@@ -113,9 +113,8 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                     <Button.Box
                         text='Edit'
                         onClick={() => {
-                            //TODO. Implement edit functionality
+                            appRouter.push(`/topsters/edit/${id}`)
                         }}
-                        disabled
                         leftIcon={editComponent}
                     />
                 </div>

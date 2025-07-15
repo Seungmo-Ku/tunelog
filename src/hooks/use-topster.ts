@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { TopsterCreateRequest, TopsterDeleteRequest, TopsterResponse } from '@/libs/dto/topster.dto'
+import { TopsterCreateRequest, TopsterDeleteRequest, TopsterResponse, TopsterUpdateRequest } from '@/libs/dto/topster.dto'
 import ApiTopster from '@/libs/api/api-topster'
 import { DataConnection } from '@/libs/dto/rating.dto'
 
@@ -34,6 +34,16 @@ export const useDeleteTopster = () => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: async ({ id, topster }: { id: string, topster: TopsterDeleteRequest }) => await ApiTopster._delete_topster(id, topster),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['topster-all'] })
+            queryClient.invalidateQueries({ queryKey: ['topster'] })
+        }
+    })
+}
+export const useUpdateTopster = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async ({ id, topster }: { id: string, topster: TopsterUpdateRequest }) => await ApiTopster._update_topster(id, topster),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['topster-all'] })
             queryClient.invalidateQueries({ queryKey: ['topster'] })
