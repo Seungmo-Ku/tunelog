@@ -93,7 +93,7 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     }
     
     return (
-        <div className='w-full h-full flex flex-col overflow-y-auto hide-sidebar gap-y-10 text-white p-4'>
+        <div className='w-full h-full flex flex-col overflow-x-hidden overflow-y-auto hide-sidebar gap-y-10 text-white p-4'>
             <div className='flex md:flex-row flex-col md:justify-between items-start gap-2'>
                 <div className='flex flex-col gap-y-2.5'>
                     <h1 className='text-36-bold text-[#A4C7C6]'>{topster?.title ?? ''}</h1>
@@ -119,37 +119,37 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                     />
                 </div>
             </div>
-            
-            <div className='flex md:flex-row flex-col gap-x-8 gap-y-4'>
-                <div className='flex-1 p-1' ref={topsterRef}>
+            <div ref={topsterRef}>
+                <div className='flex md:flex-row gap-x-8 gap-y-4 p-1'>
                     <ResizableGridDefault
                         initialItems={initialItems}
                         gridSize={gridSize}
                     />
-                </div>
-                <div className='flex flex-col gap-y-3 md:w-[250px] w-full'>
-                    <span className='text-20-semibold text-white'>Item list</span>
-                    <div className='flex flex-col gap-y-2 items-start'>
-                        {
-                            topster?.components.map((component, index) => {
-                                return (
-                                    <div
-                                        key={`topster-item-title-${index}`}
-                                        className='flex items-baseline justify-start gap-x-2 p-2 rounded-md hover:bg-white/10 transition-colors cursor-pointer'
-                                        onClick={() => {
-                                            if (isEmpty(component.spotifyId)) return
-                                            appRouter.push(`/detail/${component.type}/${component.spotifyId}`)
-                                        }}
-                                    >
-                                        <span className='text-sm text-gray-400 w-6 text-right'>{index + 1}.</span>
-                                        <span className='text-white text-left text-14-regular whitespace-pre-wrap'>
-                                            {component.type ? `${component.title}${topster?.showTypes ? ` - ${component.type}` : ''}` : '(Empty Slot)'}
-                                        </span>
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
+                    {
+                        topster?.showTitles && (
+                            <div className='md:flex hidden flex-col gap-y-0.5 items-start justify-start md:w-[250px] w-full shrink-0'>
+                                {
+                                    topster?.components.map((component, index) => {
+                                        return (
+                                            <div
+                                                key={`topster-item-title-${index}`}
+                                                className='flex justify-start items-start gap-x-2 p-2 pl-0 rounded-md transition-colors cursor-pointer'
+                                                onClick={() => {
+                                                    if (isEmpty(component.spotifyId)) return
+                                                    appRouter.push(`/detail/${component.type}/${component.spotifyId}`)
+                                                }}
+                                            >
+                                                <span className='text-sm text-white'>{index + 1}.</span>
+                                                <span className='text-white text-14-regular whitespace-pre-wrap'>
+                                                    {component.type ? `${component.title}${topster?.showTypes ? ` - ${component.type}` : ''}` : '(Empty Slot)'}
+                                                </span>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
+                        )
+                    }
                 </div>
             </div>
             <Dialogs.MutationObject
