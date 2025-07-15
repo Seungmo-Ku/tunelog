@@ -102,7 +102,7 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
         journal.author = author
     }
     
-    if (journal.subjects) {
+    if (subjects) {
         journal.subjects = subjects
     }
     
