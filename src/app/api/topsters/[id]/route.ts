@@ -54,7 +54,7 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
 export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
     const { id } = await params
     if (!id) {
-        return new Response(JSON.stringify({ error: 'Missing topster ID' }), { status: 400 })
+        return NextResponse.json({ error: 'Missing topster ID' }, { status: 400 })
     }
     await connectDB()
     
