@@ -5,13 +5,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Input } from '@headlessui/react'
 import { Button } from '@/components/buttons'
 import { TopSearchBar } from '@/components/views/dashboard/top-search-bar'
-import { isEmpty } from 'lodash'
+import { isEmpty, noop } from 'lodash'
 import { useGetAlbumsQuery, useGetArtistsQuery, useGetTracksQuery } from '@/hooks/use-spotify'
 import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { Cards } from '@/components/cards'
 import { usePostJournal } from '@/hooks/use-journal'
 import { useRouter } from 'next/navigation'
-import { Tags } from '@/libs/interfaces/journal.interface'
+import { Journal, Tags } from '@/libs/interfaces/journal.interface'
+import { Dialogs } from '@/components/dialogs'
 
 
 interface SelectedObjectProps {
@@ -19,7 +20,13 @@ interface SelectedObjectProps {
     type: 'album' | 'artist' | 'track'
 }
 
-export const CreatingComponent = () => {
+export interface CreatingComponentProps {
+    journal?: Journal | null | undefined
+}
+
+export const CreatingComponent = ({
+    journal = null
+}: CreatingComponentProps) => {
     const editRef = useRef<TiptapRef>(null)
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
@@ -32,6 +39,25 @@ export const CreatingComponent = () => {
     const [password, setPassword] = useState<string>('')
     const [selectedObjectId, setSelectedObjectId] = useState<string>('')
     const [selectedObject, setSelectedObject] = useState<SelectedObjectProps[]>([])
+    const [openUpdateDialog, setOpenUpdateDialog] = useState<boolean>(false)
+    
+    useEffect(() => {
+        if (!journal) return
+        setTitle(journal.title || '')
+        setAuthor(journal.author || '')
+        setTags({
+            weather: journal.tags?.weather || '',
+            mood: journal.tags?.mood || '',
+            scene: journal.tags?.scene || '',
+            custom: journal.tags?.custom || ''
+        })
+        setSelectedObject(journal.subjects.map(subject => {
+            return {
+                id: subject.spotifyId,
+                type: subject.type as 'album' | 'artist' | 'track'
+            }
+        }))
+    }, [journal])
     
     const appRouter = useRouter()
     
@@ -172,15 +198,26 @@ export const CreatingComponent = () => {
                     onChange={(e) => setTitle(e.target.value)}
                     maxLength={50}
                 />
-                <Button.Box text='Upload' onClick={handleClick}/>
+                <Button.Box
+                    text={journal ? 'Update' : 'Upload'}
+                    onClick={() => {
+                        if (!journal) {
+                            handleClick().then(noop)
+                        } else {
+                            setOpenUpdateDialog(true)
+                        }
+                    }}
+                />
             </div>
-            <Input
-                className='w-full py-1 border-white border'
-                placeholder='Author'
-                value={author}
-                onChange={(e) => setAuthor(e.target.value)}
-                maxLength={10}
-            />
+            {
+                !journal && <Input
+                    className='w-full py-1 border-white border'
+                    placeholder='Author'
+                    value={author}
+                    onChange={(e) => setAuthor(e.target.value)}
+                    maxLength={10}
+                />
+            }
             <TopSearchBar
                 onAlbumClick={() => {
                     setSelectedObject(prev => [...prev, { id: '', type: 'album' }])
@@ -196,7 +233,7 @@ export const CreatingComponent = () => {
             />
             {objectsShowingComponent}
             <div className='w-full h-[500px]'>
-                <Tiptap ref={editRef}/>
+                <Tiptap ref={editRef} initialContent={journal ? journal.content : undefined}/>
             </div>
             <div className='w-full flex flex-col gap-y-5'>
                 <span className='text-18-regular'>Tags (Optional)</span>
@@ -238,14 +275,32 @@ export const CreatingComponent = () => {
                         maxLength={10}
                     />
                 </div>
-                <Input
-                    className='w-full py-1 border-white border'
-                    placeholder='Password'
-                    type='password'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+                {
+                    !journal && <Input
+                        className='w-full py-1 border-white border'
+                        placeholder='Password'
+                        type='password'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                }
             </div>
+            <Dialogs.MutationObject
+                open={openUpdateDialog}
+                onCloseAction={() => setOpenUpdateDialog(false)}
+                object={journal}
+                type='journal'
+                action='update'
+                updateObject={{
+                    title,
+                    content: editRef.current?.getHTML() || '',
+                    tags,
+                    subjects: selectedObject.map(obj => ({
+                        type: obj.type,
+                        spotifyId: obj.id
+                    }))
+                }}
+            />
         </div>
     )
 }

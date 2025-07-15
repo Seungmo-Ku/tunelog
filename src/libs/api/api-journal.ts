@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Journal } from '@/libs/interfaces/journal.interface'
-import { JournalCreateRequest, JournalDeleteRequest, JournalResponse } from '@/libs/dto/journal.dto'
+import { JournalCreateRequest, JournalDeleteRequest, JournalResponse, JournalUpdateRequest } from '@/libs/dto/journal.dto'
 import { DataConnection } from '@/libs/dto/rating.dto'
 
 
@@ -65,6 +65,20 @@ const ApiJournal = {
             return response.status === 200
         } catch {
             return false
+        }
+    },
+    _update_journal: async (id: string, journal: JournalUpdateRequest): Promise<Journal | null> => {
+        try {
+            const { password, ...rest } = journal
+            const response = await axios.patch<JournalResponse>(`/api/journals/${id}`, rest, {
+                headers: {
+                    'x-update-journal-password': password || ''
+                }
+            })
+            if (!response.data || response.status !== 200) return null
+            return new Journal(response.data)
+        } catch {
+            return null
         }
     }
 }

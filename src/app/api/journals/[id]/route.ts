@@ -50,3 +50,65 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
     
     return NextResponse.json({ message: 'Journal deleted successfully' }, { status: 200 }) // 200 OK
 }
+
+export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+    const { id } = await params
+    if (!id) {
+        return NextResponse.json({ error: 'Missing journal ID' }, { status: 400 })
+    }
+    await connectDB()
+    
+    let password = ''
+    try {
+        password = req.headers.get('x-update-journal-password') as string
+    } catch {
+        return new Response(JSON.stringify({ error: 'Password Required' }), { status: 400 })
+    }
+    
+    // noinspection DuplicatedCode
+    if (!password) {
+        return new Response(JSON.stringify({ error: 'Password Required' }), { status: 400 })
+    }
+    
+    const journal = await Journal.findById(id).select('+password')
+    if (!journal) {
+        return new Response(JSON.stringify({ error: 'Journal not found' }), { status: 404 })
+    }
+    
+    const isMatch = await verifyPassword(password, journal.password)
+    
+    const adminKey = process.env.ADMIN_KEY || ''
+    if (!isMatch && password.trim() !== adminKey) {
+        return new Response(JSON.stringify({ error: 'Invalid password' }), { status: 401 })
+    }
+    
+    const body = await req.json()
+    
+    const { title, content, tags, author, subjects } = body
+    
+    if (title) {
+        journal.title = title
+    }
+    
+    if (content) {
+        journal.content = content
+    }
+    
+    if (tags) {
+        journal.tags = tags
+    }
+    
+    if (author) {
+        journal.author = author
+    }
+    
+    if (subjects) {
+        journal.subjects = subjects
+    }
+    
+    await journal.save()
+    
+    const updateJournal = await Journal.findById(id).select('-password')
+    
+    return NextResponse.json(updateJournal, { status: 200 })
+}

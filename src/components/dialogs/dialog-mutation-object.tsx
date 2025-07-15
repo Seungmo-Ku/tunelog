@@ -9,7 +9,7 @@ import { useDeleteRating } from '@/hooks/use-rating'
 import toast from 'react-hot-toast'
 import { Journal } from '@/libs/interfaces/journal.interface'
 import { Topster } from '@/libs/interfaces/topster.interface'
-import { useDeleteJournal } from '@/hooks/use-journal'
+import { useDeleteJournal, useUpdateJournal } from '@/hooks/use-journal'
 import { useRouter } from 'next/navigation'
 import { capitalizeFirstLetter } from '@/libs/utils/string'
 import { useDeleteTopster, useUpdateTopster } from '@/hooks/use-topster'
@@ -17,23 +17,23 @@ import { TopsterUpdateRequest } from '@/libs/dto/topster.dto'
 import { JournalUpdateRequest } from '@/libs/dto/journal.dto'
 
 
-export interface DialogDeleteObjectProps {
+export interface DialogMutationObjectProps {
     open: boolean
     onCloseAction: () => void
     object: Rating | Journal | Topster | null | undefined
     type?: 'rating' | 'journal' | 'topster'
-    action?: 'delete' | 'edit'
-    updateObject?: TopsterUpdateRequest | JournalUpdateRequest | null | undefined
+    action?: 'delete' | 'update'
+    updateObject?: Omit<TopsterUpdateRequest, 'password'> | Omit<JournalUpdateRequest, 'password'> | null | undefined
 }
 
-export const DialogDeleteObject = ({
+export const DialogMutationObject = ({
     open,
     onCloseAction,
     object,
     type = 'rating',
     action = 'delete',
     updateObject = null
-}: DialogDeleteObjectProps) => {
+}: DialogMutationObjectProps) => {
     
     const appRouter = useRouter()
     const [password, setPassword] = useState<string>('')
@@ -43,8 +43,10 @@ export const DialogDeleteObject = ({
     const { mutateAsync: deleteTopster, isPending: isTopsterPending } = useDeleteTopster()
     
     const { mutateAsync: updateTopster, isPending: isTopsterUpdatePending } = useUpdateTopster()
+    const { mutateAsync: updateJournal, isPending: isJournalUpdatePending } = useUpdateJournal()
     
-    const isPending = useMemo(() => isRatingPending || isJournalPending || isTopsterPending || isTopsterUpdatePending, [isRatingPending, isJournalPending, isTopsterPending, isTopsterUpdatePending])
+    const isPending = useMemo(() => isRatingPending || isJournalPending || isTopsterPending || isTopsterUpdatePending || isJournalUpdatePending,
+        [isRatingPending, isJournalPending, isTopsterPending, isTopsterUpdatePending, isJournalUpdatePending])
     
     const handleDelete = useCallback(async () => {
         if (!object || isEmpty(password) || isPending) return
@@ -97,14 +99,14 @@ export const DialogDeleteObject = ({
             let response
             switch (type) {
                 case 'journal':
-                /*response = await deleteJournal({
-                 id: object._id,
-                 journal: {
-                 password
-                 }
-                 })
-                 break*/
-                // TODO. Update journal logic
+                    response = await updateJournal({
+                        id: object._id,
+                        journal: {
+                            ...updateObject,
+                            password
+                        }
+                    })
+                    break
                 case 'topster':
                     response = await updateTopster({
                         id: object._id,
@@ -128,7 +130,7 @@ export const DialogDeleteObject = ({
         } catch {
             toast.error(`Failed to update ${type}. Please check your password and try again.`)
         }
-    }, [object, password, isPending, updateObject, type, updateTopster, onCloseAction, appRouter])
+    }, [object, password, isPending, updateObject, type, updateJournal, updateTopster, onCloseAction, appRouter])
     
     if (!object) return null
     return (

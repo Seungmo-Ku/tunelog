@@ -269,12 +269,12 @@ export const TopsterCreate = ({
                 index={index}
                 setItemsAction={setItems}
             />
-            <Dialogs.DeleteObject
+            <Dialogs.MutationObject
                 open={openEditDialog}
                 onCloseAction={() => setOpenEditDialog(false)}
                 object={topster}
                 type='topster'
-                action='edit'
+                action='update'
                 updateObject={{
                     title,
                     showTitles: showTitle,
