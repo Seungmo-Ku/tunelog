@@ -14,16 +14,12 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     
     await connectDB()
     
-    const defaultQuery: { deleted: boolean, type?: string } = { deleted: false }
+    const queryBase = type === 'all' ? { deleted: false } : { deleted: false, type }
     const sortDirection = sort === 'newest' ? -1 : 1
     
-    if (type !== 'all') {
-        defaultQuery.type = type
-    }
-    
     const query = cursor
-                  ? { createdAt: { $lt: new Date(cursor) }, ...defaultQuery }
-                  : { ...defaultQuery }
+                  ? { createdAt: { $lt: new Date(cursor) }, ...queryBase }
+                  : { ...queryBase }
     
     const ratings = await Rating.find(query)
                                 .select('-password') // 비밀번호는 제외
