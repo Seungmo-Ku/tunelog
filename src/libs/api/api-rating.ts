@@ -1,14 +1,17 @@
 import axios from 'axios'
 import { Rating } from '@/libs/interfaces/rating.interface'
 import { DataConnection, RatingCreateRequest, RatingDeleteRequest, RatingResponse } from '@/libs/dto/rating.dto'
+import { RatingQueryType, RatingSortType } from '@/libs/constants/rating.constant'
 
 
 const ApiRating = {
-    _get_all_ratings: async (limit: number = 10, nextCursor?: string): Promise<DataConnection<RatingResponse> | null> => {
+    _get_all_ratings: async (limit: number = 10, type: RatingQueryType = 'all', sort: RatingSortType = 'newest', nextCursor?: string): Promise<DataConnection<RatingResponse> | null> => {
         try {
             // nextCursor가 있으면 쿼리스트링에 추가
             const params = new URLSearchParams()
             params.append('limit', limit.toString())
+            params.append('type', type)
+            params.append('sort', sort)
             if (nextCursor) params.append('cursor', nextCursor)
             
             const { data } = await axios.get<DataConnection<RatingResponse>>(`/api/ratings?${params.toString()}`)

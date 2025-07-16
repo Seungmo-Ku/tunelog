@@ -2,14 +2,15 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import ApiRating from '@/libs/api/api-rating'
 import { DataConnection, RatingCreateRequest, RatingDeleteRequest, RatingResponse } from '@/libs/dto/rating.dto'
 import { isEmpty } from 'lodash'
+import { RatingQueryType, RatingSortType } from '@/libs/constants/rating.constant'
 
 
-export const useGetAllRatings = (limit: number = 10) => {
+export const useGetAllRatings = (limit: number = 10, type: RatingQueryType = 'all', sort: RatingSortType = 'newest') => {
     return useInfiniteQuery<DataConnection<RatingResponse>, Error>({
-        queryKey: ['rating-all', limit],
+        queryKey: ['rating-all', limit, type, sort],
         queryFn: async ({ pageParam }) => {
             const cursor = typeof pageParam === 'string' ? pageParam : ''
-            return await ApiRating._get_all_ratings(limit, cursor) ?? { data: [], nextCursor: undefined }
+            return await ApiRating._get_all_ratings(limit, type, sort, cursor) ?? { data: [], nextCursor: undefined }
         },
         initialPageParam: '',
         getNextPageParam: (lastPage) => lastPage?.nextCursor
