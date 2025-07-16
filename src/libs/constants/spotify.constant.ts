@@ -3,6 +3,7 @@ export enum SearchType {
     artist = 'artist',
     track = 'track'
 }
+
 export enum AlbumType {
     album = 'album',
     single = 'single',

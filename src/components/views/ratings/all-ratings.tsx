@@ -12,7 +12,7 @@ import { Plus } from 'lucide-react'
 import { Dialogs } from '@/components/dialogs'
 import { Rating } from '@/libs/interfaces/rating.interface'
 import { useInView } from 'react-intersection-observer'
-import { isEmpty } from 'lodash'
+import { isEmpty, noop } from 'lodash'
 import { useRouter } from 'next/navigation'
 import { useAtom } from 'jotai'
 import { MakeRatingAtom } from '@/components/buttons/button-make-rating'
@@ -26,7 +26,31 @@ export const AllRatings = () => {
     const [newRatingOpen, setNewRatingOpen] = useState(false)
     const [makeRating, setMakeRating] = useAtom(MakeRatingAtom)
     
-    const { data: ratingsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isRatingLoading } = useGetAllRatings(20)
+    const selectedFilter = useMemo(() => {
+        switch (filterIndex) {
+            case 0:
+                return 'all'
+            case 1:
+                return SearchType.album
+            case 2:
+                return SearchType.artist
+            case 3:
+            default:
+                return SearchType.track
+        }
+    }, [filterIndex])
+    
+    const selectedSorting = useMemo(() => {
+        switch (sortingIndex) {
+            case 0:
+                return 'newest'
+            case 1:
+            default:
+                return 'oldest'
+        }
+    }, [sortingIndex])
+    
+    const { data: ratingsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isRatingLoading } = useGetAllRatings(20, selectedFilter, selectedSorting)
     
     const ratings = useMemo(() => {
         if (isRatingLoading) return []
@@ -38,7 +62,7 @@ export const AllRatings = () => {
     
     useEffect(() => {
         if (inView && hasNextPage && !isFetchingNextPage) {
-            fetchNextPage()
+            fetchNextPage().then(noop)
         }
     }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage])
     
@@ -59,28 +83,7 @@ export const AllRatings = () => {
         }
     }, [makeRating, objectId, objectType, setMakeRating])
     
-    const filteredRatings = useMemo(() => {
-        if (!ratings) return []
-        const base =
-            filterIndex === 0
-            ? ratings
-            : ratings.filter(rating => {
-                switch (filterIndex) {
-                    case 1:
-                        return rating.type === SearchType.album
-                    case 2:
-                        return rating.type === SearchType.artist
-                    case 3:
-                        return rating.type === SearchType.track
-                    default:
-                        return true
-                }
-            })
-        
-        return sortingIndex === 0 ? base : [...base].reverse()
-    }, [filterIndex, ratings, sortingIndex])
-    
-    const { albumsById, tracksById, artistsById } = useRatingWithObjects(filteredRatings)
+    const { albumsById, tracksById, artistsById } = useRatingWithObjects(ratings)
     
     const PlusIcon = useMemo(() => <Plus className='w-5 h-5 text-tunelog-secondary'/>, [])
     
@@ -96,14 +99,14 @@ export const AllRatings = () => {
             </div>
             <div className='flex flex-col w-full'>
                 {
-                    isRatingLoading && isEmpty(filteredRatings) &&
+                    isRatingLoading && isEmpty(ratings) &&
                     Array.from({ length: 5 }).map((_, index) => (
                         <Cards.LongSkeleton key={`AllRatings-Skeleton-${index}`}/>
                     ))
                 }
                 {
-                    !isRatingLoading && !isEmpty(filteredRatings) &&
-                    filteredRatings?.map((rating, index) => {
+                    !isRatingLoading && !isEmpty(ratings) &&
+                    ratings?.map((rating, index) => {
                         let imgUrl: string = '', title: string = ''
                         if (!rating.spotifyId || !rating.type) {
                             return <Cards.LongSkeleton key={`AllRatings-Skeleton-in-${index}`}/>
