@@ -9,16 +9,25 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     const { searchParams } = new URL(req.url)
     const limit = !isEmpty(searchParams.get('limit')) ? parseInt(searchParams.get('limit')!) : 10
     const cursor = searchParams.get('cursor') // updatedAt 값 (ISO string)
+    const type = (searchParams.get('type') ?? 'all') as 'album' | 'artist' | 'track' | 'all'
+    const sort = (searchParams.get('sort') ?? 'newest') as 'newest' | 'oldest'
     
     await connectDB()
     
+    const defaultQuery: { deleted: boolean, type?: string } = { deleted: false }
+    const sortDirection = sort === 'newest' ? -1 : 1
+    
+    if (type !== 'all') {
+        defaultQuery.type = type
+    }
+    
     const query = cursor
-                  ? { createdAt: { $lt: new Date(cursor) }, deleted: false }
-                  : { deleted: false }
+                  ? { createdAt: { $lt: new Date(cursor) }, ...defaultQuery }
+                  : { ...defaultQuery }
     
     const ratings = await Rating.find(query)
                                 .select('-password') // 비밀번호는 제외
-                                .sort({ createdAt: -1 })
+                                .sort({ createdAt: sortDirection })
                                 .limit(limit)
     
     const nextCursor = ratings.length === limit ? ratings[ratings.length - 1].createdAt.toISOString() : null
