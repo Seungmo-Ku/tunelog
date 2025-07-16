@@ -53,7 +53,7 @@ export const CardTopster = ({
             <div className='text-12-regular text-white text-left'>{author}</div>
             <div className='text-12-bold text-tunelog-secondary text-left'>
                 <div>{new Date(createdAt).toLocaleDateString()}</div>
-                {updatedAt && createdAt !== updatedAt && <div>(Updated At)</div>}
+                {updatedAt && createdAt !== updatedAt && <div>{`Last Updated At ${new Date(updatedAt).toLocaleDateString()}`}</div>}
             </div>
         </div>
     )
