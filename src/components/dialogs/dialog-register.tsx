@@ -47,13 +47,11 @@ export const DialogRegister = () => {
         if (isEmpty(userid) || isEmpty(password) || isPending) return
         try {
             const response = await mutateAsync({ userid, password, name })
-            if (typeof response === 'string') {
-                toast.error(response)
-            } else if (response) {
-                toast.success('Register successful, please login')
+            if (response.status === 201) {
+                toast.success(response.message)
                 onClose()
             } else {
-                toast.error('Register failed, please try again')
+                toast.error(response.message)
             }
         } catch {
             toast.error('Register failed, please try again')

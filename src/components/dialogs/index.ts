@@ -3,6 +3,7 @@ import { DialogTopsterItem } from '@/components/dialogs/dialog-topster-item'
 import { DialogMutationObject } from '@/components/dialogs/dialog-mutation-object'
 import { DialogLogin } from '@/components/dialogs/dialog-login'
 import { DialogRegister } from '@/components/dialogs/dialog-register'
+import { DialogLogout } from '@/components/dialogs/dialog-logout'
 
 
 export const Dialogs = {
@@ -10,5 +11,6 @@ export const Dialogs = {
     TopsterItem: DialogTopsterItem,
     MutationObject: DialogMutationObject,
     Login: DialogLogin,
-    Register: DialogRegister
+    Register: DialogRegister,
+    Logout: DialogLogout
 }

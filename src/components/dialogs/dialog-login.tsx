@@ -17,7 +17,7 @@ export interface DialogLoginProps {
 }
 
 export const DialogLoginAtom = atom<DialogLoginProps>({
-    open: true
+    open: false
 })
 
 export const DialogLogin = () => {
@@ -75,21 +75,24 @@ export const DialogLogin = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <Button.Box
-                        text='Register Account'
-                        onClick={() => {
-                            onClose()
-                            setDialogRegister((prev) => ({
-                                ...prev,
-                                open: true
-                            }))
-                        }}
-                    />
-                    <Button.Box
-                        text='Login'
-                        onClick={handleLogin}
-                        disabled={isEmpty(userid) || isEmpty(password) || isPending}
-                    />
+                    <div className='w-full grid grid-cols-2 gap-x-2'>
+                        <Button.Box
+                            text='Register Account'
+                            onClick={() => {
+                                onClose()
+                                setDialogRegister((prev) => ({
+                                    ...prev,
+                                    open: true
+                                }))
+                            }}
+                        />
+                        <Button.Box
+                            text='Login'
+                            onClick={handleLogin}
+                            disabled={isEmpty(userid) || isEmpty(password) || isPending}
+                        />
+                    </div>
+                
                 </DialogPanel>
             </div>
         </Dialog>

@@ -19,8 +19,12 @@ export const useHandleLogin = () => {
     })
 }
 export const useHandleRegister = () => {
+    const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: async (account: AccountRegisterDto) => await ApiAccount._handle_register(account)
+        mutationFn: async (account: AccountRegisterDto) => await ApiAccount._handle_register(account),
+        onSuccess: (data) => {
+            if (data.status === 201) queryClient.invalidateQueries({ queryKey: ['me'] })
+        }
     })
 }
 export const useHandleLogout = () => {

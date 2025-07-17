@@ -46,6 +46,7 @@ export default function RootLayout({
                 </main>
                 <Dialogs.Login/>
                 <Dialogs.Register/>
+                <Dialogs.Logout/>
             </div>
             {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={true}/>}
         </QueryClientProvider>
