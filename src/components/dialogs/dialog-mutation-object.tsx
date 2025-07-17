@@ -4,7 +4,7 @@ import { Dialog, DialogPanel, DialogTitle, Input } from '@headlessui/react'
 import React, { useCallback, useMemo, useState } from 'react'
 import { Rating } from '@/libs/interfaces/rating.interface'
 import { Button } from '@/components/buttons'
-import { isEmpty, noop } from 'lodash'
+import { noop } from 'lodash'
 import { useDeleteRating } from '@/hooks/use-rating'
 import toast from 'react-hot-toast'
 import { Journal } from '@/libs/interfaces/journal.interface'
@@ -23,7 +23,7 @@ export interface DialogMutationObjectProps {
     object: Rating | Journal | Topster | null | undefined
     type?: 'rating' | 'journal' | 'topster'
     action?: 'delete' | 'update'
-    updateObject?: Omit<TopsterUpdateRequest, 'password'> | Omit<JournalUpdateRequest, 'password'> | null | undefined
+    updateObject?: Omit<TopsterUpdateRequest, 'password'> | JournalUpdateRequest | null | undefined
 }
 
 export const DialogMutationObject = ({
@@ -89,7 +89,7 @@ export const DialogMutationObject = ({
     }, [object, password, isPending, type, deleteRating, deleteJournal, deleteTopster, onCloseAction, appRouter])
     
     const handleUpdate = useCallback(async () => {
-        if (!object || isEmpty(password) || isPending || !updateObject) return
+        if (!object || isPending || !updateObject) return
         try {
             let response
             switch (type) {
@@ -97,8 +97,7 @@ export const DialogMutationObject = ({
                     response = await updateJournal({
                         id: object._id,
                         journal: {
-                            ...updateObject,
-                            password
+                            ...updateObject
                         }
                     })
                     break

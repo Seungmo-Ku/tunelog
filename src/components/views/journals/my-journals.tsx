@@ -1,7 +1,7 @@
 'use client'
 
 import { Cards } from '@/components/cards'
-import { useGetAllJournals } from '@/hooks/use-journal'
+import { useGetMyJournals } from '@/hooks/use-journal'
 import { useEffect, useMemo } from 'react'
 import { Journal, JournalByMonth } from '@/libs/interfaces/journal.interface'
 import { useInView } from 'react-intersection-observer'
@@ -13,10 +13,10 @@ import { Button } from '@/components/buttons'
 import { Plus } from 'lucide-react'
 
 
-export const AllJournals = () => {
+export const MyJournals = () => {
     
     const appRouter = useRouter()
-    const { data: journalsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isJournalLoading } = useGetAllJournals(20)
+    const { data: journalsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isJournalLoading } = useGetMyJournals(20)
     const journals = useMemo(() => {
         if (isJournalLoading) return []
         const journalsArray = journalsData?.pages.flatMap(page => page.data) ?? []

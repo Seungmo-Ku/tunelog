@@ -11,9 +11,14 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     const cursor = searchParams.get('cursor')
     
     await connectDB()
+    const user = await findUserByCookie()
+    if (!user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    
     const query = cursor
-                  ? { createdAt: { $lt: new Date(cursor) }, deleted: false, public: true }
-                  : { deleted: false, public: true }
+                  ? { createdAt: { $lt: new Date(cursor) }, deleted: false, uid: user._id.toString() }
+                  : { deleted: false, uid: user._id.toString() }
     const journals = await Journal.find(query)
                                   .select('-password')
                                   .sort({ createdAt: -1 })
@@ -25,18 +30,4 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
         data: journals,
         nextCursor
     })
-}
-
-export const POST = async (req: NextRequest) => {
-    await connectDB()
-    const user = await findUserByCookie()
-    if (!user) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-    const body = await req.json()
-    body.uid = user._id.toString()
-    const newJournal = await Journal.create(body)
-    const object = newJournal.toObject()
-    delete object.password
-    return NextResponse.json(object, { status: 201 }) // 201 Created
 }

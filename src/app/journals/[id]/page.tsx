@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/buttons'
 import { Dialogs } from '@/components/dialogs'
 import { Delete, Pencil } from 'lucide-react'
+import { useIsOwner } from '@/libs/utils/account'
 
 
 const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -44,8 +45,14 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     const deleteComponent = useMemo(() => <Delete className='text-tunelog-secondary w-4 h-4 shrink-0'/>, [])
     const editComponent = useMemo(() => <Pencil className='text-tunelog-secondary w-4 h-4 shrink-0'/>, [])
     
+    const isOwner = useIsOwner(journal?.uid)
+    
     if (isLoading) {
         return <div className='text-white'>Loading...</div>
+    }
+    
+    if (!journal) {
+        return <div className='text-white'>Journal not found</div>
     }
     
     return (
@@ -79,20 +86,24 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
             <div className='text-14-regular text-white/50'>
                 {tagList}
             </div>
-            <div className='flex w-full gap-x-2'>
-                <Button.Box
-                    text='Delete'
-                    onClick={() => setDeleteDialogOpen(true)}
-                    leftIcon={deleteComponent}
-                />
-                <Button.Box
-                    text='Edit'
-                    onClick={() => {
-                        appRouter.push(`/journals/edit/${journal?._id}`)
-                    }}
-                    leftIcon={editComponent}
-                />
-            </div>
+            {isOwner &&
+                (
+                    <div className='flex w-full gap-x-2'>
+                        <Button.Box
+                            text='Delete'
+                            onClick={() => setDeleteDialogOpen(true)}
+                            leftIcon={deleteComponent}
+                        />
+                        <Button.Box
+                            text='Edit'
+                            onClick={() => {
+                                appRouter.push(`/journals/edit/${journal?._id}`)
+                            }}
+                            leftIcon={editComponent}
+                        />
+                    </div>
+                )
+            }
             <Dialogs.MutationObject
                 open={deleteDialogOpen}
                 onCloseAction={() => setDeleteDialogOpen(false)}

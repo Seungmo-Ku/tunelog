@@ -1,7 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import ApiAccount from '@/libs/api/api-account'
 import { AccountLoginDto, AccountRegisterDto } from '@/libs/dto/account.dto'
+import { QueryClient } from '@tanstack/query-core'
 
+
+const invalidateQueries = (queryClient: QueryClient) => {
+    queryClient.invalidateQueries({ queryKey: ['me'] })
+    queryClient.invalidateQueries({ queryKey: ['rating-my'] })
+    queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
+    queryClient.invalidateQueries({ queryKey: ['journal-my'] })
+    queryClient.invalidateQueries({ queryKey: ['journal'] })
+}
 
 export const useGetMe = () => {
     return useQuery({
@@ -15,9 +24,7 @@ export const useHandleLogin = () => {
         mutationFn: async (account: AccountLoginDto) => await ApiAccount._handle_login(account),
         onSuccess: (data) => {
             if (data.status === 200) {
-                queryClient.invalidateQueries({ queryKey: ['me'] })
-                queryClient.invalidateQueries({ queryKey: ['rating-my'] })
-                queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
+                invalidateQueries(queryClient)
             }
         }
     })
@@ -28,9 +35,7 @@ export const useHandleRegister = () => {
         mutationFn: async (account: AccountRegisterDto) => await ApiAccount._handle_register(account),
         onSuccess: (data) => {
             if (data.status === 201) {
-                queryClient.invalidateQueries({ queryKey: ['me'] })
-                queryClient.invalidateQueries({ queryKey: ['rating-my'] })
-                queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
+                invalidateQueries(queryClient)
             }
         }
     })
@@ -40,9 +45,7 @@ export const useHandleLogout = () => {
     return useMutation({
         mutationFn: async () => await ApiAccount._handle_logout(),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['me'] })
-            queryClient.invalidateQueries({ queryKey: ['rating-my'] })
-            queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
+            invalidateQueries(queryClient)
         }
     })
 }

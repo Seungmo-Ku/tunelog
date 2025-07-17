@@ -5,7 +5,7 @@ import { DataConnection } from '@/libs/dto/rating.dto'
 
 
 const ApiJournal = {
-    _get_all_journals: async (limit: number = 10, nextCursor?: string): Promise<DataConnection<JournalResponse> | null> => {
+    _get_all_public_journals: async (limit: number = 10, nextCursor?: string): Promise<DataConnection<JournalResponse> | null> => {
         try {
             const params = new URLSearchParams()
             params.append('limit', limit.toString())
@@ -19,13 +19,25 @@ const ApiJournal = {
             return null
         }
     },
+    _get_my_journals: async (limit: number = 10, nextCursor?: string): Promise<DataConnection<JournalResponse> | null> => {
+        try {
+            const params = new URLSearchParams()
+            params.append('limit', limit.toString())
+            if (nextCursor) params.append('cursor', nextCursor)
+            
+            const { data } = await axios.get<DataConnection<JournalResponse>>(`/api/journals/my?${params.toString()}`)
+            if (!data) return null
+            return data
+        } catch {
+            return null
+        }
+    },
     _get_journal: async (id: string): Promise<Journal | null> => {
         try {
             const { data } = await axios.get<JournalResponse>(`/api/journals/${id}`)
             if (!data) return null
             return data
         } catch (e) {
-            console.error('ApiJournal._get_journal', e)
             return null
         }
     },

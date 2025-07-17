@@ -11,3 +11,9 @@ export const useAccount = () => {
         me
     }
 }
+
+export const useIsOwner = (uid?: string) => {
+    const { status, me } = useAccount()
+    if (!uid) return false
+    return status === AccountStatus.admin || (status === AccountStatus.user && me?._id === uid)
+}

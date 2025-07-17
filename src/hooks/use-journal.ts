@@ -5,12 +5,23 @@ import { DataConnection } from '@/libs/dto/rating.dto'
 import { isEmpty } from 'lodash'
 
 
-export const useGetAllJournals = (limit: number = 10) => {
+export const useGetAllPublicJournals = (limit: number = 10) => {
     return useInfiniteQuery<DataConnection<JournalResponse>, Error>({
         queryKey: ['journal-all', limit],
         queryFn: async ({ pageParam }) => {
             const cursor = typeof pageParam === 'string' ? pageParam : ''
-            return await ApiJournal._get_all_journals(limit, cursor) ?? { data: [], nextCursor: undefined }
+            return await ApiJournal._get_all_public_journals(limit, cursor) ?? { data: [], nextCursor: undefined }
+        },
+        initialPageParam: '',
+        getNextPageParam: (lastPage) => lastPage?.nextCursor
+    })
+}
+export const useGetMyJournals = (limit: number = 10) => {
+    return useInfiniteQuery<DataConnection<JournalResponse>, Error>({
+        queryKey: ['journal-my', limit],
+        queryFn: async ({ pageParam }) => {
+            const cursor = typeof pageParam === 'string' ? pageParam : ''
+            return await ApiJournal._get_my_journals(limit, cursor) ?? { data: [], nextCursor: undefined }
         },
         initialPageParam: '',
         getNextPageParam: (lastPage) => lastPage?.nextCursor

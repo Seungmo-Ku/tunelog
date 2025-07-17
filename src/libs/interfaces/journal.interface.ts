@@ -28,6 +28,8 @@ export interface IJournal {
     replies?: IReply[]
     deleted?: boolean
     password?: string
+    public?: boolean
+    uid: string
 }
 
 export class Journal implements IJournal {
@@ -43,6 +45,8 @@ export class Journal implements IJournal {
     likes?: number
     replies?: IReply[]
     deleted?: boolean
+    public?: boolean
+    uid: string
     
     constructor(data: Partial<IJournal>) {
         this._id = data._id || ''
@@ -57,6 +61,8 @@ export class Journal implements IJournal {
         this.likes = data.likes || 0
         this.replies = data.replies || []
         this.deleted = data.deleted || false
+        this.public = data.public || false
+        this.uid = data.uid || ''
     }
 }
 

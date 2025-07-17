@@ -1,8 +1,8 @@
 'use client'
 
 import Tiptap, { TiptapRef } from '@/components/Tiptap'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Input } from '@headlessui/react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Input, Switch } from '@headlessui/react'
 import { Button } from '@/components/buttons'
 import { TopSearchBar } from '@/components/views/dashboard/top-search-bar'
 import { isEmpty, noop } from 'lodash'
@@ -13,6 +13,8 @@ import { usePostJournal } from '@/hooks/use-journal'
 import { useRouter } from 'next/navigation'
 import { Journal, Tags } from '@/libs/interfaces/journal.interface'
 import { Dialogs } from '@/components/dialogs'
+import { useAccount } from '@/libs/utils/account'
+import { AccountStatus } from '@/libs/constants/account.constant'
 
 
 interface SelectedObjectProps {
@@ -27,16 +29,16 @@ export interface CreatingComponentProps {
 export const CreatingComponent = ({
     journal = null
 }: CreatingComponentProps) => {
+    const { status, me } = useAccount()
     const editRef = useRef<TiptapRef>(null)
     const [title, setTitle] = useState('')
-    const [author, setAuthor] = useState('')
     const [tags, setTags] = useState<Tags>({
         weather: '',
         mood: '',
         scene: '',
         custom: ''
     })
-    const [password, setPassword] = useState<string>('')
+    const [isPublic, setIsPublic] = useState<boolean>(false)
     const [selectedObjectId, setSelectedObjectId] = useState<string>('')
     const [selectedObject, setSelectedObject] = useState<SelectedObjectProps[]>([])
     const [openUpdateDialog, setOpenUpdateDialog] = useState<boolean>(false)
@@ -44,7 +46,6 @@ export const CreatingComponent = ({
     useEffect(() => {
         if (!journal) return
         setTitle(journal.title || '')
-        setAuthor(journal.author || '')
         setTags({
             weather: journal.tags?.weather || '',
             mood: journal.tags?.mood || '',
@@ -57,6 +58,7 @@ export const CreatingComponent = ({
                 type: subject.type as 'album' | 'artist' | 'track'
             }
         }))
+        setIsPublic(journal.public ?? false)
     }, [journal])
     
     const appRouter = useRouter()
@@ -64,7 +66,7 @@ export const CreatingComponent = ({
     const { mutateAsync, isPending } = usePostJournal()
     
     const handleClick = useCallback(async () => {
-        if (isEmpty(title) || isPending || isEmpty(selectedObject) || isEmpty(author)) return
+        if (isEmpty(title) || isPending || isEmpty(selectedObject) || status === AccountStatus.guest) return
         const html = editRef.current?.getHTML()
         if (isEmpty(html)) return
         const subjects = selectedObject.map(obj => {
@@ -77,14 +79,14 @@ export const CreatingComponent = ({
             subjects,
             title,
             content: html ?? '',
-            author,
+            author: me?.name ?? '',
             tags,
-            password
+            public: isPublic
         })
         if (res) {
             appRouter.replace(`/journals`)
         }
-    }, [appRouter, author, isPending, mutateAsync, password, selectedObject, tags, title])
+    }, [appRouter, isPending, isPublic, me?.name, mutateAsync, selectedObject, status, tags, title])
     
     useEffect(() => {
         if (selectedObject.length > 0) {
@@ -209,15 +211,6 @@ export const CreatingComponent = ({
                     }}
                 />
             </div>
-            {
-                !journal && <Input
-                    className='w-full py-1 border-white border'
-                    placeholder='Author'
-                    value={author}
-                    onChange={(e) => setAuthor(e.target.value)}
-                    maxLength={10}
-                />
-            }
             <TopSearchBar
                 onAlbumClick={() => {
                     setSelectedObject(prev => [...prev, { id: '', type: 'album' }])
@@ -274,16 +267,20 @@ export const CreatingComponent = ({
                         }}
                         maxLength={10}
                     />
+                    <div className='flex items-center gap-x-2'>
+                        <Switch
+                            checked={isPublic}
+                            onChange={setIsPublic}
+                            className='group relative flex h-7 w-14 cursor-pointer rounded-full bg-white/10 p-1 ease-in-out focus:not-data-focus:outline-none data-checked:bg-white/10 data-focus:outline data-focus:outline-white'
+                        >
+                            <span
+                                aria-hidden='true'
+                                className='pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7'
+                            />
+                        </Switch>
+                        <p className='text-14-regular text-white'>{isPublic ? 'Set the journal visible to everyone' : 'Set the journal personal'}</p>
+                    </div>
                 </div>
-                {
-                    !journal && <Input
-                        className='w-full py-1 border-white border'
-                        placeholder='Password'
-                        type='password'
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                }
             </div>
             <Dialogs.MutationObject
                 open={openUpdateDialog}
@@ -298,7 +295,8 @@ export const CreatingComponent = ({
                     subjects: selectedObject.map(obj => ({
                         type: obj.type,
                         spotifyId: obj.id
-                    }))
+                    })),
+                    public: isPublic
                 }}
             />
         </div>
