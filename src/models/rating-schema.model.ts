@@ -20,8 +20,7 @@ const ratingSchema = new mongoose.Schema({
     replies: [replySchema],
     deleted: { type: Boolean, default: false },
     uid: { type: String, required: true },
-    public: { type: Boolean, default: false },
-    password: { type: String, required: false, default: '' } // TODO. 삭제하기
+    public: { type: Boolean, default: false }
 }, { timestamps: true })
 
 export const Rating = mongoose.models.Rating || mongoose.model('Rating', ratingSchema)
