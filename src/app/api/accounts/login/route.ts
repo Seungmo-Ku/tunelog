@@ -7,8 +7,14 @@ import { connectDB } from '@/libs/api-server/mongoose'
 
 export const POST = async (req: NextRequest) => {
     const body = await req.json()
-    const { userid, password } = body
+    const { userid } = body
     await connectDB()
+    let password = ''
+    try {
+        password = req.headers.get('x-login-password') as string
+    } catch {
+        return new Response(JSON.stringify({ error: 'Password Required' }), { status: 400 })
+    }
     if (!userid || !password) {
         return new Response(JSON.stringify({ error: 'Missing userid or password' }), { status: 400 })
     }
@@ -28,7 +34,7 @@ export const POST = async (req: NextRequest) => {
         .setIssuedAt()
         .setExpirationTime('1h')
         .sign(new TextEncoder().encode(process.env.JWT_SECRET))
-    const response = new Response(JSON.stringify({ message: 'Login successful' }), { status: 200 })
+    const response = new Response(JSON.stringify({ message: 'Login and register successful' }), { status: 201 })
     response.headers.set('Set-Cookie', `auth=${token}; HttpOnly; Path=/; Max-Age=3600`)
     return response
 }

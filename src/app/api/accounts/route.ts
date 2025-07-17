@@ -3,6 +3,7 @@ import { connectDB } from '@/libs/api-server/mongoose'
 import { isEmpty } from 'lodash'
 import { hashPassword } from '@/libs/utils/password'
 import { Account } from '@/models/account-schema.model'
+import { SignJWT } from 'jose'
 
 
 export const POST = async (req: NextRequest) => {
@@ -16,7 +17,12 @@ export const POST = async (req: NextRequest) => {
         body.password = await hashPassword(body.password)
     } else delete body.password
     const newAccount = await Account.create(body)
-    const object = newAccount.toObject()
-    delete object.password
-    return NextResponse.json(object, { status: 201 }) // 201 Created
+    const token = await new SignJWT({ sub: newAccount._id.toString(), userid: newAccount.userid.toString() })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime('1h')
+        .sign(new TextEncoder().encode(process.env.JWT_SECRET))
+    const response = new Response(JSON.stringify({ message: 'Login successful' }), { status: 200 })
+    response.headers.set('Set-Cookie', `auth=${token}; HttpOnly; Path=/; Max-Age=3600`)
+    return response
 }
