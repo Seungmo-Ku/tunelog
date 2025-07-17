@@ -27,7 +27,6 @@ export interface IJournal {
     likes?: number
     replies?: IReply[]
     deleted?: boolean
-    password?: string
     public?: boolean
     uid: string
 }
