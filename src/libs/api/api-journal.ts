@@ -37,7 +37,7 @@ const ApiJournal = {
             const { data } = await axios.get<JournalResponse>(`/api/journals/${id}`)
             if (!data) return null
             return data
-        } catch (e) {
+        } catch {
             return null
         }
     },
