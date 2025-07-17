@@ -3,12 +3,13 @@
 import { Dialog, DialogPanel, DialogTitle, Input } from '@headlessui/react'
 import { Button } from '@/components/buttons'
 import React, { useCallback, useEffect, useState } from 'react'
-import { atom, useAtom } from 'jotai'
+import { atom, useAtom, useSetAtom } from 'jotai'
 import { isEmpty } from 'lodash'
 import { useHandleLogin } from '@/hooks/use-account'
 import toast from 'react-hot-toast'
 import { useAccount } from '@/libs/utils/account'
 import { AccountStatus } from '@/libs/constants/account.constant'
+import { DialogRegisterAtom } from '@/components/dialogs/dialog-register'
 
 
 export interface DialogLoginProps {
@@ -16,12 +17,13 @@ export interface DialogLoginProps {
 }
 
 export const DialogLoginAtom = atom<DialogLoginProps>({
-    open: false
+    open: true
 })
 
 export const DialogLogin = () => {
     const { mutateAsync, isPending } = useHandleLogin()
     const [dialogLogin, setDialogLogin] = useAtom(DialogLoginAtom)
+    const setDialogRegister = useSetAtom(DialogRegisterAtom)
     const { open } = dialogLogin
     const [userid, setUserid] = useState<string>('')
     const [password, setPassword] = useState<string>('')
@@ -72,6 +74,16 @@ export const DialogLogin = () => {
                         placeholder='Password'
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <Button.Box
+                        text='Register Account'
+                        onClick={() => {
+                            onClose()
+                            setDialogRegister((prev) => ({
+                                ...prev,
+                                open: true
+                            }))
+                        }}
                     />
                     <Button.Box
                         text='Login'
