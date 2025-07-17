@@ -5,6 +5,4 @@ export type JournalCreateRequest = Pick<IJournal, 'subjects' | 'title' | 'conten
 
 export type JournalUpdateRequest = Partial<Pick<IJournal, 'title' | 'content' | 'tags' | 'subjects' | 'public'>>
 
-export type JournalDeleteRequest = { password: string }
-
 export type JournalResponse = IJournal

@@ -57,12 +57,7 @@ export const DialogMutationObject = ({
                     response = await deleteRating(object._id)
                     break
                 case 'journal':
-                    response = await deleteJournal({
-                        id: object._id,
-                        journal: {
-                            password
-                        }
-                    })
+                    response = await deleteJournal(object._id)
                     break
                 case 'topster':
                     response = await deleteTopster({
