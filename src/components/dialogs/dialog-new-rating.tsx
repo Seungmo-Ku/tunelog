@@ -1,8 +1,8 @@
 'use client'
 
-import { Dialog, DialogPanel, DialogTitle, Input, Textarea } from '@headlessui/react'
+import { Dialog, DialogPanel, DialogTitle, Switch, Textarea } from '@headlessui/react'
 import { TopSearchBar } from '@/components/views/dashboard/top-search-bar'
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { SearchType } from '@/libs/constants/spotify.constant'
 import { useGetAlbumQuery, useGetArtistQuery, useGetTrackQuery } from '@/hooks/use-spotify'
 import { usePostRating } from '@/hooks/use-rating'
@@ -29,7 +29,7 @@ export const DialogNewRating = ({
     const [selectedType, setSelectedType] = useState<SearchType | null>(null)
     const [comment, setComment] = useState<string>('')
     const [score, setScore] = useState<number>(0)
-    const [password, setPassword] = useState<string>('')
+    const [isPublic, setIsPublic] = useState<boolean>(false)
     
     const { mutateAsync, isPending } = usePostRating()
     
@@ -98,13 +98,19 @@ export const DialogNewRating = ({
                         onChange={(e) => setComment(e.target.value)}
                         maxLength={1000}
                     />
-                    <Input
-                        className='w-full py-1 border-white border'
-                        placeholder='Password'
-                        type='password'
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
+                    <div className='flex items-center gap-x-2'>
+                        <Switch
+                            checked={isPublic}
+                            onChange={setIsPublic}
+                            className='group relative flex h-7 w-14 cursor-pointer rounded-full bg-white/10 p-1 ease-in-out focus:not-data-focus:outline-none data-checked:bg-white/10 data-focus:outline data-focus:outline-white'
+                        >
+                            <span
+                                aria-hidden='true'
+                                className='pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7'
+                            />
+                        </Switch>
+                        <p className='text-14-regular text-white'>{isPublic ? 'Set the rating visible to everyone' : 'Set the rating personal'}</p>
+                    </div>
                     <Button.Box
                         text='create new rating!'
                         disabled={isPending || isEmpty(selectedObjectId) || isEmpty(comment)}
@@ -116,8 +122,7 @@ export const DialogNewRating = ({
                                 author: me?.name ?? '',
                                 score,
                                 comment,
-                                password: isEmpty(password) ? undefined : password,
-                                public: false // TODO. 나중에 공개 여부 설정 추가
+                                public: isPublic
                             }
                             await mutateAsync(ratingData)
                             onCloseAction()
@@ -125,7 +130,6 @@ export const DialogNewRating = ({
                             setComment('')
                             setSelectedObjectId('')
                             setSelectedType(null)
-                            setPassword('')
                         }}
                     />
                 </DialogPanel>
