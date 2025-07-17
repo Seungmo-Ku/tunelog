@@ -1,8 +1,8 @@
-import { connectDB } from '@/libs/api-server/mongoose'
-import { Rating } from '@/models/rating-schema.model'
 import { NextRequest, NextResponse } from 'next/server'
 import { isEmpty } from 'lodash'
-import { findUserByCookie, hashPassword } from '@/libs/utils/password'
+import { connectDB } from '@/libs/api-server/mongoose'
+import { findUserByCookie } from '@/libs/utils/password'
+import { Rating } from '@/models/rating-schema.model'
 
 
 export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
@@ -13,8 +13,12 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     const sort = (searchParams.get('sort') ?? 'newest') as 'newest' | 'oldest'
     
     await connectDB()
+    const user = await findUserByCookie()
+    if (!user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) // 401 Unauthorized
+    }
     
-    const queryBase = type === 'all' ? { deleted: false, public: true } : { deleted: false, public: true, type }
+    const queryBase = type === 'all' ? { deleted: false, uid: user._id.toString() } : { deleted: false, uid: user._id.toString(), type }
     const sortDirection = sort === 'newest' ? -1 : 1
     
     const query = cursor
@@ -22,7 +26,7 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
                   : { ...queryBase }
     
     const ratings = await Rating.find(query)
-                                .select('-password') // 비밀번호는 제외
+                                .select('-password')
                                 .sort({ createdAt: sortDirection })
                                 .limit(limit)
     
@@ -33,21 +37,3 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
         nextCursor
     })
 }
-
-export const POST = async (req: NextRequest) => {
-    await connectDB()
-    const user = await findUserByCookie()
-    if (!user) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-    const body = await req.json()
-    if (body.password && !isEmpty(body.password)) {
-        body.password = await hashPassword(body.password)
-    } else delete body.password
-    body.uid = user._id.toString()
-    const newRating = await Rating.create(body)
-    const object = newRating.toObject()
-    delete object.password
-    return NextResponse.json(object, { status: 201 }) // 201 Created
-}
-

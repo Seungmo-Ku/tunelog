@@ -91,6 +91,7 @@ const TrackDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
                                         imgUrl={track?.album?.images[0].url ?? '/favicon.ico'}
                                         title={`${track?.name ?? ''}`}
                                         rating={rating}
+                                        showMyRating
                                     />
                                 )
                             })

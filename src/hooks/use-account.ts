@@ -14,7 +14,11 @@ export const useHandleLogin = () => {
     return useMutation({
         mutationFn: async (account: AccountLoginDto) => await ApiAccount._handle_login(account),
         onSuccess: (data) => {
-            if (data.status === 200) queryClient.invalidateQueries({ queryKey: ['me'] })
+            if (data.status === 200) {
+                queryClient.invalidateQueries({ queryKey: ['me'] })
+                queryClient.invalidateQueries({ queryKey: ['rating-my'] })
+                queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
+            }
         }
     })
 }
@@ -23,7 +27,11 @@ export const useHandleRegister = () => {
     return useMutation({
         mutationFn: async (account: AccountRegisterDto) => await ApiAccount._handle_register(account),
         onSuccess: (data) => {
-            if (data.status === 201) queryClient.invalidateQueries({ queryKey: ['me'] })
+            if (data.status === 201) {
+                queryClient.invalidateQueries({ queryKey: ['me'] })
+                queryClient.invalidateQueries({ queryKey: ['rating-my'] })
+                queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
+            }
         }
     })
 }
@@ -33,6 +41,8 @@ export const useHandleLogout = () => {
         mutationFn: async () => await ApiAccount._handle_logout(),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['me'] })
+            queryClient.invalidateQueries({ queryKey: ['rating-my'] })
+            queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
         }
     })
 }

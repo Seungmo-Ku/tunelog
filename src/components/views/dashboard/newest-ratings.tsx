@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetAllRatings } from '@/hooks/use-rating'
+import { useGetAllPublicRatings } from '@/hooks/use-rating'
 import { Cards } from '@/components/cards'
 import { SearchType } from '@/libs/constants/spotify.constant'
 import { useRatingWithObjects } from '@/hooks/use-rating-with-objects'
@@ -11,7 +11,7 @@ import { Rating } from '@/libs/interfaces/rating.interface'
 
 export const NewestRatings = () => {
     const appRoute = useRouter()
-    const { data: ratingsData, isLoading: isRatingLoading } = useGetAllRatings(10)
+    const { data: ratingsData, isLoading: isRatingLoading } = useGetAllPublicRatings(10)
     
     const ratings = useMemo(() => {
         if (isRatingLoading) return []

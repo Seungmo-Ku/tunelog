@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetAllRatings } from '@/hooks/use-rating'
+import { useGetMyRatings } from '@/hooks/use-rating'
 import { useRatingWithObjects } from '@/hooks/use-rating-with-objects'
 import { Cards } from '@/components/cards'
 import { SearchType } from '@/libs/constants/spotify.constant'
@@ -19,7 +19,7 @@ import { MakeRatingAtom } from '@/components/buttons/button-make-rating'
 import { useRatingHash } from '@/libs/utils/rating'
 
 
-export const AllRatings = () => {
+export const MyRatings = () => {
     const appRouter = useRouter()
     const [filterIndex, setFilterIndex] = useState(0)
     const [sortingIndex, setSortingIndex] = useState(0)
@@ -50,7 +50,7 @@ export const AllRatings = () => {
         }
     }, [sortingIndex])
     
-    const { data: ratingsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isRatingLoading } = useGetAllRatings(20, selectedFilter, selectedSorting)
+    const { data: ratingsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isRatingLoading } = useGetMyRatings(20, selectedFilter, selectedSorting)
     
     const ratings = useMemo(() => {
         if (isRatingLoading) return []

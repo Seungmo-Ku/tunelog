@@ -11,6 +11,8 @@ import { isEmpty } from 'lodash'
 import { RatingCreateRequest } from '@/libs/dto/rating.dto'
 import { Rating } from 'react-simple-star-rating'
 import { useRatingHash } from '@/libs/utils/rating'
+import { useAccount } from '@/libs/utils/account'
+import { AccountStatus } from '@/libs/constants/account.constant'
 
 
 interface DialogNewRatingProps {
@@ -22,10 +24,10 @@ export const DialogNewRating = ({
     open,
     onCloseAction
 }: DialogNewRatingProps) => {
+    const { status, me } = useAccount()
     const [selectedObjectId, setSelectedObjectId] = useState<string>('')
     const [selectedType, setSelectedType] = useState<SearchType | null>(null)
     const [comment, setComment] = useState<string>('')
-    const [author, setAuthor] = useState<string>('')
     const [score, setScore] = useState<number>(0)
     const [password, setPassword] = useState<string>('')
     
@@ -63,6 +65,8 @@ export const DialogNewRating = ({
         )
     }, [albumData?.images, albumData?.name, artistData?.images, artistData?.name, isLoading, selectedObjectId, selectedType, trackData?.album?.images, trackData?.name])
     
+    if (status === AccountStatus.guest) return null
+    
     return (
         <Dialog transition open={open} onClose={onCloseAction} className='relative z-50 transition duration-300 ease-out data-closed:opacity-0'>
             <div className='fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/50'>
@@ -87,13 +91,6 @@ export const DialogNewRating = ({
                         ratingValue={score}
                         size={30}
                     />
-                    <Input
-                        className='w-full py-1 border-white border'
-                        placeholder='Author'
-                        value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
-                        maxLength={10}
-                    />
                     <Textarea
                         className='w-full py-1 border-white border min-h-[100px]'
                         placeholder='Comment'
@@ -110,22 +107,22 @@ export const DialogNewRating = ({
                     />
                     <Button.Box
                         text='create new rating!'
-                        disabled={isPending || isEmpty(selectedObjectId) || isEmpty(comment) || isEmpty(author)}
+                        disabled={isPending || isEmpty(selectedObjectId) || isEmpty(comment)}
                         onClick={async () => {
-                            if (isPending || !selectedType || isEmpty(selectedObjectId) || isEmpty(comment) || isEmpty(author)) return
+                            if (isPending || !selectedType || isEmpty(selectedObjectId) || isEmpty(comment)) return
                             const ratingData: RatingCreateRequest = {
                                 spotifyId: selectedObjectId,
                                 type: selectedType,
-                                author,
+                                author: me?.name ?? '',
                                 score,
                                 comment,
-                                password: isEmpty(password) ? undefined : password
+                                password: isEmpty(password) ? undefined : password,
+                                public: false // TODO. 나중에 공개 여부 설정 추가
                             }
                             await mutateAsync(ratingData)
                             onCloseAction()
                             setScore(5)
                             setComment('')
-                            setAuthor('')
                             setSelectedObjectId('')
                             setSelectedType(null)
                             setPassword('')

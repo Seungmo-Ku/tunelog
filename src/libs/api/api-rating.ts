@@ -5,7 +5,7 @@ import { RatingQueryType, RatingSortType } from '@/libs/constants/rating.constan
 
 
 const ApiRating = {
-    _get_all_ratings: async (limit: number = 10, type: RatingQueryType = 'all', sort: RatingSortType = 'newest', nextCursor?: string): Promise<DataConnection<RatingResponse> | null> => {
+    _get_all_public_ratings: async (limit: number = 10, type: RatingQueryType = 'all', sort: RatingSortType = 'newest', nextCursor?: string): Promise<DataConnection<RatingResponse> | null> => {
         try {
             // nextCursor가 있으면 쿼리스트링에 추가
             const params = new URLSearchParams()
@@ -17,8 +17,23 @@ const ApiRating = {
             const { data } = await axios.get<DataConnection<RatingResponse>>(`/api/ratings?${params.toString()}`)
             if (!data) return null
             return data
-        } catch (e) {
-            console.error('ApiRating._get_all_ratings', e)
+        } catch {
+            return null
+        }
+    },
+    _get_my_ratings: async (limit: number = 10, type: RatingQueryType = 'all', sort: RatingSortType = 'newest', nextCursor?: string): Promise<DataConnection<RatingResponse> | null> => {
+        try {
+            // nextCursor가 있으면 쿼리스트링에 추가
+            const params = new URLSearchParams()
+            params.append('limit', limit.toString())
+            params.append('type', type)
+            params.append('sort', sort)
+            if (nextCursor) params.append('cursor', nextCursor)
+            
+            const { data } = await axios.get<DataConnection<RatingResponse>>(`/api/ratings/my?${params.toString()}`)
+            if (!data) return null
+            return data
+        } catch {
             return null
         }
     },
@@ -27,8 +42,7 @@ const ApiRating = {
             const { data } = await axios.post<RatingResponse>('/api/ratings', rating)
             if (!data) return null
             return new Rating(data)
-        } catch (e) {
-            console.error('ApiRating._post_rating', e)
+        } catch {
             return null
         }
     },

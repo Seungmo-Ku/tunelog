@@ -129,6 +129,7 @@ const ArtistDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> })
                                         imgUrl={artist?.images[0].url ?? '/favicon.ico'}
                                         title={`${artist?.name ?? ''}`}
                                         rating={rating}
+                                        showMyRating
                                     />
                                 )
                             })

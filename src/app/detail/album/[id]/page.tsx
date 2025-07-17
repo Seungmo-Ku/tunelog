@@ -115,6 +115,7 @@ const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
                                         imgUrl={album?.images[0].url ?? '/favicon.ico'}
                                         title={`${album?.name ?? ''}`}
                                         rating={rating}
+                                        showMyRating
                                     />
                                 )
                             })
