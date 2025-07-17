@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import ApiRating from '@/libs/api/api-rating'
-import { DataConnection, RatingCreateRequest, RatingDeleteRequest, RatingResponse } from '@/libs/dto/rating.dto'
+import { DataConnection, RatingCreateRequest, RatingResponse } from '@/libs/dto/rating.dto'
 import { isEmpty } from 'lodash'
 import { RatingQueryType, RatingSortType } from '@/libs/constants/rating.constant'
 import { useAccount } from '@/libs/utils/account'
@@ -55,7 +55,7 @@ export const useGetRatingsBySpotifyId = (spotifyId: string, limit: number = 10) 
 export const useDeleteRating = () => {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: async ({ id, rating }: { id: string, rating: RatingDeleteRequest }) => await ApiRating._delete_rating(id, rating),
+        mutationFn: async (id: string) => await ApiRating._delete_rating(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['rating-all'] })
             queryClient.invalidateQueries({ queryKey: ['rating-my'] })

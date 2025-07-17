@@ -49,17 +49,12 @@ export const DialogMutationObject = ({
         [isRatingPending, isJournalPending, isTopsterPending, isTopsterUpdatePending, isJournalUpdatePending])
     
     const handleDelete = useCallback(async () => {
-        if (!object || isEmpty(password) || isPending) return
+        if (!object || isPending) return
         try {
             let response
             switch (type) {
                 case 'rating':
-                    response = await deleteRating({
-                        id: object._id,
-                        rating: {
-                            password
-                        }
-                    })
+                    response = await deleteRating(object._id)
                     break
                 case 'journal':
                     response = await deleteJournal({
@@ -148,7 +143,6 @@ export const DialogMutationObject = ({
                     />
                     <Button.Box
                         text={`${capitalizeFirstLetter(action)} ${capitalizeFirstLetter(type)}`}
-                        disabled={isEmpty(password)}
                         onClick={() => {
                             if (action === 'delete') handleDelete().then(noop)
                             handleUpdate().then(noop)

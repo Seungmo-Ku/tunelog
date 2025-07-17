@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Rating } from '@/libs/interfaces/rating.interface'
-import { DataConnection, RatingCreateRequest, RatingDeleteRequest, RatingResponse } from '@/libs/dto/rating.dto'
+import { DataConnection, RatingCreateRequest, RatingResponse } from '@/libs/dto/rating.dto'
 import { RatingQueryType, RatingSortType } from '@/libs/constants/rating.constant'
 
 
@@ -62,13 +62,9 @@ const ApiRating = {
             return null
         }
     },
-    _delete_rating: async (id: string, rating: RatingDeleteRequest): Promise<boolean> => {
+    _delete_rating: async (id: string): Promise<boolean> => {
         try {
-            const response = await axios.delete(`/api/ratings/${id}`, {
-                headers: {
-                    'x-delete-rating-password': rating.password || ''
-                }
-            })
+            const response = await axios.delete(`/api/ratings/${id}`)
             return response.status === 200
         } catch {
             return false
