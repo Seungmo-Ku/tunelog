@@ -119,7 +119,7 @@ export const DialogMutationObject = ({
             <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
                 <DialogPanel className='w-3/4 space-y-4 bg-[#33373B] text-white md:p-12 p-4 rounded-2xl flex flex-col'>
                     <DialogTitle className='font-bold'>{`${capitalizeFirstLetter(action)} ${capitalizeFirstLetter(type)}`}</DialogTitle>
-                    <p>This process cannot be undone</p>
+                    <p>{`This process will ${action} the ${type} and cannot be undone.`}</p>
                     <Button.Box
                         text={`${capitalizeFirstLetter(action)} ${capitalizeFirstLetter(type)}`}
                         onClick={() => {
