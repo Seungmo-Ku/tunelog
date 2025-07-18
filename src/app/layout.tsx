@@ -8,6 +8,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Navbar from '@/components/navigation-bar/navitaion-bar-default'
 import { Toaster } from 'react-hot-toast'
+import { Dialogs } from '@/components/dialogs'
 
 
 const quicksand = Quicksand({
@@ -43,6 +44,9 @@ export default function RootLayout({
                     <Toaster/>
                     {children}
                 </main>
+                <Dialogs.Login/>
+                <Dialogs.Register/>
+                <Dialogs.Logout/>
             </div>
             {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={true}/>}
         </QueryClientProvider>

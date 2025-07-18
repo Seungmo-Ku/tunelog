@@ -1,6 +1,7 @@
 import { NavigationBar } from '@/components/navigation-bar/index'
 import { DiscAlbum, GalleryVerticalEnd, House, ListMusic, Music, NotebookPen, SquareUser } from 'lucide-react'
 import React from 'react'
+import { useNavbarAuth } from '@/components/navigation-bar/navigation-bar-auth'
 
 /*
  * 대시보드: /dashboard
@@ -27,17 +28,18 @@ export const navbarDetailComponents: NavbarComponentProps[] = [
     { Icon: Music, path: '/detail/track' },
     { Icon: SquareUser, path: '/detail/artist' }
 ]
-
 export default function Navbar() {
     
+    const { navbarAuth } = useNavbarAuth()
     return (
         <div>
             <nav className='h-full shrink-0 pr-4 py-2 text-white md:flex hidden flex-col gap-y-5 justify-start items-center'>
                 <NavigationBar.Group components={navbarMainComponents}/>
+                {navbarAuth}
                 {/*<NavigationBar.Group components={navbarDetailComponents}/>*/}
             </nav>
             <nav className='w-full shrink-0 md:hidden flex'>
-                <NavigationBar.Mobile />
+                <NavigationBar.Mobile/>
             </nav>
         </div>
     )

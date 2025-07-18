@@ -1,11 +1,11 @@
 import axios from 'axios'
 import { Journal } from '@/libs/interfaces/journal.interface'
-import { JournalCreateRequest, JournalDeleteRequest, JournalResponse, JournalUpdateRequest } from '@/libs/dto/journal.dto'
+import { JournalCreateRequest, JournalResponse, JournalUpdateRequest } from '@/libs/dto/journal.dto'
 import { DataConnection } from '@/libs/dto/rating.dto'
 
 
 const ApiJournal = {
-    _get_all_journals: async (limit: number = 10, nextCursor?: string): Promise<DataConnection<JournalResponse> | null> => {
+    _get_all_public_journals: async (limit: number = 10, nextCursor?: string): Promise<DataConnection<JournalResponse> | null> => {
         try {
             const params = new URLSearchParams()
             params.append('limit', limit.toString())
@@ -19,13 +19,25 @@ const ApiJournal = {
             return null
         }
     },
+    _get_my_journals: async (limit: number = 10, nextCursor?: string): Promise<DataConnection<JournalResponse> | null> => {
+        try {
+            const params = new URLSearchParams()
+            params.append('limit', limit.toString())
+            if (nextCursor) params.append('cursor', nextCursor)
+            
+            const { data } = await axios.get<DataConnection<JournalResponse>>(`/api/journals/my?${params.toString()}`)
+            if (!data) return null
+            return data
+        } catch {
+            return null
+        }
+    },
     _get_journal: async (id: string): Promise<Journal | null> => {
         try {
             const { data } = await axios.get<JournalResponse>(`/api/journals/${id}`)
             if (!data) return null
             return data
-        } catch (e) {
-            console.error('ApiJournal._get_journal', e)
+        } catch {
             return null
         }
     },
@@ -55,13 +67,9 @@ const ApiJournal = {
             return null
         }
     },
-    _delete_journal: async (id: string, journal: JournalDeleteRequest): Promise<boolean> => {
+    _delete_journal: async (id: string): Promise<boolean> => {
         try {
-            const response = await axios.delete(`/api/journals/${id}`, {
-                headers: {
-                    'x-delete-journal-password': journal.password || ''
-                }
-            })
+            const response = await axios.delete(`/api/journals/${id}`)
             return response.status === 200
         } catch {
             return false
@@ -69,12 +77,7 @@ const ApiJournal = {
     },
     _update_journal: async (id: string, journal: JournalUpdateRequest): Promise<Journal | null> => {
         try {
-            const { password, ...rest } = journal
-            const response = await axios.patch<JournalResponse>(`/api/journals/${id}`, rest, {
-                headers: {
-                    'x-update-journal-password': password || ''
-                }
-            })
+            const response = await axios.patch<JournalResponse>(`/api/journals/${id}`, journal)
             if (!response.data || response.status !== 200) return null
             return new Journal(response.data)
         } catch {

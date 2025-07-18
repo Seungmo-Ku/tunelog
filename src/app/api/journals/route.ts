@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { isEmpty } from 'lodash'
 import { connectDB } from '@/libs/api-server/mongoose'
 import { Journal } from '@/models/journal-schema.model'
-import { hashPassword } from '@/libs/utils/password'
+import { findUserByCookie } from '@/libs/utils/password'
 
 
 export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
@@ -12,8 +12,8 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     
     await connectDB()
     const query = cursor
-                  ? { createdAt: { $lt: new Date(cursor) }, deleted: false }
-                  : { deleted: false }
+                  ? { createdAt: { $lt: new Date(cursor) }, deleted: false, public: true }
+                  : { deleted: false, public: true }
     const journals = await Journal.find(query)
                                   .select('-password')
                                   .sort({ createdAt: -1 })
@@ -29,12 +29,13 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
 
 export const POST = async (req: NextRequest) => {
     await connectDB()
+    const user = await findUserByCookie()
+    if (!user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
     const body = await req.json()
-    if (body.password && !isEmpty(body.password)) {
-        body.password = await hashPassword(body.password)
-    } else delete body.password
+    body.uid = user._id.toString()
     const newJournal = await Journal.create(body)
     const object = newJournal.toObject()
-    delete object.password
     return NextResponse.json(object, { status: 201 }) // 201 Created
 }

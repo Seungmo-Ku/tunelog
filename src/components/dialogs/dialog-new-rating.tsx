@@ -1,8 +1,8 @@
 'use client'
 
-import { Dialog, DialogPanel, DialogTitle, Input, Textarea } from '@headlessui/react'
+import { Dialog, DialogPanel, DialogTitle, Switch, Textarea } from '@headlessui/react'
 import { TopSearchBar } from '@/components/views/dashboard/top-search-bar'
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { SearchType } from '@/libs/constants/spotify.constant'
 import { useGetAlbumQuery, useGetArtistQuery, useGetTrackQuery } from '@/hooks/use-spotify'
 import { usePostRating } from '@/hooks/use-rating'
@@ -11,6 +11,8 @@ import { isEmpty } from 'lodash'
 import { RatingCreateRequest } from '@/libs/dto/rating.dto'
 import { Rating } from 'react-simple-star-rating'
 import { useRatingHash } from '@/libs/utils/rating'
+import { useAccount } from '@/libs/utils/account'
+import { AccountStatus } from '@/libs/constants/account.constant'
 
 
 interface DialogNewRatingProps {
@@ -22,12 +24,12 @@ export const DialogNewRating = ({
     open,
     onCloseAction
 }: DialogNewRatingProps) => {
+    const { status, me } = useAccount()
     const [selectedObjectId, setSelectedObjectId] = useState<string>('')
     const [selectedType, setSelectedType] = useState<SearchType | null>(null)
     const [comment, setComment] = useState<string>('')
-    const [author, setAuthor] = useState<string>('')
     const [score, setScore] = useState<number>(0)
-    const [password, setPassword] = useState<string>('')
+    const [isPublic, setIsPublic] = useState<boolean>(false)
     
     const { mutateAsync, isPending } = usePostRating()
     
@@ -63,6 +65,8 @@ export const DialogNewRating = ({
         )
     }, [albumData?.images, albumData?.name, artistData?.images, artistData?.name, isLoading, selectedObjectId, selectedType, trackData?.album?.images, trackData?.name])
     
+    if (status === AccountStatus.guest) return null
+    
     return (
         <Dialog transition open={open} onClose={onCloseAction} className='relative z-50 transition duration-300 ease-out data-closed:opacity-0'>
             <div className='fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/50'>
@@ -87,13 +91,6 @@ export const DialogNewRating = ({
                         ratingValue={score}
                         size={30}
                     />
-                    <Input
-                        className='w-full py-1 border-white border'
-                        placeholder='Author'
-                        value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
-                        maxLength={10}
-                    />
                     <Textarea
                         className='w-full py-1 border-white border min-h-[100px]'
                         placeholder='Comment'
@@ -101,34 +98,38 @@ export const DialogNewRating = ({
                         onChange={(e) => setComment(e.target.value)}
                         maxLength={1000}
                     />
-                    <Input
-                        className='w-full py-1 border-white border'
-                        placeholder='Password'
-                        type='password'
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
+                    <div className='flex items-center gap-x-2'>
+                        <Switch
+                            checked={isPublic}
+                            onChange={setIsPublic}
+                            className='group relative flex h-7 w-14 cursor-pointer rounded-full bg-white/10 p-1 ease-in-out focus:not-data-focus:outline-none data-checked:bg-white/10 data-focus:outline data-focus:outline-white'
+                        >
+                            <span
+                                aria-hidden='true'
+                                className='pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7'
+                            />
+                        </Switch>
+                        <p className='text-14-regular text-white'>{isPublic ? 'Set the rating visible to everyone' : 'Set the rating personal'}</p>
+                    </div>
                     <Button.Box
                         text='create new rating!'
-                        disabled={isPending || isEmpty(selectedObjectId) || isEmpty(comment) || isEmpty(author)}
+                        disabled={isPending || isEmpty(selectedObjectId) || isEmpty(comment)}
                         onClick={async () => {
-                            if (isPending || !selectedType || isEmpty(selectedObjectId) || isEmpty(comment) || isEmpty(author)) return
+                            if (isPending || !selectedType || isEmpty(selectedObjectId) || isEmpty(comment)) return
                             const ratingData: RatingCreateRequest = {
                                 spotifyId: selectedObjectId,
                                 type: selectedType,
-                                author,
+                                author: me?.name ?? '',
                                 score,
                                 comment,
-                                password: isEmpty(password) ? undefined : password
+                                public: isPublic
                             }
                             await mutateAsync(ratingData)
                             onCloseAction()
                             setScore(5)
                             setComment('')
-                            setAuthor('')
                             setSelectedObjectId('')
                             setSelectedType(null)
-                            setPassword('')
                         }}
                     />
                 </DialogPanel>

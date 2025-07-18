@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { ResizableGridDefault } from '@/components/resizable-grid/resizeable-grid-default'
 import { SearchType } from '@/libs/constants/spotify.constant'
 import { Dialogs } from '@/components/dialogs'
@@ -10,6 +10,10 @@ import { usePostTopster } from '@/hooks/use-topster'
 import { Button } from '@/components/buttons'
 import { useRouter } from 'next/navigation'
 import { Topster } from '@/libs/interfaces/topster.interface'
+import { useAccount } from '@/libs/utils/account'
+import { useSetAtom } from 'jotai/index'
+import { DialogLoginAtom } from '@/components/dialogs/dialog-login'
+import { AccountStatus } from '@/libs/constants/account.constant'
 
 
 export interface TopsterItem {
@@ -26,10 +30,9 @@ export interface TopsterCreateProps {
 export const TopsterCreate = ({
     topster = null
 }: TopsterCreateProps) => {
-    
+    const { me, status } = useAccount()
     const appRouter = useRouter()
     const [title, setTitle] = useState<string>('')
-    const [author, setAuthor] = useState<string>('')
     const [showTitle, setShowTitle] = useState<boolean>(true)
     const [showType, setShowType] = useState<boolean>(true)
     const [gridSize, setGridSize] = useState(3)
@@ -42,15 +45,16 @@ export const TopsterCreate = ({
         url: '',
         title: ''
     }))
-    const [password, setPassword] = useState<string>('')
+    const [isPublic, setIsPublic] = useState<boolean>(false)
+    const setLoginDialogOpen = useSetAtom(DialogLoginAtom)
     
     useEffect(() => {
         if (!topster) return
         setTitle(topster.title)
-        setAuthor(topster.author)
         setShowTitle(topster.showTitles ?? true)
         setShowType(topster.showTypes ?? true)
         setGridSize(topster.size)
+        setIsPublic(topster.public ?? false)
         setItems(() => {
             const newItems = Array(100).fill({
                 id: '',
@@ -100,13 +104,18 @@ export const TopsterCreate = ({
     }, [gridSize, items])
     
     const makeTopster = useCallback(async () => {
-        if (isPending) return
-        if (isEmpty(title) || isEmpty(author)) return
+        if (isPending || isEmpty(title)) return
+        if (status === AccountStatus.guest) {
+            setLoginDialogOpen((prev) => (
+                { ...prev, open: true }
+            ))
+            return
+        }
         try {
             const itemNumber = gridSize * gridSize
             const res = await mutateAsync({
                 title,
-                author,
+                author: me?.name ?? '',
                 components: items.slice(0, itemNumber).map((item, index) => (
                     {
                         spotifyId: item.id,
@@ -121,11 +130,10 @@ export const TopsterCreate = ({
                 showTitles: showTitle,
                 showTypes: showType,
                 size: gridSize,
-                password
+                public: isPublic
             })
             if (res) {
                 setTitle('')
-                setAuthor('')
                 setItems(Array(100).fill({
                     id: '',
                     type: null,
@@ -136,14 +144,14 @@ export const TopsterCreate = ({
                 setShowTitle(true)
                 setShowType(true)
                 setOpenDialog(false)
-                setPassword('')
+                setIsPublic(false)
                 appRouter.push('/topsters')
             }
         } catch (e) {
             console.error('Error creating topster:', e)
             return
         }
-    }, [appRouter, author, gridSize, isPending, items, mutateAsync, password, showTitle, showType, title])
+    }, [appRouter, gridSize, isPending, isPublic, items, me?.name, mutateAsync, showTitle, showType, title])
     
     return (
         <div className='w-full flex md:flex-row flex-col gap-3 overflow-y-auto hide-sidebar'>
@@ -182,17 +190,6 @@ export const TopsterCreate = ({
                         placeholder='Enter title'
                     />
                 </div>
-                {
-                    !topster && <div className='flex flex-col gap-y-2'>
-                        <label htmlFor='authorInput' className='text-white'>Author</label>
-                        <Input
-                            id='authorInput'
-                            value={author}
-                            onChange={(e) => setAuthor(e.target.value)}
-                            placeholder='Enter Author'
-                        />
-                    </div>
-                }
                 <div className='flex flex-col gap-y-2'>
                     <label htmlFor='gridSizeInput' className='text-white'>Size</label>
                     <div className='flex gap-x-2 w-full items-center'>
@@ -240,19 +237,22 @@ export const TopsterCreate = ({
                         </div>
                     )
                 }
-                {!topster && <div className='flex flex-col gap-y-2'>
-                    <label htmlFor='passwordInput' className='text-white'>Password</label>
-                    <Input
-                        id='passwordInput'
-                        value={password}
-                        type='password'
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder='Enter Password'
-                    />
-                </div>}
+                <div className='flex flex-col gap-y-2'>
+                    <p className='text-white'>{isPublic ? 'Set the topster visible to everyone' : 'Set the topster personal'}</p>
+                    <Switch
+                        checked={isPublic}
+                        onChange={setIsPublic}
+                        className='group relative flex h-7 w-14 cursor-pointer rounded-full bg-white/10 p-1 ease-in-out focus:not-data-focus:outline-none data-checked:bg-white/10 data-focus:outline data-focus:outline-white shrink-0'
+                    >
+                        <span
+                            aria-hidden='true'
+                            className='pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7'
+                        />
+                    </Switch>
+                </div>
                 <Button.Box
                     text={`${topster ? 'Update' : 'Create'} Topster`}
-                    disabled={isEmpty(title) || isEmpty(author) || isPending}
+                    disabled={isEmpty(title) || isPending}
                     onClick={() => {
                         if (!topster) {
                             makeTopster().then(noop) // 탑스터 생성
@@ -289,7 +289,8 @@ export const TopsterCreate = ({
                         y: Math.floor(idx / gridSize),
                         imageUrl: item.url,
                         title: item.title
-                    }))
+                    })),
+                    public: isPublic
                 }}
             />
         </div>

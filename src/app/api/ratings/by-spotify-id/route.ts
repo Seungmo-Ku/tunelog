@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { connectDB } from '@/libs/api-server/mongoose'
 import { Rating } from '@/models/rating-schema.model'
 import { isEmpty } from 'lodash'
+import { findUserByCookie } from '@/libs/utils/password'
 
 
 export const GET = async (req: NextRequest) => {
@@ -12,10 +13,23 @@ export const GET = async (req: NextRequest) => {
     
     await connectDB()
     
+    const user = await findUserByCookie()
+    
+    const userQuery = user ?
+        {
+            $or: [
+                { public: true },
+                { uid: user._id.toString() }
+            ]
+        } :
+        {
+            public: true
+        }
+    
     // 쿼리 객체 생성
     const query = cursor
-                  ? { createdAt: { $lt: new Date(cursor) }, spotifyId, deleted: false }
-                  : { spotifyId, deleted: false }
+                  ? { createdAt: { $lt: new Date(cursor) }, spotifyId, deleted: false, ...userQuery }
+                  : { spotifyId, deleted: false, ...userQuery }
     
     const ratings = await Rating.find(query)
                                 .select('-password') // 비밀번호는 제외

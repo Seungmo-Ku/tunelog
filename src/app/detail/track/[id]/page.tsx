@@ -14,6 +14,7 @@ import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { Disc } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { SearchType } from '@/libs/constants/spotify.constant'
+import { useAccount } from '@/libs/utils/account'
 
 
 const TrackDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -22,6 +23,7 @@ const TrackDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
     const { data: track, isLoading: isTrackLoading } = useGetTrackQuery(id)
     const { data: ratingsData, isLoading: isRatingLoading } = useGetRatingsBySpotifyId(track?.id ?? '', 10)
     const { data: journalsData, isLoading: isJournalLoading } = useGetJournalsBySpotifyId(track?.id ?? '', 10)
+    const { me } = useAccount()
     
     // noinspection DuplicatedCode
     const ratings = useMemo(() => {
@@ -91,6 +93,7 @@ const TrackDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
                                         imgUrl={track?.album?.images[0].url ?? '/favicon.ico'}
                                         title={`${track?.name ?? ''}`}
                                         rating={rating}
+                                        showMyRating
                                     />
                                 )
                             })
@@ -118,6 +121,7 @@ const TrackDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
                                                 imgUrl={imgUrl ?? '/favicon.ico'}
                                                 title={journal.title}
                                                 subtitle={journal.author ?? 'Anonymous'}
+                                                showMyJournal={me?._id === journal.uid}
                                             />
                                         </div>
                                     )

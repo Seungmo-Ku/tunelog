@@ -4,8 +4,10 @@ import { Cards } from '@/components/cards/index'
 import { EllipsisVertical } from 'lucide-react'
 import { Rating } from '@/libs/interfaces/rating.interface'
 import { Menu, MenuButton, MenuItems } from '@headlessui/react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Dialogs } from '@/components/dialogs'
+import { useAccount } from '@/libs/utils/account'
+import { AccountStatus } from '@/libs/constants/account.constant'
 
 
 export interface CardRatingWithContentProps {
@@ -13,6 +15,7 @@ export interface CardRatingWithContentProps {
     imgUrl?: string
     title: string
     onClickAction?: () => void
+    showMyRating?: boolean
 }
 
 export const CardRatingWithContent = ({
@@ -20,9 +23,11 @@ export const CardRatingWithContent = ({
     imgUrl,
     title,
     onClickAction,
+    showMyRating = false,
     ...props
 }: CardRatingWithContentProps) => {
     const [deleteRatingOpen, setDeleteRatingOpen] = useState<boolean>(false)
+    const { status, me } = useAccount()
     const ratingsComponent = (
         <Menu>
             <MenuButton
@@ -44,6 +49,11 @@ export const CardRatingWithContent = ({
             </MenuItems>
         </Menu>
     )
+    
+    const isMyRating = useMemo(() => {
+        return status !== AccountStatus.guest && me?._id === rating?.uid
+    }, [me?._id, rating?.uid, status])
+    
     if (!rating) return (
         <Cards.RatingWithContentSkeleton {...props}/>
     )
@@ -58,13 +68,19 @@ export const CardRatingWithContent = ({
                 title={`${title}`}
                 type={rating.type}
                 duration={`${rating.score}/5`}
-                rightIcon={ratingsComponent}
+                rightIcon={isMyRating ? ratingsComponent : undefined}
                 containerClassName='!w-full rounded-none rounded-t-[15px]'
             />
             <div className='w-full bg-white/50 h-[1px]'/>
             <div className='w-full flex flex-col bg-[#33373B] overflow-hidden rounded-b-[15px] p-[10px] text-white text-13-regular gap-y-1'>
                 <span className='whitespace-pre-line break-keep text-left'>{rating.comment}</span>
-                <span className='text-12-regular text-left'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anynomous'}`}</span>
+                <p className='space-x-1'>
+                    <span className='text-12-regular text-left'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anynomous'}`}</span>
+                    {showMyRating && isMyRating && (
+                        <span className='text-12-bold text-tunelog-secondary'>My Rating</span>
+                    )}
+                </p>
+                
                 {rating.createdAt !== rating.updatedAt && <span className='text-12-regular text-left'>Last Edited: {new Date(rating.updatedAt).toLocaleDateString()}</span>}
             </div>
             <div

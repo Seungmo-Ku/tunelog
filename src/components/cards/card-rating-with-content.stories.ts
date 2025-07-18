@@ -35,7 +35,8 @@ export const Primary: Story = {
             comment: 'Amazing',
             createdAt: new Date(),
             updatedAt: new Date(),
-            author: 'Seungmo Ku'
+            author: 'Seungmo Ku',
+            uid: '11234'
         }
     }
 }

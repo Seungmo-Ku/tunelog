@@ -35,6 +35,7 @@ export const Primary: Story = {
             showTypes: true,
             createdAt: new Date(),
             updatedAt: new Date(),
+            uid: 'sdfdsf',
             components: [
                 {
                     type: SearchType.album,

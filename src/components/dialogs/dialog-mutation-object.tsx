@@ -1,10 +1,10 @@
 'use client'
 
-import { Dialog, DialogPanel, DialogTitle, Input } from '@headlessui/react'
-import React, { useCallback, useMemo, useState } from 'react'
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
+import React, { useCallback, useMemo } from 'react'
 import { Rating } from '@/libs/interfaces/rating.interface'
 import { Button } from '@/components/buttons'
-import { isEmpty, noop } from 'lodash'
+import { noop } from 'lodash'
 import { useDeleteRating } from '@/hooks/use-rating'
 import toast from 'react-hot-toast'
 import { Journal } from '@/libs/interfaces/journal.interface'
@@ -23,7 +23,7 @@ export interface DialogMutationObjectProps {
     object: Rating | Journal | Topster | null | undefined
     type?: 'rating' | 'journal' | 'topster'
     action?: 'delete' | 'update'
-    updateObject?: Omit<TopsterUpdateRequest, 'password'> | Omit<JournalUpdateRequest, 'password'> | null | undefined
+    updateObject?: TopsterUpdateRequest | JournalUpdateRequest | null | undefined
 }
 
 export const DialogMutationObject = ({
@@ -36,7 +36,6 @@ export const DialogMutationObject = ({
 }: DialogMutationObjectProps) => {
     
     const appRouter = useRouter()
-    const [password, setPassword] = useState<string>('')
     
     const { mutateAsync: deleteRating, isPending: isRatingPending } = useDeleteRating()
     const { mutateAsync: deleteJournal, isPending: isJournalPending } = useDeleteJournal()
@@ -49,37 +48,21 @@ export const DialogMutationObject = ({
         [isRatingPending, isJournalPending, isTopsterPending, isTopsterUpdatePending, isJournalUpdatePending])
     
     const handleDelete = useCallback(async () => {
-        if (!object || isEmpty(password) || isPending) return
+        if (!object || isPending) return
         try {
             let response
             switch (type) {
                 case 'rating':
-                    response = await deleteRating({
-                        id: object._id,
-                        rating: {
-                            password
-                        }
-                    })
+                    response = await deleteRating(object._id)
                     break
                 case 'journal':
-                    response = await deleteJournal({
-                        id: object._id,
-                        journal: {
-                            password
-                        }
-                    })
+                    response = await deleteJournal(object._id)
                     break
                 case 'topster':
-                    response = await deleteTopster({
-                        id: object._id,
-                        topster: {
-                            password
-                        }
-                    })
+                    response = await deleteTopster(object._id)
                     break
             }
             if (response) {
-                setPassword('')
                 onCloseAction()
                 toast.success(`${type} deleted successfully.`)
                 if (type === 'journal' || type === 'topster') {
@@ -91,10 +74,10 @@ export const DialogMutationObject = ({
         } catch {
             toast.error(`Failed to delete ${type}. Please check your password and try again.`)
         }
-    }, [object, password, isPending, type, deleteRating, deleteJournal, deleteTopster, onCloseAction, appRouter])
+    }, [object, isPending, type, deleteRating, deleteJournal, deleteTopster, onCloseAction, appRouter])
     
     const handleUpdate = useCallback(async () => {
-        if (!object || isEmpty(password) || isPending || !updateObject) return
+        if (!object || isPending || !updateObject) return
         try {
             let response
             switch (type) {
@@ -102,8 +85,7 @@ export const DialogMutationObject = ({
                     response = await updateJournal({
                         id: object._id,
                         journal: {
-                            ...updateObject,
-                            password
+                            ...updateObject
                         }
                     })
                     break
@@ -111,14 +93,12 @@ export const DialogMutationObject = ({
                     response = await updateTopster({
                         id: object._id,
                         topster: {
-                            ...updateObject,
-                            password
+                            ...updateObject
                         }
                     })
                     break
             }
             if (response) {
-                setPassword('')
                 onCloseAction()
                 toast.success(`Updated ${type} successfully.`)
                 if (type === 'journal' || type === 'topster') {
@@ -130,7 +110,7 @@ export const DialogMutationObject = ({
         } catch {
             toast.error(`Failed to update ${type}. Please check your password and try again.`)
         }
-    }, [object, password, isPending, updateObject, type, updateJournal, updateTopster, onCloseAction, appRouter])
+    }, [object, isPending, updateObject, type, updateJournal, updateTopster, onCloseAction, appRouter])
     
     if (!object) return null
     return (
@@ -139,16 +119,9 @@ export const DialogMutationObject = ({
             <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
                 <DialogPanel className='w-3/4 space-y-4 bg-[#33373B] text-white md:p-12 p-4 rounded-2xl flex flex-col'>
                     <DialogTitle className='font-bold'>{`${capitalizeFirstLetter(action)} ${capitalizeFirstLetter(type)}`}</DialogTitle>
-                    <Input
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        type='password'
-                        placeholder='Enter password'
-                        className='w-full py-1 border-white border'
-                    />
+                    <p>{`This process will ${action} the ${type} and cannot be undone.`}</p>
                     <Button.Box
                         text={`${capitalizeFirstLetter(action)} ${capitalizeFirstLetter(type)}`}
-                        disabled={isEmpty(password)}
                         onClick={() => {
                             if (action === 'delete') handleDelete().then(noop)
                             handleUpdate().then(noop)

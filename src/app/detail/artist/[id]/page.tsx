@@ -13,6 +13,7 @@ import { Button } from '@/components/buttons'
 import { Cards } from '@/components/cards'
 import { useRouter } from 'next/navigation'
 import { SearchType } from '@/libs/constants/spotify.constant'
+import { useAccount } from '@/libs/utils/account'
 
 
 const ArtistDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -28,6 +29,8 @@ const ArtistDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> })
     
     const { data: ratingsData, isLoading: isRatingLoading } = useGetRatingsBySpotifyId(artist?.id ?? '', 10)
     const { data: journalsData, isLoading: isJournalLoading } = useGetJournalsBySpotifyId(artist?.id ?? '', 10)
+    
+    const { me } = useAccount()
     
     // noinspection DuplicatedCode
     const ratings = useMemo(() => {
@@ -129,6 +132,7 @@ const ArtistDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> })
                                         imgUrl={artist?.images[0].url ?? '/favicon.ico'}
                                         title={`${artist?.name ?? ''}`}
                                         rating={rating}
+                                        showMyRating
                                     />
                                 )
                             })
@@ -156,6 +160,7 @@ const ArtistDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> })
                                                 imgUrl={imgUrl ?? '/favicon.ico'}
                                                 title={journal.title}
                                                 subtitle={journal.author ?? 'Anonymous'}
+                                                showMyJournal={me?._id === journal.uid}
                                             />
                                         </div>
                                     )

@@ -3,7 +3,7 @@
 import { Cards } from '@/components/cards'
 import { useCallback, useMemo } from 'react'
 import { ArrowUpRight } from 'lucide-react'
-import { useGetAllJournals } from '@/hooks/use-journal'
+import { useGetAllPublicJournals } from '@/hooks/use-journal'
 import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { SearchType } from '@/libs/constants/spotify.constant'
 import { Journal, Tags } from '@/libs/interfaces/journal.interface'
@@ -15,7 +15,7 @@ import { useJournalWithObjects } from '@/hooks/use-journal-with-objects'
 export const TopJournal = () => {
     
     const appRouter = useRouter()
-    const { data: journalsData, isLoading: isJournalLoading } = useGetAllJournals(4)
+    const { data: journalsData, isLoading: isJournalLoading } = useGetAllPublicJournals(4)
     const journals = useMemo(() => {
         if (isJournalLoading) return []
         const journalsArray = journalsData?.pages.flatMap(page => page.data) ?? []

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { connectDB } from '@/libs/api-server/mongoose'
 import { Rating } from '@/models/rating-schema.model'
-import { verifyPassword } from '@/libs/utils/password'
+import { findUserByCookie } from '@/libs/utils/password'
 
 
 export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
@@ -10,32 +10,21 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
         return new Response(JSON.stringify({ error: 'Missing rating ID' }), { status: 400 })
     }
     await connectDB()
-    
-    let password = ''
-    try {
-        password = req.headers.get('x-delete-rating-password') as string
-    } catch {
-        return new Response(JSON.stringify({ error: 'Password Required' }), { status: 400 })
+    const user = await findUserByCookie()
+    if (!user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
     }
     
-    if (!password) {
-        return new Response(JSON.stringify({ error: 'Password Required' }), { status: 400 })
-    }
-    
-    const rating = await Rating.findById(id).select('+password')
+    const rating = await Rating.findById(id)
     if (!rating) {
         return new Response(JSON.stringify({ error: 'Rating not found' }), { status: 404 })
     }
-    
-    const isMatch = await verifyPassword(password, rating.password)
-    
-    const adminKey = process.env.ADMIN_KEY || ''
-    if (!isMatch && password.trim() !== adminKey) {
-        return new Response(JSON.stringify({ error: 'Invalid password' }), { status: 401 })
+    if (rating.uid.toString() !== user._id.toString()) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
     }
     
     rating.deleted = true
     await rating.save()
     
-    return NextResponse.json({ message: 'Rating deleted successfully' }, { status: 200 }) // 200 OK
+    return NextResponse.json({ message: 'Rating deleted successfully' }, { status: 200 })
 }

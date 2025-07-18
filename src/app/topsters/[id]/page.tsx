@@ -9,6 +9,7 @@ import html2canvas from 'html2canvas'
 import { Button } from '@/components/buttons'
 import { Delete, Pencil } from 'lucide-react'
 import { Dialogs } from '@/components/dialogs'
+import { useIsOwner } from '@/libs/utils/account'
 
 
 const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -18,6 +19,8 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     const topsterRef = useRef<HTMLDivElement>(null)
     
     const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
+    
+    const isOwner = useIsOwner(topster?.uid)
     
     const handleSaveAsImage = () => {
         const element = topsterRef.current
@@ -91,7 +94,9 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     if (isLoading) {
         return <div className='text-white'>Loading...</div>
     }
-    
+    if (!topster) {
+        return <div className='text-white'>Topster not found</div>
+    }
     return (
         <div className='w-full h-full flex flex-col overflow-x-hidden overflow-y-auto hide-sidebar gap-y-10 text-white p-4'>
             <div className='flex md:flex-row flex-col md:justify-between items-start gap-2'>
@@ -100,24 +105,28 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                     <p className='text-14-regular text-[#EFEEE0]'>{`Made By ${topster?.author ?? ''}`}</p>
                     <p className='text-14-regular text-[#EFEEE0]'>{`Created At ${new Date(topster?.createdAt ?? 0).toLocaleDateString() ?? ''}`}</p>
                 </div>
-                <div className='flex overflow-x-auto hide-sidebar gap-x-2'>
-                    <Button.Box
-                        text='Save as Image'
-                        onClick={handleSaveAsImage}
-                    />
-                    <Button.Box
-                        text='Delete'
-                        onClick={() => setDeleteDialogOpen(true)}
-                        leftIcon={deleteComponent}
-                    />
-                    <Button.Box
-                        text='Edit'
-                        onClick={() => {
-                            appRouter.push(`/topsters/edit/${id}`)
-                        }}
-                        leftIcon={editComponent}
-                    />
-                </div>
+                {
+                    isOwner && (
+                        <div className='flex overflow-x-auto hide-sidebar gap-x-2'>
+                            <Button.Box
+                                text='Save as Image'
+                                onClick={handleSaveAsImage}
+                            />
+                            <Button.Box
+                                text='Delete'
+                                onClick={() => setDeleteDialogOpen(true)}
+                                leftIcon={deleteComponent}
+                            />
+                            <Button.Box
+                                text='Edit'
+                                onClick={() => {
+                                    appRouter.push(`/topsters/edit/${id}`)
+                                }}
+                                leftIcon={editComponent}
+                            />
+                        </div>
+                    )
+                }
             </div>
             <div ref={topsterRef}>
                 <div className='flex md:flex-row gap-x-8 gap-y-4 p-1'>

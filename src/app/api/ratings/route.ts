@@ -2,7 +2,7 @@ import { connectDB } from '@/libs/api-server/mongoose'
 import { Rating } from '@/models/rating-schema.model'
 import { NextRequest, NextResponse } from 'next/server'
 import { isEmpty } from 'lodash'
-import { hashPassword } from '@/libs/utils/password'
+import { findUserByCookie } from '@/libs/utils/password'
 
 
 export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
@@ -14,7 +14,7 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     
     await connectDB()
     
-    const queryBase = type === 'all' ? { deleted: false } : { deleted: false, type }
+    const queryBase = type === 'all' ? { deleted: false, public: true } : { deleted: false, public: true, type }
     const sortDirection = sort === 'newest' ? -1 : 1
     
     const query = cursor
@@ -36,10 +36,12 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
 
 export const POST = async (req: NextRequest) => {
     await connectDB()
+    const user = await findUserByCookie()
+    if (!user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
     const body = await req.json()
-    if (body.password && !isEmpty(body.password)) {
-        body.password = await hashPassword(body.password)
-    } else delete body.password
+    body.uid = user._id.toString()
     const newRating = await Rating.create(body)
     const object = newRating.toObject()
     delete object.password

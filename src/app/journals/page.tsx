@@ -1,10 +1,10 @@
-import { AllJournals } from '@/components/views/journals/all-journals'
+import { MyJournals } from '@/components/views/journals/my-journals'
 
 
 const JournalsPage = () => {
     return (
         <div className='w-full h-full flex flex-col overflow-y-scroll hide-sidebar'>
-            <AllJournals/>
+            <MyJournals/>
         </div>
     )
 }

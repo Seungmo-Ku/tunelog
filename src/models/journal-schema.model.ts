@@ -24,7 +24,8 @@ const journalSchema = new mongoose.Schema({
     likes: { type: Number, default: 0 },
     replies: [replySchema],
     deleted: { type: Boolean, default: false },
-    password: { type: String, required: false, default: '' }
+    uid: { type: String, required: true },
+    public: { type: Boolean, default: false }
 }, { timestamps: true })
 
 export const Journal = mongoose.models.Journal || mongoose.model('Journal', journalSchema)

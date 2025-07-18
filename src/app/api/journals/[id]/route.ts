@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { connectDB } from '@/libs/api-server/mongoose'
 import { Journal } from '@/models/journal-schema.model'
-import { verifyPassword } from '@/libs/utils/password'
+import { findUserByCookie } from '@/libs/utils/password'
 
 
 export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
@@ -11,7 +11,23 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
     }
     await connectDB()
     
-    const journal = await Journal.findOne({ _id: id, deleted: false }).select('-password')
+    const user = await findUserByCookie()
+    
+    const userQuery = user ?
+        {
+            $or: [
+                { public: true },
+                { uid: user._id.toString() }
+            ]
+        } :
+        {
+            public: true
+        }
+    
+    const journal = await Journal.findOne({ _id: id, deleted: false, ...userQuery }).select('-password')
+    if (!journal) {
+        return new Response(JSON.stringify({ error: 'Journal not found' }), { status: 404 })
+    }
     return NextResponse.json(journal, { status: 200 }) // 200 OK
 }
 
@@ -21,28 +37,18 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
         return new Response(JSON.stringify({ error: 'Missing journal ID' }), { status: 400 })
     }
     await connectDB()
-    
-    let password = ''
-    try {
-        password = req.headers.get('x-delete-journal-password') as string
-    } catch {
-        return new Response(JSON.stringify({ error: 'Password Required' }), { status: 400 })
+    const user = await findUserByCookie()
+    // noinspection DuplicatedCode
+    if (!user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
     }
     
-    if (!password) {
-        return new Response(JSON.stringify({ error: 'Password Required' }), { status: 400 })
-    }
-    
-    const journal = await Journal.findById(id).select('+password')
+    const journal = await Journal.findById(id)
     if (!journal) {
         return new Response(JSON.stringify({ error: 'Journal not found' }), { status: 404 })
     }
-    
-    const isMatch = await verifyPassword(password, journal.password)
-    
-    const adminKey = process.env.ADMIN_KEY || ''
-    if (!isMatch && password.trim() !== adminKey) {
-        return new Response(JSON.stringify({ error: 'Invalid password' }), { status: 401 })
+    if (journal.uid.toString() !== user._id.toString()) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
     }
     
     journal.deleted = true
@@ -56,54 +62,42 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
     if (!id) {
         return NextResponse.json({ error: 'Missing journal ID' }, { status: 400 })
     }
-    await connectDB()
-    
-    let password = ''
-    try {
-        password = req.headers.get('x-update-journal-password') as string
-    } catch {
-        return new Response(JSON.stringify({ error: 'Password Required' }), { status: 400 })
-    }
-    
     // noinspection DuplicatedCode
-    if (!password) {
-        return new Response(JSON.stringify({ error: 'Password Required' }), { status: 400 })
+    await connectDB()
+    const user = await findUserByCookie()
+    if (!user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
     }
     
-    const journal = await Journal.findById(id).select('+password')
+    const journal = await Journal.findById(id)
     if (!journal) {
         return new Response(JSON.stringify({ error: 'Journal not found' }), { status: 404 })
     }
-    
-    const isMatch = await verifyPassword(password, journal.password)
-    
-    const adminKey = process.env.ADMIN_KEY || ''
-    if (!isMatch && password.trim() !== adminKey) {
-        return new Response(JSON.stringify({ error: 'Invalid password' }), { status: 401 })
+    if (journal.uid.toString() !== user._id.toString()) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
     }
     
     const body = await req.json()
     
-    const { title, content, tags, author, subjects } = body
+    const { title, content, tags, author, subjects, public: isPublic } = body
     
     if (title) {
         journal.title = title
     }
-    
     if (content) {
         journal.content = content
     }
-    
     if (tags) {
         journal.tags = tags
     }
-    
     if (author) {
         journal.author = author
     }
-    
     if (subjects) {
         journal.subjects = subjects
+    }
+    if (isPublic !== undefined) {
+        journal.public = isPublic
     }
     
     await journal.save()

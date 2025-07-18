@@ -15,6 +15,7 @@ import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { useJournalWithObjects } from '@/hooks/use-journal-with-objects'
 import { useRouter } from 'next/navigation'
 import { SearchType } from '@/libs/constants/spotify.constant'
+import { useAccount } from '@/libs/utils/account'
 
 
 const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -24,6 +25,7 @@ const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
     const { data: album, isLoading: isAlbumLoading } = useGetAlbumQuery(id)
     const { data: ratingsData, isLoading: isRatingLoading } = useGetRatingsBySpotifyId(album?.id ?? '', 10)
     const { data: journalsData, isLoading: isJournalLoading } = useGetJournalsBySpotifyId(album?.id ?? '', 10)
+    const { me } = useAccount()
     
     const ratings = useMemo(() => {
         if (isRatingLoading) return []
@@ -115,6 +117,7 @@ const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
                                         imgUrl={album?.images[0].url ?? '/favicon.ico'}
                                         title={`${album?.name ?? ''}`}
                                         rating={rating}
+                                        showMyRating
                                     />
                                 )
                             })
@@ -142,6 +145,7 @@ const AlbumDetailWithIdPage = ({ params }: { params: Promise<{ id: string }> }) 
                                                 imgUrl={imgUrl ?? '/favicon.ico'}
                                                 title={journal.title}
                                                 subtitle={journal.author ?? 'Anonymous'}
+                                                showMyJournal={me?._id === journal.uid}
                                             />
                                         </div>
                                     )

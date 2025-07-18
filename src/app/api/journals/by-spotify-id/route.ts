@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { isEmpty } from 'lodash'
 import { connectDB } from '@/libs/api-server/mongoose'
 import { Journal } from '@/models/journal-schema.model'
+import { findUserByCookie } from '@/libs/utils/password'
 
 
 export const GET = async (req: NextRequest) => {
@@ -12,10 +13,24 @@ export const GET = async (req: NextRequest) => {
     
     await connectDB()
     
+    const user = await findUserByCookie()
+    
+    const userQuery = user ?
+        {
+            $or: [
+                { public: true },
+                { uid: user._id.toString() }
+            ]
+        } :
+        {
+            public: true
+        }
+    
     // 쿼리 조건 구성
     const baseQuery = {
         'subjects.spotifyId': spotifyId,
-        deleted: false
+        deleted: false,
+        ...userQuery
     }
     
     const query = cursor ?
