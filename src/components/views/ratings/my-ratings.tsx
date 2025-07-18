@@ -14,17 +14,22 @@ import { Rating } from '@/libs/interfaces/rating.interface'
 import { useInView } from 'react-intersection-observer'
 import { isEmpty, noop } from 'lodash'
 import { useRouter } from 'next/navigation'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { MakeRatingAtom } from '@/components/buttons/button-make-rating'
 import { useRatingHash } from '@/libs/utils/rating'
+import { useAccount } from '@/libs/utils/account'
+import { DialogLoginAtom } from '@/components/dialogs/dialog-login'
+import { AccountStatus } from '@/libs/constants/account.constant'
 
 
 export const MyRatings = () => {
     const appRouter = useRouter()
+    const { status } = useAccount()
     const [filterIndex, setFilterIndex] = useState(0)
     const [sortingIndex, setSortingIndex] = useState(0)
     const [newRatingOpen, setNewRatingOpen] = useState(false)
     const [makeRating, setMakeRating] = useAtom(MakeRatingAtom)
+    const setLoginDialogOpen = useSetAtom(DialogLoginAtom)
     
     const selectedFilter = useMemo(() => {
         switch (filterIndex) {
@@ -95,7 +100,19 @@ export const MyRatings = () => {
                 <div className='w-[1px] h-full bg-white md:flex hidden'/>
                 <SortingButtons sortingIndex={sortingIndex} setSortingIndexAction={setSortingIndex}/>
                 <div className='w-[1px] h-full bg-white md:flex hidden'/>
-                <Button.Box text='New Rating' leftIcon={PlusIcon} className='text-14-regular w-fit h-10' onClick={() => setNewRatingOpen(true)}/>
+                <Button.Box
+                    text='New Rating'
+                    leftIcon={PlusIcon}
+                    className='text-14-regular w-fit h-10'
+                    onClick={() => {
+                        if (status === AccountStatus.guest) {
+                            setLoginDialogOpen((prev) => (
+                                { ...prev, open: true }
+                            ))
+                        }
+                        setNewRatingOpen(true)
+                    }}
+                />
             </div>
             <div className='flex flex-col w-full'>
                 {

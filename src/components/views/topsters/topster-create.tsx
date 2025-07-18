@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { ResizableGridDefault } from '@/components/resizable-grid/resizeable-grid-default'
 import { SearchType } from '@/libs/constants/spotify.constant'
 import { Dialogs } from '@/components/dialogs'
@@ -11,6 +11,9 @@ import { Button } from '@/components/buttons'
 import { useRouter } from 'next/navigation'
 import { Topster } from '@/libs/interfaces/topster.interface'
 import { useAccount } from '@/libs/utils/account'
+import { useSetAtom } from 'jotai/index'
+import { DialogLoginAtom } from '@/components/dialogs/dialog-login'
+import { AccountStatus } from '@/libs/constants/account.constant'
 
 
 export interface TopsterItem {
@@ -27,7 +30,7 @@ export interface TopsterCreateProps {
 export const TopsterCreate = ({
     topster = null
 }: TopsterCreateProps) => {
-    const { me } = useAccount()
+    const { me, status } = useAccount()
     const appRouter = useRouter()
     const [title, setTitle] = useState<string>('')
     const [showTitle, setShowTitle] = useState<boolean>(true)
@@ -43,6 +46,7 @@ export const TopsterCreate = ({
         title: ''
     }))
     const [isPublic, setIsPublic] = useState<boolean>(false)
+    const setLoginDialogOpen = useSetAtom(DialogLoginAtom)
     
     useEffect(() => {
         if (!topster) return
@@ -100,8 +104,13 @@ export const TopsterCreate = ({
     }, [gridSize, items])
     
     const makeTopster = useCallback(async () => {
-        if (isPending) return
-        if (isEmpty(title)) return
+        if (isPending || isEmpty(title)) return
+        if (status === AccountStatus.guest) {
+            setLoginDialogOpen((prev) => (
+                { ...prev, open: true }
+            ))
+            return
+        }
         try {
             const itemNumber = gridSize * gridSize
             const res = await mutateAsync({

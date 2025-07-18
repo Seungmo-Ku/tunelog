@@ -15,6 +15,8 @@ import { Journal, Tags } from '@/libs/interfaces/journal.interface'
 import { Dialogs } from '@/components/dialogs'
 import { useAccount } from '@/libs/utils/account'
 import { AccountStatus } from '@/libs/constants/account.constant'
+import { useSetAtom } from 'jotai/index'
+import { DialogLoginAtom } from '@/components/dialogs/dialog-login'
 
 
 interface SelectedObjectProps {
@@ -42,6 +44,7 @@ export const CreatingComponent = ({
     const [selectedObjectId, setSelectedObjectId] = useState<string>('')
     const [selectedObject, setSelectedObject] = useState<SelectedObjectProps[]>([])
     const [openUpdateDialog, setOpenUpdateDialog] = useState<boolean>(false)
+    const setLoginDialogOpen = useSetAtom(DialogLoginAtom)
     
     useEffect(() => {
         if (!journal) return
@@ -66,7 +69,13 @@ export const CreatingComponent = ({
     const { mutateAsync, isPending } = usePostJournal()
     
     const handleClick = useCallback(async () => {
-        if (isEmpty(title) || isPending || isEmpty(selectedObject) || status === AccountStatus.guest) return
+        if (isEmpty(title) || isPending || isEmpty(selectedObject)) return
+        if (status === AccountStatus.guest) {
+            setLoginDialogOpen((prev) => (
+                { ...prev, open: true }
+            ))
+            return
+        }
         const html = editRef.current?.getHTML()
         if (isEmpty(html)) return
         const subjects = selectedObject.map(obj => {
@@ -86,7 +95,7 @@ export const CreatingComponent = ({
         if (res) {
             appRouter.replace(`/journals`)
         }
-    }, [appRouter, isPending, isPublic, me?.name, mutateAsync, selectedObject, status, tags, title])
+    }, [appRouter, isPending, isPublic, me?.name, mutateAsync, selectedObject, setLoginDialogOpen, status, tags, title])
     
     useEffect(() => {
         if (selectedObject.length > 0) {
@@ -209,6 +218,7 @@ export const CreatingComponent = ({
                             setOpenUpdateDialog(true)
                         }
                     }}
+                    disabled={isEmpty(title) || isPending || isEmpty(selectedObject)}
                 />
             </div>
             <TopSearchBar
