@@ -3,6 +3,7 @@ import ApiJournal from '@/libs/api/api-journal'
 import { JournalCreateRequest, JournalResponse, JournalUpdateRequest } from '@/libs/dto/journal.dto'
 import { DataConnection } from '@/libs/dto/rating.dto'
 import { isEmpty } from 'lodash'
+import { useAccount } from '@/libs/utils/account'
 
 
 export const useGetAllPublicJournals = (limit: number = 10) => {
@@ -17,8 +18,9 @@ export const useGetAllPublicJournals = (limit: number = 10) => {
     })
 }
 export const useGetMyJournals = (limit: number = 10) => {
+    const { status, me } = useAccount()
     return useInfiniteQuery<DataConnection<JournalResponse>, Error>({
-        queryKey: ['journal-my', limit],
+        queryKey: ['journal-my', status, me?._id ?? '', limit],
         queryFn: async ({ pageParam }) => {
             const cursor = typeof pageParam === 'string' ? pageParam : ''
             return await ApiJournal._get_my_journals(limit, cursor) ?? { data: [], nextCursor: undefined }
@@ -28,8 +30,9 @@ export const useGetMyJournals = (limit: number = 10) => {
     })
 }
 export const useGetJournal = (id: string) => {
+    const { status, me } = useAccount()
     return useQuery({
-        queryKey: ['journal', id],
+        queryKey: ['journal', status, me?._id ?? '', id],
         queryFn: () => ApiJournal._get_journal(id)
     })
 }
@@ -39,12 +42,15 @@ export const usePostJournal = () => {
         mutationFn: async (journal: JournalCreateRequest) => await ApiJournal._post_journal(journal),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['journal-all'] })
+            queryClient.invalidateQueries({ queryKey: ['journal-my'] })
+            queryClient.invalidateQueries({ queryKey: ['journal-by-spotify-id'] })
         }
     })
 }
 export const useGetJournalsBySpotifyId = (spotifyId: string, limit: number = 10) => {
+    const { status, me } = useAccount()
     return useInfiniteQuery<DataConnection<JournalResponse>, Error>({
-        queryKey: ['journal-by-spotify-id', spotifyId, limit],
+        queryKey: ['journal-by-spotify-id', status, me?._id ?? '', spotifyId, limit],
         queryFn: async ({ pageParam }) => {
             const cursor = typeof pageParam === 'string' ? pageParam : ''
             return await ApiJournal._get_journals_by_spotify_id(spotifyId, limit, cursor) ?? { data: [], nextCursor: undefined }

@@ -24,7 +24,9 @@ const topsterSchema = new mongoose.Schema({
     likes: { type: Number, default: 0 },
     replies: [replySchema],
     deleted: { type: Boolean, default: false },
-    password: { type: String, required: false, default: '' }
+    uid: { type: String, required: true },
+    public: { type: Boolean, default: false },
+    password: { type: String, required: false, default: '' } // TODO. 삭제
 }, { timestamps: true })
 
 export const Topster = mongoose.models.Topster || mongoose.model('Topster', topsterSchema)

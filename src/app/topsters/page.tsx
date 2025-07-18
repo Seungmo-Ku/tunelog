@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetAllTopsters } from '@/hooks/use-topster'
+import { useGetMyTopsters } from '@/hooks/use-topster'
 import { useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { Topster } from '@/libs/interfaces/topster.interface'
@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation'
 const TopstersPage = () => {
     
     const appRouter = useRouter()
-    const { data: topstersData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isTopsterLoading } = useGetAllTopsters(20)
+    const { data: topstersData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isTopsterLoading } = useGetMyTopsters(20)
     const topsters = useMemo(() => {
         if (isTopsterLoading) return []
         const topstersArray = topstersData?.pages.flatMap(page => page.data) ?? []

@@ -25,7 +25,6 @@ export interface IRating {
     likes?: number
     replies?: IReply[]
     deleted?: boolean
-    password?: string
     public?: boolean
     uid: string
 } // Rating

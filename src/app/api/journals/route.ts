@@ -37,6 +37,5 @@ export const POST = async (req: NextRequest) => {
     body.uid = user._id.toString()
     const newJournal = await Journal.create(body)
     const object = newJournal.toObject()
-    delete object.password
     return NextResponse.json(object, { status: 201 }) // 201 Created
 }

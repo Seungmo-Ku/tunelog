@@ -6,10 +6,6 @@ import { QueryClient } from '@tanstack/query-core'
 
 const invalidateQueries = (queryClient: QueryClient) => {
     queryClient.invalidateQueries({ queryKey: ['me'] })
-    queryClient.invalidateQueries({ queryKey: ['rating-my'] })
-    queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
-    queryClient.invalidateQueries({ queryKey: ['journal-my'] })
-    queryClient.invalidateQueries({ queryKey: ['journal'] })
 }
 
 export const useGetMe = () => {

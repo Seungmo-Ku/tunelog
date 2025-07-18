@@ -27,7 +27,8 @@ export interface ITopster {
     deleted?: boolean,
     createdAt: Date,
     updatedAt: Date,
-    password?: string
+    uid: string,
+    public?: boolean
 }
 
 export class Topster implements ITopster {
@@ -44,6 +45,8 @@ export class Topster implements ITopster {
     deleted?: boolean
     createdAt: Date
     updatedAt: Date
+    uid: string
+    public?: boolean
     
     constructor(data: Partial<ITopster>) {
         this._id = data._id || ''
@@ -59,5 +62,7 @@ export class Topster implements ITopster {
         this.deleted = data.deleted || false
         this.createdAt = data.createdAt || new Date()
         this.updatedAt = data.updatedAt || new Date()
+        this.uid = data.uid || ''
+        this.public = data.public || false
     }
 }

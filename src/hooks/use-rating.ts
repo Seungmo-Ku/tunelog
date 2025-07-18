@@ -41,8 +41,9 @@ export const usePostRating = () => {
     })
 }
 export const useGetRatingsBySpotifyId = (spotifyId: string, limit: number = 10) => {
+    const { status, me } = useAccount()
     return useInfiniteQuery<DataConnection<RatingResponse>, Error>({
-        queryKey: ['rating-by-spotify-id', spotifyId, limit],
+        queryKey: ['rating-by-spotify-id', status, me?._id ?? '', spotifyId, limit],
         queryFn: async ({ pageParam }) => {
             const cursor = typeof pageParam === 'string' ? pageParam : ''
             return await ApiRating._get_ratings_by_spotify_id(spotifyId, limit, cursor) ?? { data: [], nextCursor: undefined }

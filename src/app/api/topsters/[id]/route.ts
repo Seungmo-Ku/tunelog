@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { connectDB } from '@/libs/api-server/mongoose'
 import { Topster } from '@/models/topster-schema.model'
-import { verifyPassword } from '@/libs/utils/password'
+import { findUserByCookie } from '@/libs/utils/password'
 
 
 export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
@@ -11,7 +11,20 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
     }
     await connectDB()
     
-    const topster = await Topster.findOne({ _id: id, deleted: false }).select('-password')
+    const user = await findUserByCookie()
+    
+    const userQuery = user ?
+        {
+            $or: [
+                { public: true },
+                { uid: user._id.toString() }
+            ]
+        } :
+        {
+            public: true
+        }
+    
+    const topster = await Topster.findOne({ _id: id, deleted: false, ...userQuery }).select('-password')
     return NextResponse.json(topster, { status: 200 }) // 200 OK
 }
 
@@ -21,28 +34,18 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
         return new Response(JSON.stringify({ error: 'Missing topster ID' }), { status: 400 })
     }
     await connectDB()
-    
-    let password = ''
-    try {
-        password = req.headers.get('x-delete-topster-password') as string
-    } catch {
-        return new Response(JSON.stringify({ error: 'Password Required' }), { status: 400 })
+    const user = await findUserByCookie()
+    // noinspection DuplicatedCode
+    if (!user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
     }
     
-    if (!password) {
-        return new Response(JSON.stringify({ error: 'Password Required' }), { status: 400 })
-    }
-    
-    const topster = await Topster.findById(id).select('+password')
+    const topster = await Topster.findById(id)
     if (!topster) {
         return new Response(JSON.stringify({ error: 'Topster not found' }), { status: 404 })
     }
-    
-    const isMatch = await verifyPassword(password, topster.password)
-    
-    const adminKey = process.env.ADMIN_KEY || ''
-    if (!isMatch && password.trim() !== adminKey) {
-        return new Response(JSON.stringify({ error: 'Invalid password' }), { status: 401 })
+    if (topster.uid.toString() !== user._id.toString()) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
     }
     
     topster.deleted = true
@@ -57,34 +60,22 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
         return NextResponse.json({ error: 'Missing topster ID' }, { status: 400 })
     }
     await connectDB()
-    
-    let password = ''
-    try {
-        password = req.headers.get('x-update-topster-password') as string
-    } catch {
-        return new Response(JSON.stringify({ error: 'Password Required' }), { status: 400 })
-    }
-    
-    // noinspection DuplicatedCode
-    if (!password) {
-        return new Response(JSON.stringify({ error: 'Password Required' }), { status: 400 })
+    const user = await findUserByCookie()
+    if (!user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
     }
     
     const topster = await Topster.findById(id).select('+password')
     if (!topster) {
         return new Response(JSON.stringify({ error: 'Topster not found' }), { status: 404 })
     }
-    
-    const isMatch = await verifyPassword(password, topster.password)
-    
-    const adminKey = process.env.ADMIN_KEY || ''
-    if (!isMatch && password.trim() !== adminKey) {
-        return new Response(JSON.stringify({ error: 'Invalid password' }), { status: 401 })
+    if (topster.uid.toString() !== user._id.toString()) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
     }
     
     const body = await req.json()
     
-    const { title, components, size, author, showTitles, showTypes } = body
+    const { title, components, size, author, showTitles, showTypes, public: isPublic } = body
     
     if (title) {
         topster.title = title
@@ -108,6 +99,9 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
     
     if (showTypes !== undefined) {
         topster.showTypes = showTypes
+    }
+    if (isPublic !== undefined) {
+        topster.public = isPublic
     }
     
     topster.isEdited = true

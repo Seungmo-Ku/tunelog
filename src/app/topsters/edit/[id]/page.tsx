@@ -15,6 +15,13 @@ const TopsterEditPage = ({ params }: { params: Promise<{ id: string }> }) => {
             </div>
         )
     }
+    if (!topster) {
+        return (
+            <div className='flex items-center justify-center w-full h-full text-white'>
+                <p>Topster not found</p>
+            </div>
+        )
+    }
     return (
         <div className='flex flex-col w-full h-full overflow-y-auto hide-sidebar text-white'>
             <TopsterCreate topster={isLoading ? null : topster}/>
