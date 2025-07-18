@@ -34,7 +34,7 @@ export const POST = async (req: NextRequest) => {
         .setIssuedAt()
         .setExpirationTime('1h')
         .sign(new TextEncoder().encode(process.env.JWT_SECRET))
-    const response = new Response(JSON.stringify({ message: 'Login and register successful' }), { status: 200 })
+    const response = new Response(JSON.stringify({ message: 'Login successful' }), { status: 200 })
     response.headers.set('Set-Cookie', `auth=${token}; HttpOnly; Path=/; Max-Age=3600`)
     return response
 }
