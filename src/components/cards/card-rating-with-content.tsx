@@ -27,6 +27,7 @@ export const CardRatingWithContent = ({
     ...props
 }: CardRatingWithContentProps) => {
     const [deleteRatingOpen, setDeleteRatingOpen] = useState<boolean>(false)
+    const [editRatingOpen, setEditRatingOpen] = useState<boolean>(false)
     const { status, me } = useAccount()
     const ratingsComponent = (
         <Menu>
@@ -45,6 +46,13 @@ export const CardRatingWithContent = ({
                     setDeleteRatingOpen(true)
                 }}>
                     Delete
+                </div>
+                <div className='w-full flex flex-col gap-y-1 items-start text-white cursor-pointer' onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setEditRatingOpen(true)
+                }}>
+                    Edit
                 </div>
             </MenuItems>
         </Menu>
@@ -89,6 +97,7 @@ export const CardRatingWithContent = ({
                     e.stopPropagation()
                 }}>
                 <Dialogs.MutationObject open={deleteRatingOpen} onCloseAction={() => setDeleteRatingOpen(false)} object={rating}/>
+                <Dialogs.EditRating open={editRatingOpen} onCloseAction={() => setEditRatingOpen(false)} rating={rating}/>
             </div>
         </div>
     )

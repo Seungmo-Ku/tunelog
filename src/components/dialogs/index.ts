@@ -4,6 +4,7 @@ import { DialogMutationObject } from '@/components/dialogs/dialog-mutation-objec
 import { DialogLogin } from '@/components/dialogs/dialog-login'
 import { DialogRegister } from '@/components/dialogs/dialog-register'
 import { DialogLogout } from '@/components/dialogs/dialog-logout'
+import { DialogEditRating } from '@/components/dialogs/dialog-edit-rating'
 
 
 export const Dialogs = {
@@ -12,5 +13,6 @@ export const Dialogs = {
     MutationObject: DialogMutationObject,
     Login: DialogLogin,
     Register: DialogRegister,
-    Logout: DialogLogout
+    Logout: DialogLogout,
+    EditRating: DialogEditRating
 }

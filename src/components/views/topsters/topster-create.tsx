@@ -151,7 +151,7 @@ export const TopsterCreate = ({
             console.error('Error creating topster:', e)
             return
         }
-    }, [appRouter, gridSize, isPending, isPublic, items, me?.name, mutateAsync, showTitle, showType, title])
+    }, [appRouter, gridSize, isPending, isPublic, items, me?.name, mutateAsync, setLoginDialogOpen, showTitle, showType, status, title])
     
     return (
         <div className='w-full flex md:flex-row flex-col gap-3 overflow-y-auto hide-sidebar'>
