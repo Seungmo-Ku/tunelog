@@ -103,7 +103,7 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                 <div className='flex flex-col gap-y-2.5'>
                     <h1 className='text-36-bold text-[#A4C7C6]'>{topster?.title ?? ''}</h1>
                     <p className='text-14-regular text-[#EFEEE0]'>{`Made By ${topster?.author ?? ''}`}</p>
-                    <p className='text-14-regular text-[#EFEEE0]'>{`Created At ${new Date(topster?.createdAt ?? 0).toLocaleDateString() ?? ''}`}</p>
+                    <p className='text-14-regular text-[#EFEEE0]'>{`Created At ${new Date(topster?.createdAt ?? 0).toLocaleDateString() ?? ''} | ${topster?.public ? 'Public' : 'Private'}`}</p>
                 </div>
                 {
                     isOwner && (
