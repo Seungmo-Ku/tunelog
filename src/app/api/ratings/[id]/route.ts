@@ -28,3 +28,35 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
     
     return NextResponse.json({ message: 'Rating deleted successfully' }, { status: 200 })
 }
+
+export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+    const { id } = await params
+    if (!id) {
+        return NextResponse.json({ error: 'Missing rating ID' }, { status: 400 })
+    }
+    await connectDB()
+    const user = await findUserByCookie()
+    if (!user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    
+    const rating = await Rating.findById(id)
+    if (!rating) {
+        return NextResponse.json({ error: 'Rating not found' }, { status: 404 })
+    }
+    
+    if (rating.uid.toString() !== user._id.toString()) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    
+    const body = await req.json()
+    
+    const { public: isPublic } = body
+    if (isPublic !== undefined) {
+        rating.public = isPublic
+    }
+    rating.isEdited = true
+    await rating.save()
+    
+    return NextResponse.json(rating, { status: 200 })
+}

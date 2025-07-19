@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Rating } from '@/libs/interfaces/rating.interface'
-import { DataConnection, RatingCreateRequest, RatingResponse } from '@/libs/dto/rating.dto'
+import { DataConnection, RatingCreateRequest, RatingResponse, RatingUpdateRequest } from '@/libs/dto/rating.dto'
 import { RatingQueryType, RatingSortType } from '@/libs/constants/rating.constant'
 
 
@@ -68,6 +68,15 @@ const ApiRating = {
             return response.status === 200
         } catch {
             return false
+        }
+    },
+    _edit_rating: async (id: string, rating: RatingUpdateRequest): Promise<Rating | null> => {
+        try {
+            const { data } = await axios.patch<RatingResponse>(`/api/ratings/${id}`, rating)
+            if (!data) return null
+            return new Rating(data)
+        } catch {
+            return null
         }
     }
 }
