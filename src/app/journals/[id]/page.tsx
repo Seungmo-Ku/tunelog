@@ -9,7 +9,7 @@ import { isEmpty } from 'lodash'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/buttons'
 import { Dialogs } from '@/components/dialogs'
-import { Delete, Pencil } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { useIsOwner } from '@/libs/utils/account'
 
 
@@ -42,7 +42,7 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     
     const isLoading = useMemo(() => isJournalLoading || isAlbumLoading || isArtistLoading || isTrackLoading, [isJournalLoading, isAlbumLoading, isArtistLoading, isTrackLoading])
     
-    const deleteComponent = useMemo(() => <Delete className='text-tunelog-secondary w-4 h-4 shrink-0'/>, [])
+    const deleteComponent = useMemo(() => <Trash2 className='text-tunelog-secondary w-4 h-4 shrink-0'/>, [])
     const editComponent = useMemo(() => <Pencil className='text-tunelog-secondary w-4 h-4 shrink-0'/>, [])
     
     const isOwner = useIsOwner(journal?.uid)
