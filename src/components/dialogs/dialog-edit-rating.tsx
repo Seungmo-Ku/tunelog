@@ -54,7 +54,7 @@ export const DialogEditRating = ({
                 <DialogPanel className='w-3/4 space-y-4 bg-[#33373B] text-white md:p-12 p-4 rounded-2xl flex flex-col'>
                     <DialogTitle className='font-bold'>{`Edit Rating`}</DialogTitle>
                     <div className='flex flex-col gap-y-2'>
-                        <p className='text-white'>{isPublic ? 'Set the rating visible to everyone' : 'Set the rating personal'}</p>
+                        <p className='text-white'>{isPublic ? 'Public rating (visible to everyone)' : 'Private rating (only visible to you)'}</p>
                         <Switch
                             checked={isPublic}
                             onChange={setIsPublic}
