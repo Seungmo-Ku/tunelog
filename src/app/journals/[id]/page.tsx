@@ -60,7 +60,7 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
             <div className='w-full flex flex-col gap-y-3'>
                 <h1 className='text-24-semibold'>{journal?.title}</h1>
                 <p className='text-14-regular'>{`Written By ${journal?.author ?? ''}`}</p>
-                <p className='text-14-regular'>{`Created At ${new Date(journal?.createdAt ?? '').toLocaleDateString()}`}</p>
+                <p className='text-14-regular'>{`Created At ${new Date(journal?.createdAt ?? '').toLocaleDateString()} | ${journal?.public ? 'Public' : 'Private'}`}</p>
                 {(journal?.updatedAt ?? 0) > (journal?.createdAt ?? 0) && <p className='text-14-regular'>{`Updated At ${new Date(journal?.updatedAt ?? '').toLocaleDateString()}`}</p>}
             </div>
             <div className='flex gap-x-3 overflow-x-auto hide-sidebar shrink-0 items-start'>
