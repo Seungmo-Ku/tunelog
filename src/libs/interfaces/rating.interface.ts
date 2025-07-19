@@ -65,6 +65,7 @@ export class Rating implements IRating {
     replies?: IReply[]
     deleted?: boolean
     uid: string
+    public?: boolean
     
     constructor(rating: IRating) {
         this._id = rating._id
@@ -80,5 +81,6 @@ export class Rating implements IRating {
         this.replies = rating.replies?.map(reply => new Reply(reply)) || []
         this.deleted = rating.deleted || false
         this.uid = rating.uid || ''
+        this.public = rating.public || false
     }
 }
