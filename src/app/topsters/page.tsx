@@ -6,8 +6,9 @@ import { useInView } from 'react-intersection-observer'
 import { Topster } from '@/libs/interfaces/topster.interface'
 import { Cards } from '@/components/cards'
 import { Button } from '@/components/buttons'
-import { Plus } from 'lucide-react'
+import { LayoutGrid, Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { isEmpty } from 'lodash'
 
 
 const TopstersPage = () => {
@@ -33,6 +34,15 @@ const TopstersPage = () => {
         <div className='text-white w-full h-full flex flex-col gap-y-10 overflow-y-auto hide-sidebar'>
             <Button.Box text='New Topster' leftIcon={PlusIcon} className='text-14-regular w-fit h-10' onClick={() => appRouter.push('/topsters/create')}/>
             <div className='w-full flex flex-col gap-y-2.5'>
+                {isEmpty(topsters) && !isTopsterLoading && (
+                    <div className='flex flex-col items-center justify-center w-full py-20 text-center gap-y-4'>
+                        <LayoutGrid className='w-10 h-10 text-white'/>
+                        <div className='flex flex-col gap-y-1'>
+                            <p className='text-16-bold'>No Topsters yet</p>
+                            <p className='text-14-regular text-tunelog-secondary'>Create your own Topster and share it with others!</p>
+                        </div>
+                    </div>
+                )}
                 {topsters.map(topster => (
                     <Cards.Topster
                         key={topster._id}
