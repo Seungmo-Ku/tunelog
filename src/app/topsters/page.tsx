@@ -36,7 +36,7 @@ const TopstersPage = () => {
             <div className='w-full flex flex-col gap-y-2.5'>
                 {isEmpty(topsters) && !isTopsterLoading && (
                     <div className='flex flex-col items-center justify-center w-full py-20 text-center gap-y-4'>
-                        <LayoutGrid className='w-10 h-10'/>
+                        <LayoutGrid className='w-10 h-10 text-white'/>
                         <div className='flex flex-col gap-y-1'>
                             <p className='text-16-bold'>No Topsters yet</p>
                             <p className='text-14-regular text-tunelog-secondary'>Create your own Topster and share it with others!</p>
