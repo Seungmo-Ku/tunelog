@@ -15,7 +15,6 @@ const apiTopster = {
             if (!data) return null
             return data
         } catch (e) {
-            console.error('ApiTopster._get_my_topsters', e)
             return null
         }
     },
