@@ -10,7 +10,7 @@ import { isEmpty } from 'lodash'
 import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/buttons'
-import { Plus } from 'lucide-react'
+import { BookText, Plus } from 'lucide-react'
 
 
 export const MyJournals = () => {
@@ -60,6 +60,17 @@ export const MyJournals = () => {
                                 <Cards.BigSkeleton key={`AllJournals-Skeleton-${index}`}/>
                             ))
                         }
+                    </div>
+                )
+            }
+            {
+                !isJournalLoading && isEmpty(sortedEntries) && (
+                    <div className='flex flex-col items-center justify-center w-full py-20 text-center gap-y-4'>
+                        <BookText className='w-10 h-10 text-white'/>
+                        <div className='flex flex-col gap-y-1'>
+                            <p className='text-16-bold text-white'>No journals yet</p>
+                            <p className='text-14-regular text-tunelog-secondary'>Write your first journal about your favorite music!</p>
+                        </div>
                     </div>
                 )
             }
