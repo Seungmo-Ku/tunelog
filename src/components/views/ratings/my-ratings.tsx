@@ -92,7 +92,6 @@ export const MyRatings = () => {
     
     const PlusIcon = useMemo(() => <Plus className='w-5 h-5 text-tunelog-secondary'/>, [])
     
-    //TODO. Rating 용 검색창 따로 만들기, grid 는 journal 탭에서 사용, rating 에서는 가로로 긴 컴포넌트에 누르면 disclosure 같은 거 사용
     return (
         <div className='flex flex-col gap-y-10 relative w-full overflow-x-hidden'>
             <div className='w-full flex md:flex-row flex-col  gap-x-5 gap-y-4'>
@@ -116,10 +115,18 @@ export const MyRatings = () => {
             </div>
             <div className='flex flex-col w-full'>
                 {
-                    isRatingLoading && isEmpty(ratings) &&
-                    Array.from({ length: 5 }).map((_, index) => (
-                        <Cards.LongSkeleton key={`AllRatings-Skeleton-${index}`}/>
-                    ))
+                    isEmpty(ratings) && (
+                        isRatingLoading ?
+                        Array.from({ length: 5 }).map((_, index) => (
+                            <Cards.LongSkeleton key={`AllRatings-Skeleton-${index}`}/>
+                        )) :
+                        <div className='flex flex-col items-center justify-center w-full py-20 text-center gap-y-4'>
+                            <div className='flex flex-col gap-y-1'>
+                                <p className='text-16-bold text-white'>No ratings yet</p>
+                                <p className='text-14-regular text-tunelog-secondary'>Leave a rating for your favorite music!</p>
+                            </div>
+                        </div>
+                    )
                 }
                 {
                     !isRatingLoading && !isEmpty(ratings) &&
