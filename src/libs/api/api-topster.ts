@@ -14,7 +14,7 @@ const apiTopster = {
             const { data } = await axios.get<DataConnection<TopsterResponse>>(`/api/topsters/my?${params.toString()}`)
             if (!data) return null
             return data
-        } catch (e) {
+        } catch {
             return null
         }
     },
