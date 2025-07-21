@@ -14,7 +14,6 @@ const ApiCommunity = {
             if (nextCursor) params.append('cursor', nextCursor)
 
             const { data } = await axios.get<DataConnection<CommunityResponse>>(`/api/community?${params.toString()}`)
-            console.log('data: ', data)
             if (!data) return null
             return data
         } catch {

@@ -4,6 +4,6 @@ import { ITopster } from '@/libs/interfaces/topster.interface'
 
 
 export interface CommunityResponse {
-    type: 'rating' | 'journal' | 'topster'
+    itemType: 'rating' | 'journal' | 'topster'
     item: IRating | IJournal | ITopster
 }

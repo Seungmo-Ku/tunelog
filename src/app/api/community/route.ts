@@ -31,14 +31,14 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
     if (type === 'all') {
         const pipeline: PipelineStage[] = [
             { $match: finalQuery },
-            { $addFields: { type: 'rating' } },
+            { $addFields: { itemType: 'rating' } },
             { $project: { password: 0 } },
             {
                 $unionWith: {
                     coll: 'journals',
                     pipeline: [
                         { $match: finalQuery },
-                        { $addFields: { type: 'journal' } },
+                        { $addFields: { itemType: 'journal' } },
                         { $project: { password: 0 } }
                     ]
                 }
@@ -48,7 +48,7 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
                     coll: 'topsters',
                     pipeline: [
                         { $match: finalQuery },
-                        { $addFields: { type: 'topster' } },
+                        { $addFields: { itemType: 'topster' } },
                         { $project: { password: 0 } }
                     ]
                 }
@@ -58,8 +58,8 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
         ]
         
         results = await Rating.aggregate(pipeline)
-        results = results.map(({ type, ...rest }) => ({
-            type,
+        results = results.map(({ itemType, ...rest }) => ({
+            itemType,
             item: { ...rest }
         }))
     } else {
@@ -83,7 +83,7 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
                                     .limit(limit)
                                     .lean()
             
-            results = data.map((object) => ({ type, item: object }))
+            results = data.map((object) => ({ itemType: type, item: object }))
         }
     }
     
