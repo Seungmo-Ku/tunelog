@@ -22,7 +22,7 @@ export const navbarMainComponents: NavbarComponentProps[] = [
     { Icon: ListMusic, path: '/ratings' },
     { Icon: NotebookPen, path: '/journals' },
     { Icon: GalleryVerticalEnd, path: '/topsters' },
-    { Icon: MessageCircleHeart, path: '/community'}
+    { Icon: MessageCircleHeart, path: '/community' }
 ]
 export const navbarDetailComponents: NavbarComponentProps[] = [
     { Icon: DiscAlbum, path: '/detail/album' },
