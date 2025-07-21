@@ -111,7 +111,7 @@ export const CardCommunityItem = ({ item, ...props }: CardCommunityItemProps) =>
                             topster.components.slice(0, 3).map(component => {
                                 return (
                                     <div key={component.spotifyId} className='flex items-center gap-x-2'>
-                                        <img src={component.imageUrl} alt={component.title} className='w-10 h-10 rounded'/>
+                                        <img src={component.imageUrl ?? '/favicon.ico'} alt={component.title} className='w-10 h-10 rounded'/>
                                         <span className='text-white text-14-regular line-clamp-1'>{component.title}</span>
                                     </div>
                                 )
