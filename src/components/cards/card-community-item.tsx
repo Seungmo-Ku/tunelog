@@ -152,7 +152,7 @@ export const CardCommunityItem = ({ item, ...props }: CardCommunityItemProps) =>
             }}
         >
             <div className='relative w-full h-48 bg-gray-200'>
-                <img src={imageUrl} alt={title} className='object-cover w-full h-full'/>
+                <img src={imageUrl ?? '/favicon.ico'} alt={title} className='object-cover w-full h-full'/>
             </div>
             
             <div className='flex flex-col flex-grow p-4 bg-tunelog-dark-alt'>
