@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo } from 'react'
-import { LogIn, LogOut } from 'lucide-react'
+import { LogIn, User } from 'lucide-react'
 import { AccountStatus } from '@/libs/constants/account.constant'
 import { useAccount } from '@/libs/utils/account'
 import { useSetAtom } from 'jotai/index'
@@ -36,7 +36,7 @@ export const useNavbarAuth = () => {
             title: 'Log In'
         },
         {
-            Icon: LogOut,
+            Icon: User,
             show: status !== AccountStatus.guest,
             onClick: () => {
                 openDialogLogout(prev => ({

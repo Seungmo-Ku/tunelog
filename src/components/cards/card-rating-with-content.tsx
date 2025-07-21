@@ -27,6 +27,7 @@ export const CardRatingWithContent = ({
     ...props
 }: CardRatingWithContentProps) => {
     const [deleteRatingOpen, setDeleteRatingOpen] = useState<boolean>(false)
+    const [editRatingOpen, setEditRatingOpen] = useState<boolean>(false)
     const { status, me } = useAccount()
     const ratingsComponent = (
         <Menu>
@@ -45,6 +46,13 @@ export const CardRatingWithContent = ({
                     setDeleteRatingOpen(true)
                 }}>
                     Delete
+                </div>
+                <div className='w-full flex flex-col gap-y-1 items-start text-white cursor-pointer' onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setEditRatingOpen(true)
+                }}>
+                    Edit
                 </div>
             </MenuItems>
         </Menu>
@@ -75,7 +83,7 @@ export const CardRatingWithContent = ({
             <div className='w-full flex flex-col bg-[#33373B] overflow-hidden rounded-b-[15px] p-[10px] text-white text-13-regular gap-y-1'>
                 <span className='whitespace-pre-line break-keep text-left'>{rating.comment}</span>
                 <p className='space-x-1'>
-                    <span className='text-12-regular text-left'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anynomous'}`}</span>
+                    <span className='text-12-regular text-left'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anonymous'} | ${rating?.public ? 'Public' : 'Private'}`}</span>
                     {showMyRating && isMyRating && (
                         <span className='text-12-bold text-tunelog-secondary'>My Rating</span>
                     )}
@@ -89,6 +97,7 @@ export const CardRatingWithContent = ({
                     e.stopPropagation()
                 }}>
                 <Dialogs.MutationObject open={deleteRatingOpen} onCloseAction={() => setDeleteRatingOpen(false)} object={rating}/>
+                <Dialogs.EditRating open={editRatingOpen} onCloseAction={() => setEditRatingOpen(false)} rating={rating}/>
             </div>
         </div>
     )

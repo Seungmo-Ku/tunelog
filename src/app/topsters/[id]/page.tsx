@@ -7,7 +7,7 @@ import { ResizableGridDefault } from '@/components/resizable-grid/resizeable-gri
 import { useRouter } from 'next/navigation'
 import html2canvas from 'html2canvas'
 import { Button } from '@/components/buttons'
-import { Delete, Pencil } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { Dialogs } from '@/components/dialogs'
 import { useIsOwner } from '@/libs/utils/account'
 
@@ -88,7 +88,7 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     
     const gridSize = useMemo(() => topster ? topster.size : 0, [topster])
     
-    const deleteComponent = useMemo(() => <Delete className='text-tunelog-secondary w-4 h-4 shrink-0'/>, [])
+    const deleteComponent = useMemo(() => <Trash2 className='text-tunelog-secondary w-4 h-4 shrink-0'/>, [])
     const editComponent = useMemo(() => <Pencil className='text-tunelog-secondary w-4 h-4 shrink-0'/>, [])
     
     if (isLoading) {
@@ -103,7 +103,7 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                 <div className='flex flex-col gap-y-2.5'>
                     <h1 className='text-36-bold text-[#A4C7C6]'>{topster?.title ?? ''}</h1>
                     <p className='text-14-regular text-[#EFEEE0]'>{`Made By ${topster?.author ?? ''}`}</p>
-                    <p className='text-14-regular text-[#EFEEE0]'>{`Created At ${new Date(topster?.createdAt ?? 0).toLocaleDateString() ?? ''}`}</p>
+                    <p className='text-14-regular text-[#EFEEE0]'>{`Created At ${new Date(topster?.createdAt ?? 0).toLocaleDateString() ?? ''} | ${topster?.public ? 'Public' : 'Private'}`}</p>
                 </div>
                 {
                     isOwner && (
