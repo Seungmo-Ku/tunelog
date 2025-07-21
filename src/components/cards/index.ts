@@ -10,6 +10,8 @@ import { CardTopster } from '@/components/cards/card-topster'
 import { CardTopsterSkeleton } from '@/components/cards/card-topster-skeleton'
 import { CardRatingWithContent } from '@/components/cards/card-rating-with-content'
 import { CardRatingWithContentSkeleton } from '@/components/cards/card-rating-with-content-skeleton'
+import { CardCommunityItem } from '@/components/cards/card-community-item'
+import { CardCommunityItemSkeleton } from '@/components/cards/card-community-item-skeleton'
 
 
 export const Cards = {
@@ -24,5 +26,7 @@ export const Cards = {
     Topster: CardTopster,
     TopsterSkeleton: CardTopsterSkeleton,
     RatingWithContent: CardRatingWithContent,
-    RatingWithContentSkeleton: CardRatingWithContentSkeleton
+    RatingWithContentSkeleton: CardRatingWithContentSkeleton,
+    CommunityItem: CardCommunityItem,
+    CommunityItemSkeleton: CardCommunityItemSkeleton
 }
