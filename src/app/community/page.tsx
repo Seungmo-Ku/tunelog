@@ -17,7 +17,6 @@ import { Star } from 'lucide-react'
 const CommunityPage = () => {
     const [filterIndex, setFilterIndex] = useState(0)
     const [sortingIndex, setSortingIndex] = useState(0)
-    
     const selectedFilter = useMemo(() => {
         switch (filterIndex) {
             case 0:
@@ -41,6 +40,20 @@ const CommunityPage = () => {
                 return 'oldest'
         }
     }, [sortingIndex])
+    
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const hash = window.location.hash.substring(1)
+            if (hash) {
+                const params = new URLSearchParams(hash)
+                const filter = parseInt(params.get('initialFilter') ?? '0') ?? 0
+                if (!isNaN(filter)) {
+                    setFilterIndex(filter)
+                    history.replaceState(null, '', window.location.pathname)
+                }
+            }
+        }
+    }, [])
     
     const { data: communityItemsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useGetCommunityItems(20, selectedFilter, selectedSorting)
     
