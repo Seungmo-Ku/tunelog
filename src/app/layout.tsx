@@ -10,6 +10,7 @@ import Navbar from '@/components/navigation-bar/navitaion-bar-default'
 import { Toaster } from 'react-hot-toast'
 import { Dialogs } from '@/components/dialogs'
 import './i18n'
+import { useTranslation } from 'react-i18next'
 
 
 const quicksand = Quicksand({
@@ -23,6 +24,13 @@ export default function RootLayout({
     children: React.ReactNode
 }>) {
     const [queryClient] = useState(() => new QueryClient())
+    const { i18n } = useTranslation()
+    
+    useEffect(() => {
+        const savedLang = localStorage.getItem('appLanguage') || 'en'
+        i18n.changeLanguage(savedLang)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
     
     useEffect(() => {
         function setViewportHeight() {
