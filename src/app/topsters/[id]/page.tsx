@@ -10,11 +10,13 @@ import { Button } from '@/components/buttons'
 import { Pencil, Trash2 } from 'lucide-react'
 import { Dialogs } from '@/components/dialogs'
 import { useIsOwner } from '@/libs/utils/account'
+import { useTranslation } from 'react-i18next'
 
 
 const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     const { id } = React.use(params)
     const appRouter = useRouter()
+    const { t } = useTranslation()
     const { data: topster, isLoading } = useGetTopster(id)
     const topsterRef = useRef<HTMLDivElement>(null)
     
@@ -102,23 +104,23 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
             <div className='flex md:flex-row flex-col md:justify-between items-start gap-2'>
                 <div className='flex flex-col gap-y-2.5'>
                     <h1 className='text-36-bold text-[#A4C7C6]'>{topster?.title ?? ''}</h1>
-                    <p className='text-14-regular text-[#EFEEE0]'>{`Made By ${topster?.author ?? ''}`}</p>
-                    <p className='text-14-regular text-[#EFEEE0]'>{`Created At ${new Date(topster?.createdAt ?? 0).toLocaleDateString() ?? ''} | ${topster?.public ? 'Public' : 'Private'}`}</p>
+                    <p className='text-14-regular text-[#EFEEE0]'>{`By ${topster?.author ?? ''}`}</p>
+                    <p className='text-14-regular text-[#EFEEE0]'>{`${t('keywords.created')} ${new Date(topster?.createdAt ?? 0).toLocaleDateString() ?? ''} | ${topster?.public ? t('keywords.public') : t('keywords.private')}`}</p>
                 </div>
                 {
                     isOwner && (
                         <div className='flex overflow-x-auto hide-sidebar gap-x-2'>
                             <Button.Box
-                                text='Save as Image'
+                                text={t('topsters.save_as_image')}
                                 onClick={handleSaveAsImage}
                             />
                             <Button.Box
-                                text='Delete'
+                                text={t('keywords.delete')}
                                 onClick={() => setDeleteDialogOpen(true)}
                                 leftIcon={deleteComponent}
                             />
                             <Button.Box
-                                text='Edit'
+                                text={t('keywords.edit')}
                                 onClick={() => {
                                     appRouter.push(`/topsters/edit/${id}`)
                                 }}

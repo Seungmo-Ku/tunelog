@@ -8,6 +8,7 @@ import { useGetAlbumQuery, useGetArtistQuery, useGetTrackQuery } from '@/hooks/u
 import { Button } from '@/components/buttons'
 import { isEmpty } from 'lodash'
 import { TopsterItem } from '@/components/views/topsters/topster-create'
+import { useTranslation } from 'react-i18next'
 
 
 interface DialogTopsterItemProps {
@@ -23,6 +24,7 @@ export const DialogTopsterItem = ({
     index,
     setItemsAction
 }: DialogTopsterItemProps) => {
+    const { t } = useTranslation()
     const [selectedObjectId, setSelectedObjectId] = useState<string>('')
     const [selectedType, setSelectedType] = useState<SearchType | null>(null)
     
@@ -55,7 +57,7 @@ export const DialogTopsterItem = ({
         <Dialog transition open={open} onClose={onCloseAction} className='relative z-50 transition duration-300 ease-out data-closed:opacity-0'>
             <div className='fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/50'>
                 <DialogPanel className='w-3/4 space-y-4 bg-[#33373B] text-white md:p-12 p-4 rounded-2xl flex flex-col'>
-                    <DialogTitle className='font-bold'>Add Items</DialogTitle>
+                    <DialogTitle className='font-bold'>{t('topsters.create.add_item')}</DialogTitle>
                     {objectImage}
                     <TopSearchBar
                         onAlbumClick={() => {
@@ -71,7 +73,7 @@ export const DialogTopsterItem = ({
                         className={''}
                     />
                     <Button.Box
-                        text='Add Item'
+                        text={t('topsters.create.add_item')}
                         disabled={isEmpty(selectedObjectId)}
                         onClick={() => {
                             setItemsAction((prev) => {

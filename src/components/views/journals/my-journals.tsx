@@ -11,10 +11,11 @@ import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/buttons'
 import { BookText, Plus } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 
 export const MyJournals = () => {
-    
+    const { t } = useTranslation()
     const appRouter = useRouter()
     const { data: journalsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isJournalLoading } = useGetMyJournals(20)
     const journals = useMemo(() => {
@@ -51,7 +52,7 @@ export const MyJournals = () => {
     
     return (
         <div className='flex flex-col w-full gap-y-10'>
-            <Button.Box text='New Journal' leftIcon={PlusIcon} className='text-14-regular w-fit h-10' onClick={() => appRouter.push('/journals/create')}/>
+            <Button.Box text={t('journals.new_journal')} leftIcon={PlusIcon} className='text-14-regular w-fit h-10' onClick={() => appRouter.push('/journals/create')}/>
             {
                 isJournalLoading && isEmpty(sortedEntries) && (
                     <div className='flex gap-x-3'>
@@ -68,8 +69,8 @@ export const MyJournals = () => {
                     <div className='flex flex-col items-center justify-center w-full py-20 text-center gap-y-4'>
                         <BookText className='w-10 h-10 text-white'/>
                         <div className='flex flex-col gap-y-1'>
-                            <p className='text-16-bold text-white'>No journals yet</p>
-                            <p className='text-14-regular text-tunelog-secondary'>Write your first journal about your favorite music!</p>
+                            <p className='text-16-bold text-white'>{t('journals.no_journal_yet')}</p>
+                            <p className='text-14-regular text-tunelog-secondary'>{t('journals.leave_journal')}</p>
                         </div>
                     </div>
                 )

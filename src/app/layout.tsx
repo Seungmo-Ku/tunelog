@@ -9,6 +9,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Navbar from '@/components/navigation-bar/navitaion-bar-default'
 import { Toaster } from 'react-hot-toast'
 import { Dialogs } from '@/components/dialogs'
+import './i18n'
 
 
 const quicksand = Quicksand({

@@ -13,6 +13,7 @@ import { Rating } from 'react-simple-star-rating'
 import { useRatingHash } from '@/libs/utils/rating'
 import { useAccount } from '@/libs/utils/account'
 import { AccountStatus } from '@/libs/constants/account.constant'
+import { useTranslation } from 'react-i18next'
 
 
 interface DialogNewRatingProps {
@@ -30,6 +31,7 @@ export const DialogNewRating = ({
     const [comment, setComment] = useState<string>('')
     const [score, setScore] = useState<number>(0)
     const [isPublic, setIsPublic] = useState<boolean>(false)
+    const { t } = useTranslation()
     
     const { mutateAsync, isPending } = usePostRating()
     
@@ -71,7 +73,7 @@ export const DialogNewRating = ({
         <Dialog transition open={open} onClose={onCloseAction} className='relative z-50 transition duration-300 ease-out data-closed:opacity-0'>
             <div className='fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/50'>
                 <DialogPanel className='w-3/4 space-y-4 bg-[#33373B] text-white md:p-12 p-4 rounded-2xl flex flex-col'>
-                    <DialogTitle className='font-bold'>New Rating</DialogTitle>
+                    <DialogTitle className='font-bold'>{t('ratings.new_rating')}</DialogTitle>
                     {objectImage}
                     <TopSearchBar
                         onAlbumClick={() => {
@@ -93,7 +95,7 @@ export const DialogNewRating = ({
                     />
                     <Textarea
                         className='w-full py-1 border-white border min-h-[100px]'
-                        placeholder='Comment'
+                        placeholder={t('ratings.new_rating_dialog.comment')}
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
                         maxLength={1000}
@@ -109,10 +111,10 @@ export const DialogNewRating = ({
                                 className='pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7'
                             />
                         </Switch>
-                        <p className='text-14-regular text-white'>{isPublic ? 'Set the rating visible to everyone' : 'Set the rating personal'}</p>
+                        <p className='text-14-regular text-white'>{isPublic ? t('ratings.edit_dialog.public') : t('ratings.edit_dialog.private')}</p>
                     </div>
                     <Button.Box
-                        text='create new rating!'
+                        text={t('ratings.new_rating_dialog.create_rating')}
                         disabled={isPending || isEmpty(selectedObjectId) || isEmpty(comment)}
                         onClick={async () => {
                             if (isPending || !selectedType || isEmpty(selectedObjectId) || isEmpty(comment)) return

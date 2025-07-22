@@ -20,6 +20,7 @@ import { useRatingHash } from '@/libs/utils/rating'
 import { useAccount } from '@/libs/utils/account'
 import { DialogLoginAtom } from '@/components/dialogs/dialog-login'
 import { AccountStatus } from '@/libs/constants/account.constant'
+import { useTranslation } from 'react-i18next'
 
 
 export const MyRatings = () => {
@@ -30,6 +31,7 @@ export const MyRatings = () => {
     const [newRatingOpen, setNewRatingOpen] = useState(false)
     const [makeRating, setMakeRating] = useAtom(MakeRatingAtom)
     const setLoginDialogOpen = useSetAtom(DialogLoginAtom)
+    const { t } = useTranslation()
     
     const selectedFilter = useMemo(() => {
         switch (filterIndex) {
@@ -100,7 +102,7 @@ export const MyRatings = () => {
                 <SortingButtons sortingIndex={sortingIndex} setSortingIndexAction={setSortingIndex}/>
                 <div className='w-[1px] h-full bg-white md:flex hidden'/>
                 <Button.Box
-                    text='New Rating'
+                    text={t('ratings.new_rating')}
                     leftIcon={PlusIcon}
                     className='text-14-regular w-fit h-10'
                     onClick={() => {
@@ -123,8 +125,8 @@ export const MyRatings = () => {
                         <div className='flex flex-col items-center justify-center w-full py-20 text-center gap-y-4'>
                             <Star className='w-10 h-10 text-white'/>
                             <div className='flex flex-col gap-y-1'>
-                                <p className='text-16-bold text-white'>No ratings yet</p>
-                                <p className='text-14-regular text-tunelog-secondary'>Leave a rating for your favorite music!</p>
+                                <p className='text-16-bold text-white'>{t('ratings.no_rating_yet')}</p>
+                                <p className='text-14-regular text-tunelog-secondary'>{t('ratings.leave_rating')}</p>
                             </div>
                         </div>
                     )

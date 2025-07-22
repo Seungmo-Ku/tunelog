@@ -8,6 +8,7 @@ import { useMemo, useState } from 'react'
 import { Dialogs } from '@/components/dialogs'
 import { useAccount } from '@/libs/utils/account'
 import { AccountStatus } from '@/libs/constants/account.constant'
+import { useTranslation } from 'react-i18next'
 
 
 export interface CardRatingWithContentProps {
@@ -29,6 +30,7 @@ export const CardRatingWithContent = ({
     const [deleteRatingOpen, setDeleteRatingOpen] = useState<boolean>(false)
     const [editRatingOpen, setEditRatingOpen] = useState<boolean>(false)
     const { status, me } = useAccount()
+    const { t } = useTranslation()
     const ratingsComponent = (
         <Menu>
             <MenuButton
@@ -45,14 +47,14 @@ export const CardRatingWithContent = ({
                     e.stopPropagation()
                     setDeleteRatingOpen(true)
                 }}>
-                    Delete
+                    {t('ratings.card.delete')}
                 </div>
                 <div className='w-full flex flex-col gap-y-1 items-start text-white cursor-pointer' onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
                     setEditRatingOpen(true)
                 }}>
-                    Edit
+                    {t('ratings.card.edit')}
                 </div>
             </MenuItems>
         </Menu>
@@ -72,7 +74,7 @@ export const CardRatingWithContent = ({
             onClick={onClickAction}
         >
             <Cards.Long
-                imgUrl={imgUrl ?? '/favicon.io'}
+                imgUrl={imgUrl ?? '/favicon.ico'}
                 title={`${title}`}
                 type={rating.type}
                 duration={`${rating.score}/5`}
@@ -85,11 +87,11 @@ export const CardRatingWithContent = ({
                 <p className='space-x-1'>
                     <span className='text-12-regular text-left'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anonymous'} | ${rating?.public ? 'Public' : 'Private'}`}</span>
                     {showMyRating && isMyRating && (
-                        <span className='text-12-bold text-tunelog-secondary'>My Rating</span>
+                        <span className='text-12-bold text-tunelog-secondary'>{t('ratings.card.my_rating')}</span>
                     )}
                 </p>
                 
-                {rating.createdAt !== rating.updatedAt && <span className='text-12-regular text-left'>Last Edited: {new Date(rating.updatedAt).toLocaleDateString()}</span>}
+                {rating.createdAt !== rating.updatedAt && <span className='text-12-regular text-left'>{`${t('keywords.last_edited')}: ${new Date(rating.updatedAt).toLocaleDateString()}`}</span>}
             </div>
             <div
                 onClick={(e) => {
