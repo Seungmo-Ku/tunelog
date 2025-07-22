@@ -17,6 +17,7 @@ import { useAccount } from '@/libs/utils/account'
 import { AccountStatus } from '@/libs/constants/account.constant'
 import { useSetAtom } from 'jotai/index'
 import { DialogLoginAtom } from '@/components/dialogs/dialog-login'
+import { useTranslation } from 'react-i18next'
 
 
 interface SelectedObjectProps {
@@ -31,6 +32,7 @@ export interface CreatingComponentProps {
 export const CreatingComponent = ({
     journal = null
 }: CreatingComponentProps) => {
+    const { t } = useTranslation()
     const { status, me } = useAccount()
     const editRef = useRef<TiptapRef>(null)
     const [title, setTitle] = useState('')
@@ -204,13 +206,13 @@ export const CreatingComponent = ({
             <div className='flex gap-x-3'>
                 <Input
                     className='w-full py-1 border-white border'
-                    placeholder='Title'
+                    placeholder={t('journals.create.title')}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     maxLength={50}
                 />
                 <Button.Box
-                    text={journal ? 'Update' : 'Upload'}
+                    text={journal ? t('journals.create.update') : t('journals.create.upload')}
                     onClick={() => {
                         if (!journal) {
                             handleClick().then(noop)
@@ -239,11 +241,11 @@ export const CreatingComponent = ({
                 <Tiptap ref={editRef} initialContent={journal ? journal.content : undefined}/>
             </div>
             <div className='w-full flex flex-col gap-y-5'>
-                <span className='text-18-regular'>Tags (Optional)</span>
+                <span className='text-18-regular'>{t('journals.create.tags')}</span>
                 <div className='w-full grid md:grid-cols-2 grid-cols-1 gap-3 pb-5'>
                     <Input
                         className='w-full py-1'
-                        placeholder='Weather? (e.g. Sunny, Rainy)'
+                        placeholder={t('journals.create.tags_1')}
                         value={tags.weather}
                         onChange={(e) => {
                             setTags(prev => ({ ...prev, weather: e.target.value }))
@@ -252,7 +254,7 @@ export const CreatingComponent = ({
                     />
                     <Input
                         className='w-full py-1'
-                        placeholder='Mood? (e.g. Happy, Sad)'
+                        placeholder={t('journals.create.tags_2')}
                         value={tags.mood}
                         onChange={(e) => {
                             setTags(prev => ({ ...prev, mood: e.target.value }))
@@ -261,7 +263,7 @@ export const CreatingComponent = ({
                     />
                     <Input
                         className='w-full py-1'
-                        placeholder='Scene? (e.g. Beach, Mountain)'
+                        placeholder={t('journals.create.tags_3')}
                         value={tags.scene}
                         onChange={(e) => {
                             setTags(prev => ({ ...prev, scene: e.target.value }))
@@ -270,7 +272,7 @@ export const CreatingComponent = ({
                     />
                     <Input
                         className='w-full py-1'
-                        placeholder='Anything else? (e.g. Custom Tag)'
+                        placeholder={t('journals.create.tags_4')}
                         value={tags.custom}
                         onChange={(e) => {
                             setTags(prev => ({ ...prev, custom: e.target.value }))
@@ -288,7 +290,7 @@ export const CreatingComponent = ({
                                 className='pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7'
                             />
                         </Switch>
-                        <p className='text-14-regular text-white'>{isPublic ? 'Set the journal visible to everyone' : 'Set the journal personal'}</p>
+                        <p className='text-14-regular text-white'>{isPublic ? t('journals.create.public') : t('journals.create.private')}</p>
                     </div>
                 </div>
             </div>

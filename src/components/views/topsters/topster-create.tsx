@@ -14,6 +14,7 @@ import { useAccount } from '@/libs/utils/account'
 import { useSetAtom } from 'jotai/index'
 import { DialogLoginAtom } from '@/components/dialogs/dialog-login'
 import { AccountStatus } from '@/libs/constants/account.constant'
+import { useTranslation } from 'react-i18next'
 
 
 export interface TopsterItem {
@@ -30,6 +31,7 @@ export interface TopsterCreateProps {
 export const TopsterCreate = ({
     topster = null
 }: TopsterCreateProps) => {
+    const { t } = useTranslation()
     const { me, status } = useAccount()
     const appRouter = useRouter()
     const [title, setTitle] = useState<string>('')
@@ -94,14 +96,14 @@ export const TopsterCreate = ({
                             <img className='w-full h-full aspect-square' alt={`image-${i + 1}`} src={items[i].url}/>
                         ) : (
                             <div className='w-full h-full flex items-center justify-center text-white cursor-pointer'>
-                                Add item
+                                {t('topsters.create.add_item')}
                             </div>
                         )
                     }
                 </div>
             )
         }))
-    }, [gridSize, items])
+    }, [gridSize, items, t])
     
     const makeTopster = useCallback(async () => {
         if (isPending || isEmpty(title)) return
@@ -171,7 +173,7 @@ export const TopsterCreate = ({
                                         <span
                                             key={`topster-item-title-${i}`}
                                             className={`text-white text-left text-14-regular whitespace-pre-wrap ${isLastInRow && !isLastItem ? 'mb-4' : ''}`}>
-                                            {items[i].type ? `${items[i].title}${showType ? ` - ${items[i].type}` : ''}` : '(Empty Slot)'}
+                                            {items[i].type ? `${items[i].title}${showType ? ` - ${items[i].type}` : ''}` : `(${t('topsters.create.empty_slot')})`}
                                         </span>
                                     )
                                 })
@@ -182,16 +184,16 @@ export const TopsterCreate = ({
             </div>
             <div className='flex flex-col gap-y-3 md:w-[300px] w-full'>
                 <div className='flex flex-col gap-y-2'>
-                    <label htmlFor='titleInput' className='text-white'>Title</label>
+                    <label htmlFor='titleInput' className='text-white'>{t('topsters.create.title')}</label>
                     <Input
                         id='titleInput'
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        placeholder='Enter title'
+                        placeholder={t('topsters.create.enter_title')}
                     />
                 </div>
                 <div className='flex flex-col gap-y-2'>
-                    <label htmlFor='gridSizeInput' className='text-white'>Size</label>
+                    <label htmlFor='gridSizeInput' className='text-white'>{t('topsters.create.size')}</label>
                     <div className='flex gap-x-2 w-full items-center'>
                         <input
                             id='gridSizeInput'
@@ -206,7 +208,7 @@ export const TopsterCreate = ({
                     </div>
                 </div>
                 <div className='flex flex-col gap-y-2'>
-                    <label htmlFor='showTitleSwitch' className='text-white'>Show item titles</label>
+                    <label htmlFor='showTitleSwitch' className='text-white'>{t('topsters.create.show_item_titles')}</label>
                     <Switch
                         id='showTitleSwitch'
                         checked={showTitle}
@@ -222,7 +224,7 @@ export const TopsterCreate = ({
                 {
                     showTitle && (
                         <div className='flex flex-col gap-y-2'>
-                            <label htmlFor='showTypeSwitch' className='text-white'>Show item types</label>
+                            <label htmlFor='showTypeSwitch' className='text-white'>{t('topsters.create.show_item_types')}</label>
                             <Switch
                                 id='showTypeSwitch'
                                 checked={showType}
@@ -238,7 +240,7 @@ export const TopsterCreate = ({
                     )
                 }
                 <div className='flex flex-col gap-y-2'>
-                    <p className='text-white'>{isPublic ? 'Set the topster visible to everyone' : 'Set the topster personal'}</p>
+                    <p className='text-white'>{isPublic ? t('topsters.create.public') : t('topsters.create.private')}</p>
                     <Switch
                         checked={isPublic}
                         onChange={setIsPublic}
@@ -251,7 +253,7 @@ export const TopsterCreate = ({
                     </Switch>
                 </div>
                 <Button.Box
-                    text={`${topster ? 'Update' : 'Create'} Topster`}
+                    text={`${topster ? t('keywords.update') : t('keywords.create')} ${t('keywords.topster')}`}
                     disabled={isEmpty(title) || isPending}
                     onClick={() => {
                         if (!topster) {

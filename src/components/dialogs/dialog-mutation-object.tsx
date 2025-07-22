@@ -11,10 +11,10 @@ import { Journal } from '@/libs/interfaces/journal.interface'
 import { Topster } from '@/libs/interfaces/topster.interface'
 import { useDeleteJournal, useUpdateJournal } from '@/hooks/use-journal'
 import { useRouter } from 'next/navigation'
-import { capitalizeFirstLetter } from '@/libs/utils/string'
 import { useDeleteTopster, useUpdateTopster } from '@/hooks/use-topster'
 import { TopsterUpdateRequest } from '@/libs/dto/topster.dto'
 import { JournalUpdateRequest } from '@/libs/dto/journal.dto'
+import { useTranslation } from 'react-i18next'
 
 
 export interface DialogMutationObjectProps {
@@ -44,6 +44,8 @@ export const DialogMutationObject = ({
     const { mutateAsync: updateTopster, isPending: isTopsterUpdatePending } = useUpdateTopster()
     const { mutateAsync: updateJournal, isPending: isJournalUpdatePending } = useUpdateJournal()
     
+    const { t } = useTranslation()
+    
     const isPending = useMemo(() => isRatingPending || isJournalPending || isTopsterPending || isTopsterUpdatePending || isJournalUpdatePending,
         [isRatingPending, isJournalPending, isTopsterPending, isTopsterUpdatePending, isJournalUpdatePending])
     
@@ -64,17 +66,17 @@ export const DialogMutationObject = ({
             }
             if (response) {
                 onCloseAction()
-                toast.success(`${type} deleted successfully.`)
+                toast.success(t('mutation_object.deletion_success', { type: t(`keywords.${type}`).toLowerCase() }))
                 if (type === 'journal' || type === 'topster') {
                     appRouter.back()
                 }
             } else {
-                toast.error(`Failed to delete ${type}. Please check your password and try again.`)
+                toast.error(t('mutation_object.deletion_error', { type: t(`keywords.${type}`).toLowerCase() }))
             }
         } catch {
-            toast.error(`Failed to delete ${type}. Please check your password and try again.`)
+            toast.error(t('mutation_object.deletion_error', { type: t(`keywords.${type}`).toLowerCase() }))
         }
-    }, [object, isPending, type, deleteRating, deleteJournal, deleteTopster, onCloseAction, appRouter])
+    }, [object, isPending, type, deleteRating, deleteJournal, deleteTopster, onCloseAction, appRouter, t])
     
     const handleUpdate = useCallback(async () => {
         if (!object || isPending || !updateObject) return
@@ -100,17 +102,17 @@ export const DialogMutationObject = ({
             }
             if (response) {
                 onCloseAction()
-                toast.success(`Updated ${type} successfully.`)
+                toast.success(t('mutation_object.update_success', { type: t(`keywords.${type}`).toLowerCase() }))
                 if (type === 'journal' || type === 'topster') {
                     appRouter.back()
                 }
             } else {
-                toast.error(`Failed to update ${type}. Please check your password and try again.`)
+                toast.error(t('mutation_object.update_error', { type: t(`keywords.${type}`).toLowerCase() }))
             }
         } catch {
-            toast.error(`Failed to update ${type}. Please check your password and try again.`)
+            toast.error(t('mutation_object.update_error', { type: t(`keywords.${type}`).toLowerCase() }))
         }
-    }, [object, isPending, updateObject, type, updateJournal, updateTopster, onCloseAction, appRouter])
+    }, [object, isPending, updateObject, type, updateJournal, updateTopster, onCloseAction, t, appRouter])
     
     if (!object) return null
     return (
@@ -118,10 +120,10 @@ export const DialogMutationObject = ({
             <div className='fixed inset-0 bg-black/50' aria-hidden='true'/>
             <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
                 <DialogPanel className='w-3/4 space-y-4 bg-[#33373B] text-white md:p-12 p-4 rounded-2xl flex flex-col'>
-                    <DialogTitle className='font-bold'>{`${capitalizeFirstLetter(action)} ${capitalizeFirstLetter(type)}`}</DialogTitle>
-                    <p>{`This process will ${action} the ${type} and cannot be undone.`}</p>
+                    <DialogTitle className='font-bold'>{`${t('mutation_object.action', { action: t(`keywords.${action}`), type: t(`keywords.${type}`) })}`}</DialogTitle>
+                    <p>{t('mutation_object.description', { action: t(`keywords.${action}`).toLowerCase(), type: t(`keywords.${type}`).toLowerCase() })}</p>
                     <Button.Box
-                        text={`${capitalizeFirstLetter(action)} ${capitalizeFirstLetter(type)}`}
+                        text={`${t('mutation_object.action', { action: t(`keywords.${action}`), type: t(`keywords.${type}`) })}`}
                         onClick={() => {
                             if (action === 'delete') handleDelete().then(noop)
                             handleUpdate().then(noop)

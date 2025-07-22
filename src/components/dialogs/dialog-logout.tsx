@@ -2,12 +2,13 @@
 
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { Button } from '@/components/buttons'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { atom, useAtom } from 'jotai'
 import { useHandleLogout } from '@/hooks/use-account'
 import toast from 'react-hot-toast'
 import { useAccount } from '@/libs/utils/account'
 import { AccountStatus } from '@/libs/constants/account.constant'
+import { useTranslation } from 'react-i18next'
 
 
 export interface DialogLogoutProps {
@@ -23,6 +24,18 @@ export const DialogLogout = () => {
     const [dialogLogout, setDialogLogout] = useAtom(DialogLogoutAtom)
     const { open } = dialogLogout
     const { status, me } = useAccount()
+    const { i18n } = useTranslation()
+    
+    const currentLanguage = useMemo(() => {
+        switch (i18n.language) {
+            case 'ko':
+                return '한국어'
+            case 'ja':
+                return '日本語'
+            default:
+                return 'English'
+        }
+    }, [i18n.language])
     
     const onClose = useCallback(() => {
         setDialogLogout((prev) => (
@@ -60,6 +73,32 @@ export const DialogLogout = () => {
                         <span>{`Account Id: ${me?.userid ?? ''}`}</span>
                         <span>{`Name: ${me?.name ?? ''}`}</span>
                         <span>{`Created At ${new Date(me?.createdAt ?? 0).toLocaleDateString()}`}</span>
+                    </div>
+                    <div className='flex flex-col gap-y-2 text-white'>
+                        <p>{`Current Language: ${currentLanguage}`}</p>
+                        <div className='grid grid-cols-3 gap-2'>
+                            <Button.Box
+                                text='English'
+                                onClick={() => {
+                                    i18n.changeLanguage('en')
+                                    localStorage.setItem('appLanguage', 'en')
+                                }}
+                            />
+                            <Button.Box
+                                text='한국어'
+                                onClick={() => {
+                                    i18n.changeLanguage('ko')
+                                    localStorage.setItem('appLanguage', 'ko')
+                                }}
+                            />
+                            <Button.Box
+                                text='日本語'
+                                onClick={() => {
+                                    i18n.changeLanguage('ja')
+                                    localStorage.setItem('appLanguage', 'ja')
+                                }}
+                            />
+                        </div>
                     </div>
                     <Button.Box
                         text='Log Out'
