@@ -46,8 +46,8 @@ const CommunityPage = () => {
             const hash = window.location.hash.substring(1)
             if (hash) {
                 const params = new URLSearchParams(hash)
-                const filter = parseInt(params.get('initialFilter') ?? '0') ?? 0
-                if (!isNaN(filter)) {
+                const filter = parseInt(params.get('initialFilter') ?? '0', 10) || 0
+                if (!isNaN(filter) && filter >= 0 && filter <= 3) {
                     setFilterIndex(filter)
                     history.replaceState(null, '', window.location.pathname)
                 }
