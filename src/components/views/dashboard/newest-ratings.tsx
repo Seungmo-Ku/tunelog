@@ -73,7 +73,7 @@ export const NewestRatings = () => {
             {!isLoading && (
                 <div
                     className='flex flex-col gap-y-[5px] w-[153px] h-[153px] shrink-0 justify-center rounded-[25px] bg-white/5 hover:bg-white/10 transition cursor-pointer items-center active:scale-95'
-                    onClick={() => appRoute.push('/ratings')}
+                    onClick={() => appRoute.push('/community#initialFilter=1')}
                 >
                     <p className='text-white text-14-bold text-center'>View all Ratings</p>
                 </div>
