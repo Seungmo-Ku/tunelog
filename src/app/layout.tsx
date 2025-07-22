@@ -27,8 +27,10 @@ export default function RootLayout({
     const { i18n } = useTranslation()
     
     useEffect(() => {
-        const savedLang = localStorage.getItem('appLanguage') || 'en'
-        i18n.changeLanguage(savedLang)
+        if (typeof window !== 'undefined') {
+            const savedLang = localStorage.getItem('appLanguage') || 'en'
+            i18n.changeLanguage(savedLang)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     
