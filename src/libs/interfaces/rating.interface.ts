@@ -8,7 +8,6 @@ export interface IReply {
     createdAt: Date
     updatedAt: Date
     isEdited?: boolean
-    likes?: number
     deleted?: boolean
 } // 댓글
 
@@ -22,7 +21,6 @@ export interface IRating {
     updatedAt: Date
     author?: string
     isEdited?: boolean
-    likes?: number
     likedUids?: string[]
     replies?: IReply[]
     deleted?: boolean
@@ -37,7 +35,6 @@ export class Reply implements IReply {
     createdAt: Date
     updatedAt: Date
     isEdited?: boolean
-    likes?: number
     deleted?: boolean
     
     constructor(reply: IReply) {
@@ -47,7 +44,6 @@ export class Reply implements IReply {
         this.createdAt = reply.createdAt
         this.updatedAt = reply.updatedAt
         this.isEdited = reply.isEdited || false
-        this.likes = reply.likes || 0
         this.deleted = reply.deleted || false
     }
 }
@@ -62,7 +58,6 @@ export class Rating implements IRating {
     updatedAt: Date
     author?: string
     isEdited?: boolean
-    likes?: number
     likedUids?: string[]
     replies?: IReply[]
     deleted?: boolean
@@ -79,7 +74,6 @@ export class Rating implements IRating {
         this.updatedAt = rating.updatedAt
         this.author = rating.author || ''
         this.isEdited = rating.isEdited || false
-        this.likes = rating.likes || 0
         this.likedUids = rating.likedUids || []
         this.replies = rating.replies?.map(reply => new Reply(reply)) || []
         this.deleted = rating.deleted || false

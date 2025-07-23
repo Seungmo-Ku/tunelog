@@ -37,6 +37,7 @@ export const usePostRating = () => {
             queryClient.invalidateQueries({ queryKey: ['rating-all'] })
             queryClient.invalidateQueries({ queryKey: ['rating-my'] })
             queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
         }
     })
 }
@@ -61,6 +62,7 @@ export const useDeleteRating = () => {
             queryClient.invalidateQueries({ queryKey: ['rating-all'] })
             queryClient.invalidateQueries({ queryKey: ['rating-my'] })
             queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
         }
     })
 }
@@ -72,6 +74,31 @@ export const useEditRating = () => {
             queryClient.invalidateQueries({ queryKey: ['rating-all'] })
             queryClient.invalidateQueries({ queryKey: ['rating-my'] })
             queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
+        }
+    })
+}
+export const useLikeRating = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async (id: string) => await ApiRating._like_rating(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['rating-all'] })
+            queryClient.invalidateQueries({ queryKey: ['rating-my'] })
+            queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
+        }
+    })
+}
+export const useUnlikeRating = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async (id: string) => await ApiRating._unlike_rating(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['rating-all'] })
+            queryClient.invalidateQueries({ queryKey: ['rating-my'] })
+            queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
         }
     })
 }

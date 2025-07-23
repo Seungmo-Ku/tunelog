@@ -21,7 +21,6 @@ const journalSchema = new mongoose.Schema({
     tags: { type: tagsSchema, required: false },
     author: { type: String, required: false, default: '' },
     isEdited: { type: Boolean, default: false },
-    likes: { type: Number, default: 0 },
     likedUids: { type: [String], default: [] },
     replies: [replySchema],
     deleted: { type: Boolean, default: false },

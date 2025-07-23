@@ -24,7 +24,6 @@ export interface IJournal {
     updatedAt: Date
     author?: string
     isEdited?: boolean
-    likes?: number
     likedUids?: string[]
     replies?: IReply[]
     deleted?: boolean
@@ -42,7 +41,6 @@ export class Journal implements IJournal {
     updatedAt: Date
     author?: string
     isEdited?: boolean
-    likes?: number
     likedUids?: string[]
     replies?: IReply[]
     deleted?: boolean
@@ -59,7 +57,6 @@ export class Journal implements IJournal {
         this.updatedAt = data.updatedAt || new Date()
         this.author = data.author || ''
         this.isEdited = data.isEdited || false
-        this.likes = data.likes || 0
         this.likedUids = data.likedUids || []
         this.replies = data.replies || []
         this.deleted = data.deleted || false

@@ -64,6 +64,9 @@ const ja = {
         update_error: '{{type}}の更新に失敗しました。もう一度お試しください。',
         action: '{{action}} {{type}}'
     },
+    likes: {
+        guest: 'ログイン後にいいねを押してください！',
+    },
     keywords: {
         rating: '評価',
         journal: 'ジャーナル',

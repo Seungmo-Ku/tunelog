@@ -21,7 +21,6 @@ const topsterSchema = new mongoose.Schema({
     showTitles: { type: Boolean, default: false },
     showTypes: { type: Boolean, default: false },
     isEdited: { type: Boolean, default: false },
-    likes: { type: Number, default: 0 },
     likedUids: { type: [String], default: [] },
     replies: [replySchema],
     deleted: { type: Boolean, default: false },
