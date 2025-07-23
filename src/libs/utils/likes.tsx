@@ -10,6 +10,9 @@ import { clsx } from 'clsx'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { useLikeRating, useUnlikeRating } from '@/hooks/use-rating'
+import { useLikeJournal, useUnlikeJournal } from '@/hooks/use-journal'
+import { useLikeTopster, useUnlikeTopster } from '@/hooks/use-topster'
+import { noop } from 'lodash'
 
 
 interface useLikesProps {
@@ -25,6 +28,10 @@ export const useLikes = ({
     
     const { mutateAsync: likeRating, isPending: isLikeRatingPending } = useLikeRating()
     const { mutateAsync: unlikeRating, isPending: isUnlikeRatingPending } = useUnlikeRating()
+    const { mutateAsync: likeJournal, isPending: isLikeJournalPending } = useLikeJournal()
+    const { mutateAsync: unlikeJournal, isPending: isUnlikeJournalPending } = useUnlikeJournal()
+    const { mutateAsync: likeTopster, isPending: isLikeTopsterPending } = useLikeTopster()
+    const { mutateAsync: unlikeTopster, isPending: isUnlikeTopsterPending } = useUnlikeTopster()
     
     const isLikedByUser: boolean = useMemo(() => {
         if (!object || !me || status === AccountStatus.guest) return false
@@ -35,19 +42,43 @@ export const useLikes = ({
         return <Heart className={clsx('w-5 h-5 shrink-0', isLikedByUser ? 'fill-red-500' : 'fill-none')}/>
     }, [isLikedByUser])
     
-    const isPending = useMemo(() => isLikeRatingPending || isUnlikeRatingPending, [isLikeRatingPending, isUnlikeRatingPending])
+    const isPending = useMemo(() => isLikeRatingPending || isUnlikeRatingPending || isLikeJournalPending || isUnlikeJournalPending || isLikeTopsterPending || isUnlikeTopsterPending,
+        [isLikeJournalPending, isLikeRatingPending, isLikeTopsterPending, isUnlikeJournalPending, isUnlikeRatingPending, isUnlikeTopsterPending])
     
-    const handleLikes = useCallback(() => {
-        switch (type) {
-            case 'rating':
-                if (isLikedByUser) {
-                    unlikeRating(object?._id ?? '')
-                } else {
-                    likeRating(object?._id ?? '')
-                }
-                break
+    const handleLikes = useCallback(async () => {
+        if (isPending) return
+        try {
+            let res: boolean
+            switch (type) {
+                case 'rating':
+                    if (isLikedByUser) {
+                        res = await unlikeRating(object?._id ?? '')
+                    } else {
+                        res = await likeRating(object?._id ?? '')
+                    }
+                    break
+                case 'journal':
+                    if (isLikedByUser) {
+                        res = await unlikeJournal(object?._id ?? '')
+                    } else {
+                        res = await likeJournal(object?._id ?? '')
+                    }
+                    break
+                case 'topster':
+                    if (isLikedByUser) {
+                        res = await unlikeTopster(object?._id ?? '')
+                    } else {
+                        res = await likeTopster(object?._id ?? '')
+                    }
+            }
+            res = false
+            if (!res) {
+                toast.error(t('likes.error'))
+            }
+        } catch {
+            toast.error(t('likes.error'))
         }
-    }, [isLikedByUser, likeRating, object?._id, type, unlikeRating])
+    }, [isLikedByUser, isPending, likeJournal, likeRating, likeTopster, object?._id, t, type, unlikeJournal, unlikeRating, unlikeTopster])
     
     const likesButton = useMemo(() => {
         return (
@@ -62,7 +93,7 @@ export const useLikes = ({
                         toast.error(t('likes.guest'))
                         return
                     }
-                    handleLikes()
+                    handleLikes().then(noop)
                 }}
             />
         )

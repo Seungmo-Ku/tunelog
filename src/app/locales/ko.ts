@@ -65,7 +65,8 @@ const ko = {
         action: '{{type}} {{action}}'
     },
     likes: {
-        guest: '로그인 후 좋아요를 눌러주세요!',
+        guest: '로그인 후 좋아요를 눌러주세요',
+        error: '좋아요를 누르는 데 실패했어요. 다시 시도해주세요.',
     },
     keywords: {
         rating: '레이팅',

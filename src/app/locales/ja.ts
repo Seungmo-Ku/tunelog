@@ -66,6 +66,7 @@ const ja = {
     },
     likes: {
         guest: 'ログイン後にいいねを押してください！',
+        error: 'いいねの操作に失敗しました',
     },
     keywords: {
         rating: '評価',

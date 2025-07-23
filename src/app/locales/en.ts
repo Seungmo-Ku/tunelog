@@ -66,6 +66,7 @@ const en = {
     },
     likes: {
         guest: 'You need to log in to like this item.',
+        error: 'Failed to like this item. Please try again.',
     },
     keywords: {
         rating: 'Rating',
