@@ -11,6 +11,7 @@ import { useNavbarAuth } from '@/components/navigation-bar/navigation-bar-auth'
 export const NavigationBarMobile = () => {
     const appRouter = useRouter()
     const { components } = useNavbarAuth()
+    
     return (
         <div className='w-full h-[50px] bg-tunelog-dark-alt flex items-center justify-between p-1'>
             <span className='text-24-semibold text-white cursor-pointer' onClick={() => appRouter.push('/dashboard')}>TUNELOG</span>

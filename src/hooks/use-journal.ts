@@ -94,6 +94,7 @@ export const useLikeJournal = () => {
             queryClient.invalidateQueries({ queryKey: ['journal-all'] })
             queryClient.invalidateQueries({ queryKey: ['journal-by-spotify-id'] })
             queryClient.invalidateQueries({ queryKey: ['community-all'] })
+            queryClient.invalidateQueries({ queryKey: ['journal'] })
         }
     })
 }
@@ -105,6 +106,7 @@ export const useUnlikeJournal = () => {
             queryClient.invalidateQueries({ queryKey: ['journal-all'] })
             queryClient.invalidateQueries({ queryKey: ['journal-by-spotify-id'] })
             queryClient.invalidateQueries({ queryKey: ['community-all'] })
+            queryClient.invalidateQueries({ queryKey: ['journal'] })
         }
     })
 }

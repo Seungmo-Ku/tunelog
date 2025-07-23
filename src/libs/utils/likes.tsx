@@ -71,7 +71,6 @@ export const useLikes = ({
                         res = await likeTopster(object?._id ?? '')
                     }
             }
-            res = false
             if (!res) {
                 toast.error(t('likes.error'))
             }
