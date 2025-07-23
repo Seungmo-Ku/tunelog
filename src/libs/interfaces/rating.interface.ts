@@ -23,6 +23,7 @@ export interface IRating {
     author?: string
     isEdited?: boolean
     likes?: number
+    likedUids?: string[]
     replies?: IReply[]
     deleted?: boolean
     public?: boolean
@@ -62,6 +63,7 @@ export class Rating implements IRating {
     author?: string
     isEdited?: boolean
     likes?: number
+    likedUids?: string[]
     replies?: IReply[]
     deleted?: boolean
     uid: string
@@ -78,6 +80,7 @@ export class Rating implements IRating {
         this.author = rating.author || ''
         this.isEdited = rating.isEdited || false
         this.likes = rating.likes || 0
+        this.likedUids = rating.likedUids || []
         this.replies = rating.replies?.map(reply => new Reply(reply)) || []
         this.deleted = rating.deleted || false
         this.uid = rating.uid || ''

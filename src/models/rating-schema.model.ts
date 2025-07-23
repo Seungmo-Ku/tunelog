@@ -17,6 +17,7 @@ const ratingSchema = new mongoose.Schema({
     author: { type: String, required: true },
     isEdited: { type: Boolean, default: false },
     likes: { type: Number, default: 0 },
+    likedUids: { type: [String], default: [] },
     replies: [replySchema],
     deleted: { type: Boolean, default: false },
     uid: { type: String, required: true },
