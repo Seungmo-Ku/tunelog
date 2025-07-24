@@ -44,7 +44,7 @@ const DashboardPage = () => {
         [isFetching, trackFetching, albumFetching, artistFetching, journalFetching, journalAlbumFetching, journalArtistFetching, journalTrackFetching])
     
     const journalImageUrl = useMemo(() => {
-        if (isAnyFetching || !journalFirstSubject) return 'favicon.ico'
+        if (isAnyFetching || !journalFirstSubject) return undefined
         switch (journalFirstSubject.type) {
             case 'track':
                 return journalTrack?.album?.images?.[0]?.url || 'favicon.ico'
