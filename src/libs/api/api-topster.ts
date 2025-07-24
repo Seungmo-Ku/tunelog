@@ -54,6 +54,22 @@ const apiTopster = {
         } catch {
             return null
         }
+    },
+    _like_topster: async (id: string): Promise<boolean> => {
+        try {
+            const response = await axios.post(`/api/topsters/${id}/like`)
+            return response.status === 200
+        } catch {
+            return false
+        }
+    },
+    _unlike_topster: async (id: string): Promise<boolean> => {
+        try {
+            const response = await axios.delete(`/api/topsters/${id}/like`)
+            return response.status === 200
+        } catch {
+            return false
+        }
     }
 }
 

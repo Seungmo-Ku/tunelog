@@ -5,7 +5,6 @@ export const replySchema = new mongoose.Schema({
     comment: { type: String, required: true },
     author: { type: String, required: false, default: '' },
     isEdited: { type: Boolean, default: false },
-    likes: { type: Number, default: 0 },
     deleted: { type: Boolean, default: false }
 }, { timestamps: true })
 
@@ -16,7 +15,7 @@ const ratingSchema = new mongoose.Schema({
     comment: { type: String, required: true },
     author: { type: String, required: true },
     isEdited: { type: Boolean, default: false },
-    likes: { type: Number, default: 0 },
+    likedUids: { type: [String], default: [] },
     replies: [replySchema],
     deleted: { type: Boolean, default: false },
     uid: { type: String, required: true },

@@ -12,6 +12,7 @@ import { Dialogs } from '@/components/dialogs'
 import { Pencil, Trash2 } from 'lucide-react'
 import { useIsOwner } from '@/libs/utils/account'
 import { useTranslation } from 'react-i18next'
+import { useLikes } from '@/libs/utils/likes'
 
 
 const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -25,6 +26,8 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     const { data: tracks, isLoading: isTrackLoading } = useGetTracksQuery(journal?.subjects.filter((subject) => subject.type === 'track').map(subject => subject.spotifyId) || [])
     
     const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
+    
+    const { likesButton } = useLikes({ object: journal, type: 'journal' })
     
     // noinspection DuplicatedCode
     const subjectMap = useMemo(() => {
@@ -64,6 +67,7 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                 <p className='text-14-regular'>{`By ${journal?.author ?? ''}`}</p>
                 <p className='text-14-regular'>{`${t('keywords.created')} ${new Date(journal?.createdAt ?? '').toLocaleDateString()} | ${journal?.public ? t('keywords.public') : t('keywords.private')}`}</p>
                 {(journal?.updatedAt ?? 0) > (journal?.createdAt ?? 0) && <p className='text-14-regular'>{`${t('keywords.last_edited')} At ${new Date(journal?.updatedAt ?? '').toLocaleDateString()}`}</p>}
+                <div>{likesButton}</div>
             </div>
             <div className='flex gap-x-3 overflow-x-auto hide-sidebar shrink-0 items-start'>
                 {

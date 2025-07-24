@@ -64,6 +64,10 @@ const en = {
         update_error: `Failed to update {{type}}. Please try again.`,
         action: '{{action}} {{type}}'
     },
+    likes: {
+        guest: 'You need to log in to like this item.',
+        error: 'Failed to like this item. Please try again.',
+    },
     keywords: {
         rating: 'Rating',
         journal: 'Journal',

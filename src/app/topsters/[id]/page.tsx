@@ -11,6 +11,7 @@ import { Pencil, Trash2 } from 'lucide-react'
 import { Dialogs } from '@/components/dialogs'
 import { useIsOwner } from '@/libs/utils/account'
 import { useTranslation } from 'react-i18next'
+import { useLikes } from '@/libs/utils/likes'
 
 
 const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -23,6 +24,8 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
     
     const isOwner = useIsOwner(topster?.uid)
+    
+    const { likesButton } = useLikes({ object: topster, type: 'topster' })
     
     const handleSaveAsImage = () => {
         const element = topsterRef.current
@@ -106,6 +109,7 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                     <h1 className='text-36-bold text-[#A4C7C6]'>{topster?.title ?? ''}</h1>
                     <p className='text-14-regular text-[#EFEEE0]'>{`By ${topster?.author ?? ''}`}</p>
                     <p className='text-14-regular text-[#EFEEE0]'>{`${t('keywords.created')} ${new Date(topster?.createdAt ?? 0).toLocaleDateString() ?? ''} | ${topster?.public ? t('keywords.public') : t('keywords.private')}`}</p>
+                    <div>{likesButton}</div>
                 </div>
                 {
                     isOwner && (
