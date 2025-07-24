@@ -32,7 +32,7 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
     }
     const topster = await Topster.findById(id)
     if (!topster) {
-        return NextResponse.json({ error: 'Journal not found' }, { status: 404 })
+        return NextResponse.json({ error: 'Topster not found' }, { status: 404 })
     }
     if (!topster.likedUids.includes(user._id.toString())) {
         return NextResponse.json({ error: 'No likes by user' }, { status: 400 }) // 400 Bad Request
