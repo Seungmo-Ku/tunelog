@@ -57,6 +57,22 @@ const DashboardPage = () => {
         }
     }, [isAnyFetching, journalAlbum?.images, journalArtist?.images, journalFirstSubject, journalTrack?.album?.images])
     
+    const featuredItem = useMemo(() => {
+        if (isAnyFetching) return null
+        switch (randomRecommendationType) {
+            case 'track':
+                return track
+            case 'artist':
+                return artist
+            case 'album':
+                return album
+            case 'journal':
+                return journal
+            default:
+                return null
+        }
+    }, [isAnyFetching, randomRecommendationType, track, artist, album, journal])
+    
     return (
         <div className='flex flex-col w-full h-full'>
             <TopSearchBar
@@ -78,7 +94,7 @@ const DashboardPage = () => {
                     <div className='md:h-full h-[300px] overflow-hidden'> {/* overflow-hidden 추가 */}
                         {!isAnyFetching ? (
                             <FeaturedItem
-                                item={randomRecommendationType === 'track' ? track : randomRecommendationType === 'artist' ? artist : randomRecommendationType === 'album' ? album : journal}
+                                item={featuredItem}
                                 imageUrl={journalImageUrl}
                             />
                         ) : (
