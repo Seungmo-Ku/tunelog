@@ -29,11 +29,12 @@ export const useGetMyJournals = (limit: number = 10) => {
         getNextPageParam: (lastPage) => lastPage?.nextCursor
     })
 }
-export const useGetJournal = (id: string) => {
+export const useGetJournal = (id: string | undefined) => {
     const { status, me } = useAccount()
     return useQuery({
         queryKey: ['journal', status, me?._id ?? '', id],
-        queryFn: () => ApiJournal._get_journal(id)
+        queryFn: () => ApiJournal._get_journal(id!),
+        enabled: !isEmpty(id),
     })
 }
 export const usePostJournal = () => {
