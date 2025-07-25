@@ -22,7 +22,7 @@ export const DialogMobileRightDrawer = ({
     return (
         <Transition show={open} as={Fragment}>
             <Dialog onClose={onCloseAction} className='relative z-50'>
-                <div className='fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/50'>
+                <div className='fixed inset-0 flex w-screen items-center p-4 bg-black/50'>
                     <TransitionChild
                         as={Fragment}
                         enter='transition-transform duration-300'
