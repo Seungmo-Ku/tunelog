@@ -32,7 +32,7 @@ export const DialogMobileRightDrawer = ({
                         leaveFrom='translate-x-0'
                         leaveTo='translate-x-full'
                     >
-                        <DialogPanel className='fixed right-0 top-0 w-1/2 h-full bg-tunelog-dark-alt p-4 flex flex-col gap-y-5'>
+                        <DialogPanel className='fixed right-0 top-0 w-3/4 sm:w-1/2 h-full bg-tunelog-dark-alt p-4 flex flex-col gap-y-5'>
                             <DialogTitle className='text-white text-30-semibold'>Menu</DialogTitle>
                             <div className='w-full flex flex-col gap-y-1 items-start'>
                                 {
