@@ -44,7 +44,7 @@ export const useNavbarAuth = () => {
                     open: true
                 }))
             },
-            title: 'Log Out'
+            title: 'Account Info'
         }
     ], [openDialogLogin, openDialogLogout, status])
     
