@@ -8,15 +8,18 @@ import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { useAccount } from '@/libs/utils/account'
 import { Dialogs } from '@/components/dialogs'
+import { ObjectCountResponse } from '@/libs/dto/account.dto'
 
 
 interface CardAccountProps {
     account: Account | null | undefined
     isMyAccount?: boolean
+    objectCount: ObjectCountResponse | null | undefined
 }
 
 export const CardAccount = ({
     account,
+    objectCount,
     isMyAccount = false
 }: CardAccountProps) => {
     const { mutateAsync, isPending } = useHandleLogout()
@@ -89,6 +92,36 @@ export const CardAccount = ({
                             >
                                 <label className='text-14-semibold text-black'>Followers</label>
                                 <p className='text-18-regular text-black'>{account.followerUids?.length || 0}</p>
+                            </div>
+                        </div>
+                        <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                            <div
+                                className='rounded-2xl bg-tunelog-light p-2 transition duration-300 cursor-pointer active:scale-95'
+                                onClick={() => {
+                                    if (isMyAccount) appRouter.push('/ratings')
+                                    //TODO. 다른 유저의 경우 처리
+                                }}
+                            >
+                                <label className='text-14-semibold text-black'>Rating</label>
+                                <p className='text-18-regular text-black'>{objectCount?.ratingCount ?? 0}</p>
+                            </div>
+                            <div
+                                className='rounded-2xl bg-tunelog-light p-2 transition duration-300 cursor-pointer active:scale-95'
+                                onClick={() => {
+                                    if (isMyAccount) appRouter.push('/journals')
+                                }}
+                            >
+                                <label className='text-14-semibold text-black'>Journal</label>
+                                <p className='text-18-regular text-black'>{objectCount?.journalCount ?? 0}</p>
+                            </div>
+                            <div
+                                className='rounded-2xl bg-tunelog-light p-2 transition duration-300 cursor-pointer active:scale-95'
+                                onClick={() => {
+                                    if (isMyAccount) appRouter.push('/topsters')
+                                }}
+                            >
+                                <label className='text-14-semibold text-black'>Topster</label>
+                                <p className='text-18-regular text-black'>{objectCount?.topsterCount ?? 0}</p>
                             </div>
                         </div>
                         <div className='pt-4 mt-4 border-t border-gray-700 text-12-regular text-gray-500'>

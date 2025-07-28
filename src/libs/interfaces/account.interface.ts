@@ -28,3 +28,9 @@ export class Account implements IAccount {
         this.followerUids = data.followerUids || []
     }
 }
+
+export interface IObjectCount {
+    ratingCount: number
+    journalCount: number
+    topsterCount: number
+}

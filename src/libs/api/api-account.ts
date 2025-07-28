@@ -1,6 +1,6 @@
 import { Account } from '@/libs/interfaces/account.interface'
 import axios from 'axios'
-import { AccountLoginDto, AccountRegisterDto } from '@/libs/dto/account.dto'
+import { AccountLoginDto, AccountRegisterDto, ObjectCountResponse } from '@/libs/dto/account.dto'
 
 
 const ApiAccount = {
@@ -49,6 +49,30 @@ const ApiAccount = {
                 return { status: 409, message: 'User already exists' }
             }
             return { status: 500, message: 'Internal server error' }
+        }
+    },
+    _get_my_object_count: async (): Promise<ObjectCountResponse | null> => {
+        try {
+            const response = await axios.get('/api/accounts/me/get-count')
+            if (response.status !== 200) {
+                return null
+            } else {
+                return response.data as ObjectCountResponse
+            }
+        } catch {
+            return null
+        }
+    },
+    _get_others_object_count: async (id: string): Promise<ObjectCountResponse | null> => {
+        try {
+            const response = await axios.get(`/api/accounts/${id}/get-count`)
+            if (response.status !== 200) {
+                return null
+            } else {
+                return response.data as ObjectCountResponse
+            }
+        } catch {
+            return null
         }
     }
 }

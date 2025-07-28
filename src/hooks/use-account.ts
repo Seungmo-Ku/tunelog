@@ -45,3 +45,16 @@ export const useHandleLogout = () => {
         }
     })
 }
+export const useGetMyObjectCount = () => {
+    return useQuery({
+        queryKey: ['my-object-count'],
+        queryFn: () => ApiAccount._get_my_object_count()
+    })
+}
+export const useOthersObjectCount = (id: string) => {
+    return useQuery({
+        queryKey: ['others-object-count', id],
+        queryFn: () => ApiAccount._get_others_object_count(id),
+        enabled: !!id
+    })
+}
