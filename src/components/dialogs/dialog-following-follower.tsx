@@ -1,24 +1,37 @@
 'use client'
 
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { capitalizeFirstLetter } from '@/libs/utils/string'
-import { isEmpty } from 'lodash'
+import { useGetUserFollower, useGetUserFollowing } from '@/hooks/use-account'
+import { Account } from '@/libs/interfaces/account.interface'
 
 
 interface DialogFollowingFollowerProps {
     open: boolean
     onCloseAction: () => void
-    uids: string[]
+    uid: string
     type: 'following' | 'follower'
 }
 
 export const DialogFollowingFollower = ({
     open,
     onCloseAction,
-    uids,
+    uid,
     type
 }: DialogFollowingFollowerProps) => {
+    const { data: followingData, isLoading: isFollowingLoading } = useGetUserFollowing(type === 'following' ? uid : '')
+    const { data: followerData, isLoading: isFollowerLoading } = useGetUserFollower(type === 'follower' ? uid : '')
+    const following = useMemo(() => {
+        if (isFollowingLoading || type !== 'following') return []
+        const followingsArray = followingData?.pages.flatMap(page => page.data) ?? []
+        return followingsArray?.map(account => new Account(account)) ?? []
+    }, [followingData?.pages, isFollowingLoading, type])
+    const follower = useMemo(() => {
+        if (isFollowerLoading || type !== 'follower') return []
+        const followersArray = followerData?.pages.flatMap(page => page.data) ?? []
+        return followersArray?.map(account => new Account(account)) ?? []
+    }, [followerData?.pages, isFollowerLoading, type])
     
     return (
         <Dialog transition open={open} onClose={onCloseAction} className='relative z-50 transition duration-300 ease-out data-closed:opacity-0'>
@@ -28,17 +41,24 @@ export const DialogFollowingFollower = ({
                     <DialogTitle className='font-bold'>{capitalizeFirstLetter(type)}</DialogTitle>
                     <div className='flex flex-col gap-y-2'>
                         {
-                            !isEmpty(uids) ? (
-                                uids.map((uid) => (
-                                    <p key={uid} className='text-white'>{uid}</p>
-                                ))
+                            type === 'following' ? (
+                                following.map(account => {
+                                    return (
+                                        <div key={account._id} className='flex items-center gap-x-2 p-2 hover:bg-gray-700 rounded-lg cursor-pointer'>
+                                            <span className='text-white'>{account.name}</span>
+                                        </div>
+                                    )
+                                })
                             ) : (
-                                <p className='text-white'>No {type} found.</p>
+                                follower.map(account => {
+                                    return (
+                                        <div key={account._id} className='flex items-center gap-x-2 p-2 hover:bg-gray-700 rounded-lg cursor-pointer'>
+                                            <span className='text-white'>{account.name}</span>
+                                        </div>
+                                    )
+                                })
                             )
                         }
-                        {/*
-                         카드 목록
-                         */}
                     </div>
                 </DialogPanel>
             </div>

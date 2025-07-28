@@ -1,7 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import ApiAccount from '@/libs/api/api-account'
-import { AccountLoginDto, AccountRegisterDto } from '@/libs/dto/account.dto'
+import { AccountLoginDto, AccountRegisterDto, AccountResponse } from '@/libs/dto/account.dto'
 import { QueryClient } from '@tanstack/query-core'
+import { DataConnection } from '@/libs/dto/rating.dto'
+import { isEmpty } from 'lodash'
 
 
 const invalidateQueries = (queryClient: QueryClient) => {
@@ -56,5 +58,29 @@ export const useOthersObjectCount = (id: string) => {
         queryKey: ['others-object-count', id],
         queryFn: () => ApiAccount._get_others_object_count(id),
         enabled: !!id
+    })
+}
+export const useGetUserFollowing = (id: string, limit: number = 10) => {
+    return useInfiniteQuery<DataConnection<AccountResponse>, Error>({
+        queryKey: ['user-following', id, limit],
+        queryFn: async ({ pageParam }) => {
+            const cursor = typeof pageParam === 'string' ? pageParam : ''
+            return await ApiAccount._get_user_following(id, limit, cursor) ?? { data: [], nextCursor: undefined }
+        },
+        initialPageParam: '',
+        getNextPageParam: (lastPage) => lastPage?.nextCursor,
+        enabled: !isEmpty(id)
+    })
+}
+export const useGetUserFollower = (id: string, limit: number = 10) => {
+    return useInfiniteQuery<DataConnection<AccountResponse>, Error>({
+        queryKey: ['user-follower', id, limit],
+        queryFn: async ({ pageParam }) => {
+            const cursor = typeof pageParam === 'string' ? pageParam : ''
+            return await ApiAccount._get_user_follower(id, limit, cursor) ?? { data: [], nextCursor: undefined }
+        },
+        initialPageParam: '',
+        getNextPageParam: (lastPage) => lastPage?.nextCursor,
+        enabled: !isEmpty(id)
     })
 }

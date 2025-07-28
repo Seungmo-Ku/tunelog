@@ -26,7 +26,6 @@ export const CardAccount = ({
     const { me } = useAccount()
     const appRouter = useRouter()
     const [openUidDialog, setOpenUidDialog] = useState<boolean>(false)
-    const [uids, setUids] = useState<string[]>([])
     const [type, setType] = useState<'following' | 'follower'>('following')
     
     const handleLogOut = useCallback(async () => {
@@ -74,7 +73,6 @@ export const CardAccount = ({
                             <div
                                 className='rounded-2xl bg-tunelog-light p-2 transition duration-300 cursor-pointer active:scale-95'
                                 onClick={() => {
-                                    setUids(account.followingUids || [])
                                     setType('following')
                                     setOpenUidDialog(true)
                                 }}
@@ -85,7 +83,6 @@ export const CardAccount = ({
                             <div
                                 className='rounded-2xl bg-tunelog-light p-2 transition duration-300 cursor-pointer active:scale-95'
                                 onClick={() => {
-                                    setUids(account.followerUids || [])
                                     setType('follower')
                                     setOpenUidDialog(true)
                                 }}
@@ -131,7 +128,7 @@ export const CardAccount = ({
                     </div>
                 )}
             </div>
-            <Dialogs.FollowingFollower open={openUidDialog} onCloseAction={() => setOpenUidDialog(false)} uids={uids} type={type}/>
+            <Dialogs.FollowingFollower open={openUidDialog} onCloseAction={() => setOpenUidDialog(false)} uid={account._id} type={type}/>
         </div>
     )
 }

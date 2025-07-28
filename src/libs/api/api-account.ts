@@ -1,6 +1,7 @@
 import { Account } from '@/libs/interfaces/account.interface'
 import axios from 'axios'
-import { AccountLoginDto, AccountRegisterDto, ObjectCountResponse } from '@/libs/dto/account.dto'
+import { AccountLoginDto, AccountRegisterDto, AccountResponse, ObjectCountResponse } from '@/libs/dto/account.dto'
+import { DataConnection } from '@/libs/dto/rating.dto'
 
 
 const ApiAccount = {
@@ -71,6 +72,32 @@ const ApiAccount = {
             } else {
                 return response.data as ObjectCountResponse
             }
+        } catch {
+            return null
+        }
+    },
+    _get_user_following: async (id: string, limit: number = 10, nextCursor?: string): Promise<DataConnection<AccountResponse> | null> => {
+        try {
+            const params = new URLSearchParams()
+            params.append('limit', limit.toString())
+            if (nextCursor) params.append('cursor', nextCursor)
+
+            const { data } = await axios.get<DataConnection<AccountResponse>>(`/api/accounts/${id}/following?${params.toString()}`)
+            if (!data) return null
+            return data
+        } catch {
+            return null
+        }
+    },
+    _get_user_follower: async (id: string, limit: number = 10, nextCursor?: string): Promise<DataConnection<AccountResponse> | null> => {
+        try {
+            const params = new URLSearchParams()
+            params.append('limit', limit.toString())
+            if (nextCursor) params.append('cursor', nextCursor)
+            
+            const { data } = await axios.get<DataConnection<AccountResponse>>(`/api/accounts/${id}/follower?${params.toString()}`)
+            if (!data) return null
+            return data
         } catch {
             return null
         }
