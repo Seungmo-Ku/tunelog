@@ -3,9 +3,11 @@
 import { Account } from '@/libs/interfaces/account.interface'
 import { Button } from '@/components/buttons'
 import { useHandleLogout } from '@/hooks/use-account'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import { useAccount } from '@/libs/utils/account'
+import { Dialogs } from '@/components/dialogs'
 
 
 interface CardAccountProps {
@@ -18,7 +20,11 @@ export const CardAccount = ({
     isMyAccount = false
 }: CardAccountProps) => {
     const { mutateAsync, isPending } = useHandleLogout()
+    const { me } = useAccount()
     const appRouter = useRouter()
+    const [openUidDialog, setOpenUidDialog] = useState<boolean>(false)
+    const [uids, setUids] = useState<string[]>([])
+    const [type, setType] = useState<'following' | 'follower'>('following')
     
     const handleLogOut = useCallback(async () => {
         if (isPending) return
@@ -43,10 +49,10 @@ export const CardAccount = ({
                     <h1 className='text-24-bold'>{isMyAccount ? 'My Account' : account.name}</h1>
                     <div className='flex flex-row gap-x-1'>
                         {!isMyAccount && (
-                            <Button.Box text='Follow'/>
+                            <Button.Box text={account.followerUids?.includes(me?._id ?? '') ? 'Unfollow' : 'Follow'}/>
                         )}
                         {isMyAccount && (
-                            <Button.Box text='Edit Profile' onClick={() => console.log('Edit Profile Clicked')}/>
+                            <Button.Box text='Edit Profile' disabled/>
                         )}
                         <Button.Box text='Log Out' onClick={handleLogOut}/>
                     </div>
@@ -62,13 +68,27 @@ export const CardAccount = ({
                             <p className='text-18-regular'>{account.name}</p>
                         </div>
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                            <div>
-                                <label className='text-14-semibold text-gray-400'>Following</label>
-                                <p className='text-18-regular'>{account.followingUids?.length || 0}</p>
+                            <div
+                                className='rounded-2xl bg-tunelog-light p-2 transition duration-300 cursor-pointer active:scale-95'
+                                onClick={() => {
+                                    setUids(account.followingUids || [])
+                                    setType('following')
+                                    setOpenUidDialog(true)
+                                }}
+                            >
+                                <label className='text-14-semibold text-black'>Following</label>
+                                <p className='text-18-regular text-black'>{account.followingUids?.length || 0}</p>
                             </div>
-                            <div>
-                                <label className='text-14-semibold text-gray-400'>Followers</label>
-                                <p className='text-18-regular'>{account.followerUids?.length || 0}</p>
+                            <div
+                                className='rounded-2xl bg-tunelog-light p-2 transition duration-300 cursor-pointer active:scale-95'
+                                onClick={() => {
+                                    setUids(account.followerUids || [])
+                                    setType('follower')
+                                    setOpenUidDialog(true)
+                                }}
+                            >
+                                <label className='text-14-semibold text-black'>Followers</label>
+                                <p className='text-18-regular text-black'>{account.followerUids?.length || 0}</p>
                             </div>
                         </div>
                         <div className='pt-4 mt-4 border-t border-gray-700 text-12-regular text-gray-500'>
@@ -78,6 +98,7 @@ export const CardAccount = ({
                     </div>
                 )}
             </div>
+            <Dialogs.FollowingFollower open={openUidDialog} onCloseAction={() => setOpenUidDialog(false)} uids={uids} type={type}/>
         </div>
     )
 }
