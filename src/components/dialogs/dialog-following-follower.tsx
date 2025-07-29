@@ -5,6 +5,8 @@ import React, { useMemo } from 'react'
 import { capitalizeFirstLetter } from '@/libs/utils/string'
 import { useGetUserFollower, useGetUserFollowing } from '@/hooks/use-account'
 import { Account } from '@/libs/interfaces/account.interface'
+import { useRouter } from 'next/navigation'
+import { Cards } from '@/components/cards'
 
 
 interface DialogFollowingFollowerProps {
@@ -20,6 +22,7 @@ export const DialogFollowingFollower = ({
     uid,
     type
 }: DialogFollowingFollowerProps) => {
+    const appRouter = useRouter()
     const { data: followingData, isLoading: isFollowingLoading } = useGetUserFollowing(type === 'following' ? uid : '')
     const { data: followerData, isLoading: isFollowerLoading } = useGetUserFollower(type === 'follower' ? uid : '')
     const following = useMemo(() => {
@@ -44,15 +47,20 @@ export const DialogFollowingFollower = ({
                             type === 'following' ? (
                                 following.map(account => {
                                     return (
-                                        <div key={account._id} className='flex items-center gap-x-2 p-2 hover:bg-gray-700 rounded-lg cursor-pointer'>
-                                            <span className='text-white'>{account.name}</span>
-                                        </div>
+                                        <Cards.UserList account={account} key={account._id}/>
                                     )
                                 })
                             ) : (
                                 follower.map(account => {
                                     return (
-                                        <div key={account._id} className='flex items-center gap-x-2 p-2 hover:bg-gray-700 rounded-lg cursor-pointer'>
+                                        <div
+                                            key={account._id}
+                                            className='flex items-center gap-x-2 p-2 hover:bg-gray-700 rounded-lg cursor-pointer'
+                                            onClick={() => {
+                                                appRouter.push(`/account/${account._id}`)
+                                                onCloseAction()
+                                            }}
+                                        >
                                             <span className='text-white'>{account.name}</span>
                                         </div>
                                     )

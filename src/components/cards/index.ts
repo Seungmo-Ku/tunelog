@@ -13,6 +13,7 @@ import { CardRatingWithContentSkeleton } from '@/components/cards/card-rating-wi
 import { CardCommunityItem } from '@/components/cards/card-community-item'
 import { CardCommunityItemSkeleton } from '@/components/cards/card-community-item-skeleton'
 import { CardAccount } from '@/components/cards/card-account'
+import { CardUserList } from '@/components/cards/card-user-list'
 
 
 export const Cards = {
@@ -30,5 +31,6 @@ export const Cards = {
     RatingWithContentSkeleton: CardRatingWithContentSkeleton,
     CommunityItem: CardCommunityItem,
     CommunityItemSkeleton: CardCommunityItemSkeleton,
-    Account: CardAccount
+    Account: CardAccount,
+    UserList: CardUserList
 }
