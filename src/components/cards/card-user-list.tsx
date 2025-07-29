@@ -6,6 +6,8 @@ import { Button } from '../buttons'
 import { useAccount } from '@/libs/utils/account'
 import { useRouter } from 'next/navigation'
 import { AccountStatus } from '@/libs/constants/account.constant'
+import { useFollowUnfollow } from '@/libs/utils/follow-unfollow'
+import { noop } from 'lodash'
 
 
 interface CardUserListProps {
@@ -18,9 +20,10 @@ export const CardUserList = ({
 }: CardUserListProps) => {
     const appRouter = useRouter()
     const { status, me } = useAccount()
+    const { handleFollowUnfollow, isFollowingUnfollowingPending } = useFollowUnfollow(account)
     
     const isFollowing = useMemo(() => {
-        if(status === AccountStatus.guest) return false
+        if (status === AccountStatus.guest) return false
         return me?.followingUids?.includes(account._id) || false
     }, [account._id, me?.followingUids, status])
     
@@ -34,7 +37,17 @@ export const CardUserList = ({
             }}
         >
             <span className='text-white'>{account.name}</span>
-            {account._id !== me?._id && <Button.Box text={isFollowing ? 'Unfollow' : 'Follow'} />}
+            {account._id !== me?._id &&
+                <Button.Box
+                    text={isFollowing ? 'Unfollow' : 'Follow'}
+                    disabled={isFollowingUnfollowingPending}
+                    onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        handleFollowUnfollow().then(noop)
+                    }}
+                />
+            }
         </div>
     )
 }

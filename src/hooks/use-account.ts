@@ -91,3 +91,27 @@ export const useGetUserById = (id: string | undefined) => {
         enabled: !isEmpty(id)
     })
 }
+export const useFollowUser = (id: string) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async () => await ApiAccount._follow_user(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['user-following'] })
+            queryClient.invalidateQueries({ queryKey: ['user-follower'] })
+            queryClient.invalidateQueries({ queryKey: ['me'] })
+            queryClient.invalidateQueries({ queryKey: ['user-by-id', id] })
+        }
+    })
+}
+export const useUnfollowUser = (id: string) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async () => await ApiAccount._unfollow_user(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['user-following'] })
+            queryClient.invalidateQueries({ queryKey: ['user-follower'] })
+            queryClient.invalidateQueries({ queryKey: ['me'] })
+            queryClient.invalidateQueries({ queryKey: ['user-by-id', id] })
+        }
+    })
+}

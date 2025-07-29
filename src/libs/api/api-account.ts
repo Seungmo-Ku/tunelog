@@ -113,6 +113,28 @@ const ApiAccount = {
         } catch {
             return null
         }
+    },
+    _follow_user: async (id: string): Promise<boolean> => {
+        try {
+            const response = await axios.post(`/api/accounts/${id}/following`)
+            return response.status === 201
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error) && error.response?.status === 400) {
+                return false
+            }
+            return false
+        }
+    },
+    _unfollow_user: async (id: string): Promise<boolean> => {
+        try {
+            const response = await axios.delete(`/api/accounts/${id}/following`)
+            return response.status === 200
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error) && error.response?.status === 400) {
+                return false
+            }
+            return false
+        }
     }
 }
 

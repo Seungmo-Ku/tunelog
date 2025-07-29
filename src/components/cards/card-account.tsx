@@ -9,7 +9,8 @@ import { useRouter } from 'next/navigation'
 import { useAccount } from '@/libs/utils/account'
 import { Dialogs } from '@/components/dialogs'
 import { ObjectCountResponse } from '@/libs/dto/account.dto'
-import { isEmpty } from 'lodash'
+import { isEmpty, noop } from 'lodash'
+import { useFollowUnfollow } from '@/libs/utils/follow-unfollow'
 
 
 interface CardAccountProps {
@@ -28,6 +29,8 @@ export const CardAccount = ({
     const appRouter = useRouter()
     const [openUidDialog, setOpenUidDialog] = useState<boolean>(false)
     const [type, setType] = useState<'following' | 'follower'>('following')
+    
+    const { handleFollowUnfollow, isFollowingUnfollowingPending } = useFollowUnfollow(account)
     
     const handleLogOut = useCallback(async () => {
         if (isPending) return
@@ -52,7 +55,15 @@ export const CardAccount = ({
                     <h1 className='text-24-bold'>{isMyAccount ? 'My Account' : account.name}</h1>
                     <div className='flex flex-row gap-x-1'>
                         {!isMyAccount && (
-                            <Button.Box text={account.followerUids?.includes(me?._id ?? '') ? 'Unfollow' : 'Follow'}/>
+                            <Button.Box
+                                text={account.followerUids?.includes(me?._id ?? '') ? 'Unfollow' : 'Follow'}
+                                disabled={isFollowingUnfollowingPending}
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    handleFollowUnfollow().then(noop)
+                                }}
+                            />
                         )}
                         {isMyAccount && (
                             <Button.Box text='Edit Profile' disabled/>
