@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 import { useAccount } from '@/libs/utils/account'
 import { Dialogs } from '@/components/dialogs'
 import { ObjectCountResponse } from '@/libs/dto/account.dto'
+import { isEmpty } from 'lodash'
 
 
 interface CardAccountProps {
@@ -73,6 +74,7 @@ export const CardAccount = ({
                             <div
                                 className='rounded-2xl bg-tunelog-light p-2 transition duration-300 cursor-pointer active:scale-95'
                                 onClick={() => {
+                                    if (isEmpty(account?.followingUids)) return
                                     setType('following')
                                     setOpenUidDialog(true)
                                 }}
@@ -83,6 +85,7 @@ export const CardAccount = ({
                             <div
                                 className='rounded-2xl bg-tunelog-light p-2 transition duration-300 cursor-pointer active:scale-95'
                                 onClick={() => {
+                                    if (isEmpty(account?.followerUids)) return
                                     setType('follower')
                                     setOpenUidDialog(true)
                                 }}

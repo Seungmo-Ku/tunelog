@@ -101,6 +101,18 @@ const ApiAccount = {
         } catch {
             return null
         }
+    },
+    _get_user_by_id: async (id: string): Promise<Account | null> => {
+        try {
+            const response = await axios.get(`/api/accounts/${id}`)
+            if (response.status !== 200) {
+                return null
+            } else {
+                return new Account(response.data)
+            }
+        } catch {
+            return null
+        }
     }
 }
 

@@ -53,7 +53,7 @@ export const useGetMyObjectCount = () => {
         queryFn: () => ApiAccount._get_my_object_count()
     })
 }
-export const useOthersObjectCount = (id: string) => {
+export const useGetOthersObjectCount = (id: string) => {
     return useQuery({
         queryKey: ['others-object-count', id],
         queryFn: () => ApiAccount._get_others_object_count(id),
@@ -81,6 +81,13 @@ export const useGetUserFollower = (id: string, limit: number = 10) => {
         },
         initialPageParam: '',
         getNextPageParam: (lastPage) => lastPage?.nextCursor,
+        enabled: !isEmpty(id)
+    })
+}
+export const useGetUserById = (id: string | undefined) => {
+    return useQuery({
+        queryKey: ['user-by-id', id],
+        queryFn: () => ApiAccount._get_user_by_id(id!),
         enabled: !isEmpty(id)
     })
 }
