@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetMyRatings } from '@/hooks/use-rating'
+import { useGetMyRatings, useGetUserRatings } from '@/hooks/use-rating'
 import { useRatingWithObjects } from '@/hooks/use-rating-with-objects'
 import { Cards } from '@/components/cards'
 import { SearchType } from '@/libs/constants/spotify.constant'
@@ -23,7 +23,15 @@ import { AccountStatus } from '@/libs/constants/account.constant'
 import { useTranslation } from 'react-i18next'
 
 
-export const MyRatings = () => {
+interface AllRatingsProps {
+    showMyRating: boolean
+    uid?: string | null | undefined
+}
+
+export const AllRatings = ({
+    showMyRating = true,
+    uid
+}: AllRatingsProps) => {
     const appRouter = useRouter()
     const { status } = useAccount()
     const [filterIndex, setFilterIndex] = useState(0)
@@ -57,21 +65,31 @@ export const MyRatings = () => {
         }
     }, [sortingIndex])
     
-    const { data: ratingsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isRatingLoading } = useGetMyRatings(20, selectedFilter, selectedSorting)
+    const { data: myRatingsData, fetchNextPage: myFetchNextPage, hasNextPage: myHasNextPage, isFetchingNextPage: isMyFetchingNextPage, isLoading: isMyRatingLoading } = useGetMyRatings(20, selectedFilter, selectedSorting, showMyRating)
+    const { data: userRatingsData, fetchNextPage: userFetchNextPage, hasNextPage: userHasNextPage, isFetchingNextPage: userIsFetchingNextPage, isLoading: isUserRatingLoading } = useGetUserRatings(uid ?? '', 20, selectedFilter, selectedSorting, !showMyRating)
     
     const ratings = useMemo(() => {
-        if (isRatingLoading) return []
-        const ratingsArray = ratingsData?.pages.flatMap(page => page.data) ?? []
-        return ratingsArray?.map(rating => new Rating(rating)) ?? []
-    }, [isRatingLoading, ratingsData?.pages])
+        if (showMyRating) {
+            if (isMyRatingLoading) return []
+            const ratingsArray = myRatingsData?.pages.flatMap(page => page.data) ?? []
+            return ratingsArray?.map(rating => new Rating(rating)) ?? []
+        } else {
+            if (isUserRatingLoading) return []
+            const ratingsArray = userRatingsData?.pages.flatMap(page => page.data) ?? []
+            return ratingsArray?.map(rating => new Rating(rating)) ?? []
+        }
+    }, [isMyRatingLoading, isUserRatingLoading, myRatingsData?.pages, showMyRating, userRatingsData?.pages])
     
     const { ref, inView } = useInView()
     
     useEffect(() => {
-        if (inView && hasNextPage && !isFetchingNextPage) {
-            fetchNextPage().then(noop)
+        if (inView) {
+            if (showMyRating && !isMyFetchingNextPage && myHasNextPage)
+                myFetchNextPage().then(noop)
+            else if (!showMyRating && !userIsFetchingNextPage && userHasNextPage)
+                userFetchNextPage().then(noop)
         }
-    }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage])
+    }, [inView, isMyFetchingNextPage, myFetchNextPage, myHasNextPage, showMyRating, userFetchNextPage, userHasNextPage, userIsFetchingNextPage])
     
     const { objectId, objectType } = useRatingHash()
     
@@ -101,7 +119,7 @@ export const MyRatings = () => {
                 <div className='w-[1px] h-full bg-white md:flex hidden'/>
                 <SortingButtons sortingIndex={sortingIndex} setSortingIndexAction={setSortingIndex}/>
                 <div className='w-[1px] h-full bg-white md:flex hidden'/>
-                <Button.Box
+                {showMyRating && <Button.Box
                     text={t('ratings.new_rating')}
                     leftIcon={PlusIcon}
                     className='text-14-regular w-fit h-10'
@@ -113,12 +131,12 @@ export const MyRatings = () => {
                         }
                         setNewRatingOpen(true)
                     }}
-                />
+                />}
             </div>
             <div className='flex flex-col w-full'>
                 {
                     isEmpty(ratings) && (
-                        isRatingLoading ?
+                        isMyRatingLoading ?
                         Array.from({ length: 5 }).map((_, index) => (
                             <Cards.LongSkeleton key={`AllRatings-Skeleton-${index}`}/>
                         )) :
@@ -126,13 +144,13 @@ export const MyRatings = () => {
                             <Star className='w-10 h-10 text-white'/>
                             <div className='flex flex-col gap-y-1'>
                                 <p className='text-16-bold text-white'>{t('ratings.no_rating_yet')}</p>
-                                <p className='text-14-regular text-tunelog-secondary'>{t('ratings.leave_rating')}</p>
+                                {showMyRating && <p className='text-14-regular text-tunelog-secondary'>{t('ratings.leave_rating')}</p>}
                             </div>
                         </div>
                     )
                 }
                 {
-                    !isRatingLoading && !isEmpty(ratings) &&
+                    !isMyRatingLoading && !isEmpty(ratings) &&
                     ratings?.map((rating, index) => {
                         let imgUrl: string = '', title: string = ''
                         if (!rating.spotifyId || !rating.type) {
@@ -172,7 +190,7 @@ export const MyRatings = () => {
                 }
                 <div ref={ref}/>
                 {
-                    isFetchingNextPage && hasNextPage &&
+                    (isMyFetchingNextPage || userIsFetchingNextPage) &&
                     <Cards.LongSkeleton/>
                 }
             </div>

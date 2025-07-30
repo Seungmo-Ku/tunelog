@@ -5,17 +5,17 @@ import { Account } from '@/models/account-schema.model'
 import { findUserByCookie } from '@/libs/utils/password'
 
 
-export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
-    const { id } = await params
+export const GET = async (req: NextRequest, { params }: { params: Promise<{ uid: string }> }) => {
+    const { uid } = await params
     const { searchParams } = new URL(req.url)
     const limit = !isEmpty(searchParams.get('limit')) ? parseInt(searchParams.get('limit')!) : 10
     const cursor = searchParams.get('cursor')
     
     await connectDB()
-    if (!id) {
+    if (!uid) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    const user = await Account.findById(id)
+    const user = await Account.findById(uid)
     if (!user) {
         return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
@@ -36,9 +36,9 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
     })
 }
 
-export const POST = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
-    const { id } = await params
-    if (!id) {
+export const POST = async (req: NextRequest, { params }: { params: Promise<{ uid: string }> }) => {
+    const { uid } = await params
+    if (!uid) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     
@@ -46,7 +46,7 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ id:
     if (!followingUser) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    const followedUser = await Account.findById(id)
+    const followedUser = await Account.findById(uid)
     if (!followedUser) {
         return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
@@ -66,9 +66,9 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ message: 'Followed successfully' }, { status: 201 })
 }
 
-export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
-    const { id } = await params
-    if (!id) {
+export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ uid: string }> }) => {
+    const { uid } = await params
+    if (!uid) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     
@@ -76,7 +76,7 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
     if (!followingUser) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    const followedUser = await Account.findById(id)
+    const followedUser = await Account.findById(uid)
     if (!followedUser) {
         return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }

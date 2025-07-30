@@ -3,14 +3,14 @@ import { connectDB } from '@/libs/api-server/mongoose'
 import { Account } from '@/models/account-schema.model'
 
 
-export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
-    const { id } = await params
+export const GET = async (req: NextRequest, { params }: { params: Promise<{ uid: string }> }) => {
+    const { uid } = await params
     
     await connectDB()
-    if (!id) {
+    if (!uid) {
         return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
     }
-    const user = await Account.findById(id)
+    const user = await Account.findById(uid)
     if (!user || !user.isActive) {
         return new Response(JSON.stringify({ error: 'User not found' }), { status: 404 })
     }
