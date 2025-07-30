@@ -50,7 +50,7 @@ export const useNavbarAuth = () => {
         },
         {
             Icon: Settings,
-            show: status !== AccountStatus.guest,
+            show: true,
             onClick: () => {
                 openDialogSettings(prev => ({
                     ...prev,

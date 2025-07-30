@@ -2,12 +2,9 @@
 
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { Button } from '@/components/buttons'
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { atom, useAtom } from 'jotai'
 import { useTranslation } from 'react-i18next'
-import { AccountStatus } from '@/libs/constants/account.constant'
-import { useAccount } from '@/libs/utils/account'
-
 
 export interface DialogSettingsProps {
     open: boolean
@@ -21,7 +18,6 @@ export const DialogSettings = () => {
     const { i18n } = useTranslation()
     const [dialogSettings, setDialogSettings] = useAtom(DialogSettingsAtom)
     const { open } = dialogSettings
-    const { status } = useAccount()
     
     const currentLanguage = useMemo(() => {
         switch (i18n.language) {
@@ -39,12 +35,6 @@ export const DialogSettings = () => {
             { ...prev, open: false }
         ))
     }, [setDialogSettings])
-    
-    useEffect(() => {
-        if (status === AccountStatus.guest) {
-            onClose()
-        }
-    }, [onClose, status])
     
     return (
         <Dialog transition open={open} onClose={onClose} className='relative z-50 transition duration-300 ease-out data-closed:opacity-0'>
