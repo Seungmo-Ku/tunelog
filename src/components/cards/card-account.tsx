@@ -68,7 +68,9 @@ export const CardAccount = ({
                         {isMyAccount && (
                             <Button.Box text='Edit Profile' disabled/>
                         )}
-                        <Button.Box text='Log Out' onClick={handleLogOut}/>
+                        {isMyAccount && (
+                            <Button.Box text='Log Out' onClick={handleLogOut}/>
+                        )}
                     </div>
                 </div>
                 {account && (
