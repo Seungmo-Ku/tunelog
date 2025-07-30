@@ -68,11 +68,15 @@ export const AllJournals = ({
     
     const PlusIcon = useMemo(() => <Plus className='w-5 h-5 text-tunelog-secondary'/>, [])
     
+    const isLoading = useMemo(() => {
+        return showMyJournal ? isMyJournalLoading : isUserJournalLoading
+    }, [isMyJournalLoading, isUserJournalLoading, showMyJournal])
+    
     return (
         <div className='flex flex-col w-full gap-y-10'>
             {showMyJournal && <Button.Box text={t('journals.new_journal')} leftIcon={PlusIcon} className='text-14-regular w-fit h-10' onClick={() => appRouter.push('/journals/create')}/>}
             {
-                isMyJournalLoading && isEmpty(sortedEntries) && (
+                isLoading && isEmpty(sortedEntries) && (
                     <div className='flex gap-x-3'>
                         {
                             Array.from({ length: 5 }).map((_, index) => (
@@ -83,7 +87,7 @@ export const AllJournals = ({
                 )
             }
             {
-                !isMyJournalLoading && isEmpty(sortedEntries) && (
+                !isLoading && isEmpty(sortedEntries) && (
                     <div className='flex flex-col items-center justify-center w-full py-20 text-center gap-y-4'>
                         <BookText className='w-10 h-10 text-white'/>
                         <div className='flex flex-col gap-y-1'>
@@ -94,7 +98,7 @@ export const AllJournals = ({
                 )
             }
             {
-                !isMyJournalLoading && !isEmpty(sortedEntries) && (
+                !isLoading && !isEmpty(sortedEntries) && (
                     <div className='flex flex-col gap-y-5'>
                         {
                             sortedEntries.map(([yearMonth, monthJournals]) => (

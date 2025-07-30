@@ -112,6 +112,10 @@ export const AllRatings = ({
     
     const PlusIcon = useMemo(() => <Plus className='w-5 h-5 text-tunelog-secondary'/>, [])
     
+    const isLoading = useMemo(() => {
+        return showMyRating ? isMyRatingLoading : isUserRatingLoading
+    }, [isMyRatingLoading, isUserRatingLoading, showMyRating])
+    console.log('isLoading', isLoading)
     return (
         <div className='flex flex-col gap-y-10 relative w-full overflow-x-hidden'>
             <div className='w-full flex md:flex-row flex-col  gap-x-5 gap-y-4'>
@@ -136,7 +140,7 @@ export const AllRatings = ({
             <div className='flex flex-col w-full'>
                 {
                     isEmpty(ratings) && (
-                        isMyRatingLoading ?
+                        isLoading ?
                         Array.from({ length: 5 }).map((_, index) => (
                             <Cards.LongSkeleton key={`AllRatings-Skeleton-${index}`}/>
                         )) :
@@ -150,7 +154,7 @@ export const AllRatings = ({
                     )
                 }
                 {
-                    !isMyRatingLoading && !isEmpty(ratings) &&
+                    !isLoading && !isEmpty(ratings) &&
                     ratings?.map((rating, index) => {
                         let imgUrl: string = '', title: string = ''
                         if (!rating.spotifyId || !rating.type) {
