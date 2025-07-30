@@ -120,6 +120,7 @@ export const CardAccount = ({
                                 className='rounded-2xl bg-tunelog-light p-2 transition duration-300 cursor-pointer active:scale-95'
                                 onClick={() => {
                                     if (isMyAccount) appRouter.push('/journals')
+                                    appRouter.push(`/journals/user/${account?._id ?? ''}`)
                                 }}
                             >
                                 <label className='text-14-semibold text-black'>Journal</label>
