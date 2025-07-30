@@ -1,13 +1,14 @@
 'use client'
 
 import React, { useMemo } from 'react'
-import { LogIn, User } from 'lucide-react'
+import { LogIn, User, Settings } from 'lucide-react'
 import { AccountStatus } from '@/libs/constants/account.constant'
 import { useAccount } from '@/libs/utils/account'
 import { useSetAtom } from 'jotai/index'
 import { DialogLoginAtom } from '@/components/dialogs/dialog-login'
 import { clsx } from 'clsx'
 import { DialogLogoutAtom } from '@/components/dialogs/dialog-logout'
+import { DialogSettingsAtom } from '@/components/dialogs/dialog-settings'
 
 
 export interface NavbarAuthProps {
@@ -22,6 +23,7 @@ export const useNavbarAuth = () => {
     
     const openDialogLogin = useSetAtom(DialogLoginAtom)
     const openDialogLogout = useSetAtom(DialogLogoutAtom)
+    const openDialogSettings = useSetAtom(DialogSettingsAtom)
     
     const navbarAuthComponents: NavbarAuthProps[] = useMemo(() => [
         {
@@ -45,8 +47,19 @@ export const useNavbarAuth = () => {
                 }))
             },
             title: 'Account Info'
+        },
+        {
+            Icon: Settings,
+            show: status !== AccountStatus.guest,
+            onClick: () => {
+                openDialogSettings(prev => ({
+                    ...prev,
+                    open: true
+                }))
+            },
+            title: 'Settings'
         }
-    ], [openDialogLogin, openDialogLogout, status])
+    ], [openDialogLogin, openDialogLogout, openDialogSettings, status])
     
     const navbarAuth = useMemo(() => {
         return (
