@@ -5,7 +5,7 @@ import { DataConnection } from '@/libs/dto/rating.dto'
 import { useAccount } from '@/libs/utils/account'
 
 
-export const useGetMyTopsters = (limit: number = 10) => {
+export const useGetMyTopsters = (limit: number = 10, enabled: boolean = true) => {
     const { status, me } = useAccount()
     return useInfiniteQuery<DataConnection<TopsterResponse>, Error>({
         queryKey: ['topster-my', status, me?._id ?? '', limit],
@@ -14,7 +14,8 @@ export const useGetMyTopsters = (limit: number = 10) => {
             return await ApiTopster._get_my_topsters(limit, cursor) ?? { data: [], nextCursor: undefined }
         },
         initialPageParam: '',
-        getNextPageParam: (lastPage) => lastPage?.nextCursor
+        getNextPageParam: (lastPage) => lastPage?.nextCursor,
+        enabled: enabled
     })
 }
 export const useGetTopster = (id: string) => {
@@ -78,5 +79,17 @@ export const useUnlikeTopster = () => {
             queryClient.invalidateQueries({ queryKey: ['topster'] })
             queryClient.invalidateQueries({ queryKey: ['community-all'] })
         }
+    })
+}
+export const useGetUserTopsters = (id: string, limit: number = 10, enabled: boolean = true) => {
+    return useInfiniteQuery<DataConnection<TopsterResponse>, Error>({
+        queryKey: ['topster-user', id, limit],
+        queryFn: async ({ pageParam }) => {
+            const cursor = typeof pageParam === 'string' ? pageParam : ''
+            return await ApiTopster._get_user_topsters(id, limit, cursor) ?? { data: [], nextCursor: undefined }
+        },
+        initialPageParam: '',
+        getNextPageParam: (lastPage) => lastPage?.nextCursor,
+        enabled: enabled
     })
 }

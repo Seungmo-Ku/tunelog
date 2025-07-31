@@ -17,7 +17,7 @@ export const useGetAllPublicJournals = (limit: number = 10) => {
         getNextPageParam: (lastPage) => lastPage?.nextCursor
     })
 }
-export const useGetMyJournals = (limit: number = 10) => {
+export const useGetMyJournals = (limit: number = 10, enabled: boolean = true) => {
     const { status, me } = useAccount()
     return useInfiniteQuery<DataConnection<JournalResponse>, Error>({
         queryKey: ['journal-my', status, me?._id ?? '', limit],
@@ -26,7 +26,8 @@ export const useGetMyJournals = (limit: number = 10) => {
             return await ApiJournal._get_my_journals(limit, cursor) ?? { data: [], nextCursor: undefined }
         },
         initialPageParam: '',
-        getNextPageParam: (lastPage) => lastPage?.nextCursor
+        getNextPageParam: (lastPage) => lastPage?.nextCursor,
+        enabled: enabled
     })
 }
 export const useGetJournal = (id: string | undefined) => {
@@ -109,5 +110,17 @@ export const useUnlikeJournal = () => {
             queryClient.invalidateQueries({ queryKey: ['community-all'] })
             queryClient.invalidateQueries({ queryKey: ['journal'] })
         }
+    })
+}
+export const useGetUserJournals = (id: string, limit: number = 10, enabled: boolean = true) => {
+    return useInfiniteQuery<DataConnection<JournalResponse>, Error>({
+        queryKey: ['journal-user', id, limit],
+        queryFn: async ({ pageParam }) => {
+            const cursor = typeof pageParam === 'string' ? pageParam : ''
+            return await ApiJournal._get_user_journals(id, limit, cursor) ?? { data: [], nextCursor: undefined }
+        },
+        initialPageParam: '',
+        getNextPageParam: (lastPage) => lastPage?.nextCursor,
+        enabled: enabled && !isEmpty(id)
     })
 }

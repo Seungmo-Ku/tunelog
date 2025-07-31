@@ -94,6 +94,21 @@ const ApiRating = {
         } catch {
             return false
         }
+    },
+    _get_user_ratings: async (id: string, limit: number = 10, type: RatingQueryType = 'all', sort: RatingSortType = 'newest', nextCursor?: string): Promise<DataConnection<RatingResponse> | null> => {
+        try {
+            const params = new URLSearchParams()
+            params.append('limit', limit.toString())
+            params.append('type', type)
+            params.append('sort', sort)
+            if (nextCursor) params.append('cursor', nextCursor)
+            
+            const { data } = await axios.get<DataConnection<RatingResponse>>(`/api/ratings/user/${id}?${params.toString()}`)
+            if (!data) return null
+            return data
+        } catch {
+            return null
+        }
     }
 }
 

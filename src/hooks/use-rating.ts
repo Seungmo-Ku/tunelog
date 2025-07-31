@@ -17,7 +17,7 @@ export const useGetAllPublicRatings = (limit: number = 10, type: RatingQueryType
         getNextPageParam: (lastPage) => lastPage?.nextCursor
     })
 }
-export const useGetMyRatings = (limit: number = 10, type: RatingQueryType = 'all', sort: RatingSortType = 'newest') => {
+export const useGetMyRatings = (limit: number = 10, type: RatingQueryType = 'all', sort: RatingSortType = 'newest', enabled: boolean = true) => {
     const { status, me } = useAccount()
     return useInfiniteQuery<DataConnection<RatingResponse>, Error>({
         queryKey: ['rating-my', status, me?._id ?? '', limit, type, sort],
@@ -26,7 +26,8 @@ export const useGetMyRatings = (limit: number = 10, type: RatingQueryType = 'all
             return await ApiRating._get_my_ratings(limit, type, sort, cursor) ?? { data: [], nextCursor: undefined }
         },
         initialPageParam: '',
-        getNextPageParam: (lastPage) => lastPage?.nextCursor
+        getNextPageParam: (lastPage) => lastPage?.nextCursor,
+        enabled: enabled && !isEmpty(me?._id)
     })
 }
 export const usePostRating = () => {
@@ -100,5 +101,17 @@ export const useUnlikeRating = () => {
             queryClient.invalidateQueries({ queryKey: ['rating-by-spotify-id'] })
             queryClient.invalidateQueries({ queryKey: ['community-all'] })
         }
+    })
+}
+export const useGetUserRatings = (id: string, limit: number = 10, type: RatingQueryType = 'all', sort: RatingSortType = 'newest', enabled: boolean = true) => {
+    return useInfiniteQuery<DataConnection<RatingResponse>, Error>({
+        queryKey: ['rating-user', id, limit, type, sort],
+        queryFn: async ({ pageParam }) => {
+            const cursor = typeof pageParam === 'string' ? pageParam : ''
+            return await ApiRating._get_user_ratings(id, limit, type, sort, cursor) ?? { data: [], nextCursor: undefined }
+        },
+        initialPageParam: '',
+        getNextPageParam: (lastPage) => lastPage?.nextCursor,
+        enabled: !isEmpty(id) && enabled
     })
 }
