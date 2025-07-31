@@ -115,7 +115,7 @@ export const AllRatings = ({
     const isLoading = useMemo(() => {
         return showMyRating ? isMyRatingLoading : isUserRatingLoading
     }, [isMyRatingLoading, isUserRatingLoading, showMyRating])
-    console.log('isLoading', isLoading)
+    
     return (
         <div className='flex flex-col gap-y-10 relative w-full overflow-x-hidden'>
             <div className='w-full flex md:flex-row flex-col  gap-x-5 gap-y-4'>
