@@ -56,7 +56,7 @@ export const CardAccount = ({
                     <div className='flex flex-row gap-x-1'>
                         {!isMyAccount && (
                             <Button.Box
-                                text={account.followerUids?.includes(me?._id ?? '') ? 'Unfollow' : 'Follow'}
+                                text={me?.followingUids?.includes(account._id ?? '') ? 'Unfollow' : 'Follow'}
                                 disabled={isFollowingUnfollowingPending}
                                 onClick={(e) => {
                                     e.preventDefault()
