@@ -15,7 +15,7 @@ import { useJournalWithObjects } from '@/hooks/use-journal-with-objects'
 export const TopJournal = () => {
     
     const appRouter = useRouter()
-    const { data: journalsData, isLoading: isJournalLoading } = useGetAllPublicJournals(4)
+    const { data: journalsData, isLoading: isJournalLoading } = useGetAllPublicJournals(4, 'likes')
     const journals = useMemo(() => {
         if (isJournalLoading) return []
         const journalsArray = journalsData?.pages.flatMap(page => page.data) ?? []
