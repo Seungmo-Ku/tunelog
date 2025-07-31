@@ -4,6 +4,7 @@ import { AccountLoginDto, AccountRegisterDto, AccountResponse } from '@/libs/dto
 import { QueryClient } from '@tanstack/query-core'
 import { DataConnection } from '@/libs/dto/rating.dto'
 import { isEmpty } from 'lodash'
+import { useAccount } from '@/libs/utils/account'
 
 
 const invalidateQueries = (queryClient: QueryClient) => {
@@ -48,14 +49,16 @@ export const useHandleLogout = () => {
     })
 }
 export const useGetMyObjectCount = () => {
+    const { status, me } = useAccount()
     return useQuery({
-        queryKey: ['my-object-count'],
+        queryKey: ['my-object-count', status, me?._id ?? ''],
         queryFn: () => ApiAccount._get_my_object_count()
     })
 }
 export const useGetOthersObjectCount = (id: string) => {
+    const { status, me } = useAccount()
     return useQuery({
-        queryKey: ['others-object-count', id],
+        queryKey: ['others-object-count', id, status, me?._id ?? ''],
         queryFn: () => ApiAccount._get_others_object_count(id),
         enabled: !!id
     })
