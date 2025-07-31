@@ -6,12 +6,12 @@ import { isEmpty } from 'lodash'
 import { useAccount } from '@/libs/utils/account'
 
 
-export const useGetAllPublicJournals = (limit: number = 10) => {
+export const useGetAllPublicJournals = (limit: number = 10, sort: 'newest' | 'likes' = 'newest') => {
     return useInfiniteQuery<DataConnection<JournalResponse>, Error>({
-        queryKey: ['journal-all', limit],
+        queryKey: ['journal-all', limit, sort],
         queryFn: async ({ pageParam }) => {
             const cursor = typeof pageParam === 'string' ? pageParam : ''
-            return await ApiJournal._get_all_public_journals(limit, cursor) ?? { data: [], nextCursor: undefined }
+            return await ApiJournal._get_all_public_journals(limit, sort, cursor) ?? { data: [], nextCursor: undefined }
         },
         initialPageParam: '',
         getNextPageParam: (lastPage) => lastPage?.nextCursor
