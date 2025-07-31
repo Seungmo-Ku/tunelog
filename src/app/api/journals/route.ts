@@ -19,7 +19,7 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
         deleted: false,
         public: true
     }
-    
+    // TODO. pagenation 이 필요해지면 nextCursor 사용
     if (sort === 'likes') {
         const pipeline: PipelineStage[] = [
             { $match: match },
