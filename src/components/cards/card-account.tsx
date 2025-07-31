@@ -111,8 +111,11 @@ export const CardAccount = ({
                             <div
                                 className='rounded-2xl bg-tunelog-light p-2 transition duration-300 cursor-pointer active:scale-95'
                                 onClick={() => {
-                                    if (isMyAccount) appRouter.push('/ratings')
-                                    appRouter.push(`/ratings/user/${account?._id ?? ''}`)
+                                    if (isMyAccount) {
+                                        appRouter.push('/ratings')
+                                    } else {
+                                        appRouter.push(`/ratings/user/${account?._id ?? ''}`)
+                                    }
                                 }}
                             >
                                 <label className='text-14-semibold text-black'>Rating</label>
