@@ -56,7 +56,7 @@ export const CardAccount = ({
                     <div className='flex flex-row gap-x-1'>
                         {!isMyAccount && (
                             <Button.Box
-                                text={account.followerUids?.includes(me?._id ?? '') ? 'Unfollow' : 'Follow'}
+                                text={me?.followingUids?.includes(account._id ?? '') ? 'Unfollow' : 'Follow'}
                                 disabled={isFollowingUnfollowingPending}
                                 onClick={(e) => {
                                     e.preventDefault()
@@ -111,8 +111,11 @@ export const CardAccount = ({
                             <div
                                 className='rounded-2xl bg-tunelog-light p-2 transition duration-300 cursor-pointer active:scale-95'
                                 onClick={() => {
-                                    if (isMyAccount) appRouter.push('/ratings')
-                                    appRouter.push(`/ratings/user/${account?._id ?? ''}`)
+                                    if (isMyAccount) {
+                                        appRouter.push('/ratings')
+                                    } else {
+                                        appRouter.push(`/ratings/user/${account?._id ?? ''}`)
+                                    }
                                 }}
                             >
                                 <label className='text-14-semibold text-black'>Rating</label>
@@ -121,8 +124,11 @@ export const CardAccount = ({
                             <div
                                 className='rounded-2xl bg-tunelog-light p-2 transition duration-300 cursor-pointer active:scale-95'
                                 onClick={() => {
-                                    if (isMyAccount) appRouter.push('/journals')
-                                    appRouter.push(`/journals/user/${account?._id ?? ''}`)
+                                    if (isMyAccount) {
+                                        appRouter.push('/journals')
+                                    } else {
+                                        appRouter.push(`/journals/user/${account?._id ?? ''}`)
+                                    }
                                 }}
                             >
                                 <label className='text-14-semibold text-black'>Journal</label>
@@ -131,8 +137,11 @@ export const CardAccount = ({
                             <div
                                 className='rounded-2xl bg-tunelog-light p-2 transition duration-300 cursor-pointer active:scale-95'
                                 onClick={() => {
-                                    if (isMyAccount) appRouter.push('/topsters')
-                                    appRouter.push(`/topsters/user/${account?._id ?? ''}`)
+                                    if (isMyAccount) {
+                                        appRouter.push('/topsters')
+                                    } else {
+                                        appRouter.push(`/topsters/user/${account?._id ?? ''}`)
+                                    }
                                 }}
                             >
                                 <label className='text-14-semibold text-black'>Topster</label>
