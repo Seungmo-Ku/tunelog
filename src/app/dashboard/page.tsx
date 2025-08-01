@@ -10,7 +10,7 @@ import { useGetRecommended } from '@/hooks/use-recommended'
 import { isEmpty } from 'lodash'
 import { useGetAlbumQuery, useGetArtistQuery, useGetTrackQuery } from '@/hooks/use-spotify'
 import { useGetJournal } from '@/hooks/use-journal'
-import { FollowingObjects } from '@/components/views/dashboard/FollowingObjects'
+import { FollowingObjects } from '@/components/views/dashboard/following-objects'
 
 
 const DashboardPage = () => {
