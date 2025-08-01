@@ -97,22 +97,22 @@ const CommunityPage = () => {
                 <div className='w-[1px] h-full bg-white md:flex hidden'/>
                 <SortingButtons sortingIndex={sortingIndex} setSortingIndexAction={setSortingIndex}/>
             </div>
-            <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
-                {
-                    isEmpty(communityItems) && (
-                        isLoading ?
-                        Array.from({ length: 6 }).map((_, index) => (
-                            <Cards.CommunityItemSkeleton key={`CommunityItem-Skeleton-${index}`}/>
-                        )) :
-                        <div className='flex flex-col items-center justify-center w-full py-20 text-center gap-y-4'>
-                            <Star className='w-10 h-10 text-white'/>
-                            <div className='flex flex-col gap-y-1'>
-                                <p className='text-16-bold text-white'>No items yet</p>
-                                <p className='text-14-regular text-tunelog-secondary'>Leave a rating, journal or topster for your favorite music!</p>
-                            </div>
+            {
+                isEmpty(communityItems) && (
+                    isLoading ?
+                    Array.from({ length: 6 }).map((_, index) => (
+                        <Cards.CommunityItemSkeleton key={`CommunityItem-Skeleton-${index}`}/>
+                    )) :
+                    <div className='flex flex-col items-center justify-center w-full py-20 text-center gap-y-4'>
+                        <Star className='w-10 h-10 text-white'/>
+                        <div className='flex flex-col gap-y-1'>
+                            <p className='text-16-bold text-white'>No items yet</p>
+                            <p className='text-14-regular text-tunelog-secondary'>Leave a rating, journal or topster for your favorite music!</p>
                         </div>
-                    )
-                }
+                    </div>
+                )
+            }
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
                 {
                     !isLoading && !isEmpty(communityItems) && (
                         communityItems.map(item => {
