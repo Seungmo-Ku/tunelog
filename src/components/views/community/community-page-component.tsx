@@ -170,12 +170,12 @@ export const CommunityPageComponent = ({
                         </div>
                     )
                 }
+                {
+                    isFetchingNextPage && hasNextPage &&
+                    <Cards.CommunityItemSkeleton/>
+                }
             </div>
             <div ref={ref}/>
-            {
-                isFetchingNextPage && hasNextPage &&
-                <Cards.CommunityItemSkeleton/>
-            }
         </div>
     )
 }
