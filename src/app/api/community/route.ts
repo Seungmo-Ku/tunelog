@@ -26,6 +26,12 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
                         : {}
     
     const user = await findUserByCookie()
+    if (!user && filter === 'following') {
+        return NextResponse.json({
+            data: [],
+            nextCursor: null
+        })
+    }
     const userQuery = (filter === 'all' || !user) ? {} : { uid: { $in: user.followingUids } }
     
     const finalQuery = { ...queryBase, ...cursorQuery, ...userQuery }
