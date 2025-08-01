@@ -12,11 +12,24 @@ import { Cards } from '@/components/cards'
 import { FilterButtons } from '@/components/views/ratings/filter-buttons'
 import { SortingButtons } from '@/components/views/ratings/sorting-buttons'
 import { Star } from 'lucide-react'
+import { useAccount } from '@/libs/utils/account'
+import { AccountStatus } from '@/libs/constants/account.constant'
+import { FollowingButtons } from '@/components/views/community/following-buttons'
+import { clsx } from 'clsx'
 
 
-const CommunityPage = () => {
+interface CommunityPageProps {
+    viewOnlyFollowing?: boolean
+}
+
+const CommunityPage = ({
+    viewOnlyFollowing = false
+}: CommunityPageProps) => {
+    const { status } = useAccount()
     const [filterIndex, setFilterIndex] = useState(0)
     const [sortingIndex, setSortingIndex] = useState(0)
+    const [followingIndex, setFollowingIndex] = useState(0)
+    
     const selectedFilter = useMemo(() => {
         switch (filterIndex) {
             case 0:
@@ -41,6 +54,17 @@ const CommunityPage = () => {
         }
     }, [sortingIndex])
     
+    const selectedFollowing = useMemo(() => {
+        if (viewOnlyFollowing) return 'following'
+        switch (followingIndex) {
+            case 0:
+                return 'all'
+            case 1:
+            default:
+                return 'following'
+        }
+    }, [followingIndex, viewOnlyFollowing])
+    
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const hash = window.location.hash.substring(1)
@@ -55,7 +79,7 @@ const CommunityPage = () => {
         }
     }, [])
     
-    const { data: communityItemsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useGetCommunityItems(20, selectedFilter, selectedSorting)
+    const { data: communityItemsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useGetCommunityItems(10, selectedFilter, selectedSorting, selectedFollowing)
     
     const communityItems: CommunityItem[] = useMemo(() => {
         if (isLoading) return []
@@ -85,18 +109,28 @@ const CommunityPage = () => {
     const { ref, inView } = useInView()
     
     useEffect(() => {
-        if (inView && hasNextPage && !isFetchingNextPage) {
+        if (inView && hasNextPage && !isFetchingNextPage && !viewOnlyFollowing) {
             fetchNextPage()
         }
-    }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage])
+    }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage, viewOnlyFollowing])
+    
+    const showFollowingButton = useMemo(() => {
+        return status !== AccountStatus.guest && !viewOnlyFollowing
+    }, [status, viewOnlyFollowing])
     
     return (
-        <div className='w-full h-full p-4 overflow-y-auto hide-sidebar flex flex-col'>
-            <div className='w-full flex md:flex-row flex-col  gap-x-5 gap-y-4 mb-4'>
-                <FilterButtons filterIndex={filterIndex} setFilterIndexAction={setFilterIndex} type='community'/>
-                <div className='w-[1px] h-full bg-white md:flex hidden'/>
-                <SortingButtons sortingIndex={sortingIndex} setSortingIndexAction={setSortingIndex}/>
-            </div>
+        <div className={clsx('w-full h-full p-4 overflow-y-auto hide-sidebar flex flex-col', viewOnlyFollowing ? 'p-0' : 'p-4')}>
+            {
+                !viewOnlyFollowing && (
+                    <div className='w-full flex md:flex-row flex-col  gap-x-5 gap-y-4 mb-4'>
+                        <FilterButtons filterIndex={filterIndex} setFilterIndexAction={setFilterIndex} type='community'/>
+                        <div className='w-[1px] h-full bg-white md:flex hidden'/>
+                        <SortingButtons sortingIndex={sortingIndex} setSortingIndexAction={setSortingIndex}/>
+                        {showFollowingButton && <div className='w-[1px] h-full bg-white md:flex hidden'/>}
+                        {showFollowingButton && <FollowingButtons followingIndex={followingIndex} setFollowingIndexAction={setFollowingIndex}/>}
+                    </div>
+                )
+            }
             {
                 isEmpty(communityItems) && (
                     isLoading ?
@@ -107,17 +141,17 @@ const CommunityPage = () => {
                         <Star className='w-10 h-10 text-white'/>
                         <div className='flex flex-col gap-y-1'>
                             <p className='text-16-bold text-white'>No items yet</p>
-                            <p className='text-14-regular text-tunelog-secondary'>Leave a rating, journal or topster for your favorite music!</p>
+                            <p className='text-14-regular text-tunelog-secondary'>{viewOnlyFollowing ? 'Follow someone to see what they logged!' : 'Leave a rating, journal or topster for your favorite music!'}</p>
                         </div>
                     </div>
                 )
             }
-            <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
+            <div className={clsx(viewOnlyFollowing ? 'flex flex-row gap-x-4 overflow-x-scroll' : 'grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3')}>
                 {
                     !isLoading && !isEmpty(communityItems) && (
                         communityItems.map(item => {
                             return (
-                                <Cards.CommunityItem item={item} key={`Community-item-${item.item?._id ?? ''}`}/>
+                                <Cards.CommunityItem item={item} key={`Community-item-${item.item?._id ?? ''}`} className={viewOnlyFollowing ? '!w-[300px] shrink-0' : ''}/>
                             )
                         })
                     )
