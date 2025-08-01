@@ -1,5 +1,5 @@
 import { NavigationBar } from '@/components/navigation-bar/index'
-import { DiscAlbum, GalleryVerticalEnd, House, ListMusic, MessageCircleHeart, Music, NotebookPen, SquareUser } from 'lucide-react'
+import { Compass, DiscAlbum, House, LayoutGrid, Music, NotebookPen, SquareUser, Star } from 'lucide-react'
 import React from 'react'
 import { useNavbarAuth } from '@/components/navigation-bar/navigation-bar-auth'
 
@@ -19,10 +19,10 @@ export interface NavbarComponentProps {
 
 export const navbarMainComponents: NavbarComponentProps[] = [
     { Icon: House, path: '/dashboard' },
-    { Icon: ListMusic, path: '/ratings' },
+    { Icon: Star, path: '/ratings' },
     { Icon: NotebookPen, path: '/journals' },
-    { Icon: GalleryVerticalEnd, path: '/topsters' },
-    { Icon: MessageCircleHeart, path: '/community' }
+    { Icon: LayoutGrid, path: '/topsters' },
+    { Icon: Compass, path: '/community' }
 ]
 export const navbarDetailComponents: NavbarComponentProps[] = [
     { Icon: DiscAlbum, path: '/detail/album' },

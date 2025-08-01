@@ -78,6 +78,22 @@ const ApiRating = {
         } catch {
             return null
         }
+    },
+    _like_rating: async (id: string): Promise<boolean> => {
+        try {
+            const response = await axios.post(`/api/ratings/${id}/like`)
+            return response.status === 200
+        } catch {
+            return false
+        }
+    },
+    _unlike_rating: async (id: string): Promise<boolean> => {
+        try {
+            const response = await axios.delete(`/api/ratings/${id}/like`)
+            return response.status === 200
+        } catch {
+            return false
+        }
     }
 }
 

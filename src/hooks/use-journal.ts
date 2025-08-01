@@ -29,11 +29,12 @@ export const useGetMyJournals = (limit: number = 10) => {
         getNextPageParam: (lastPage) => lastPage?.nextCursor
     })
 }
-export const useGetJournal = (id: string) => {
+export const useGetJournal = (id: string | undefined) => {
     const { status, me } = useAccount()
     return useQuery({
         queryKey: ['journal', status, me?._id ?? '', id],
-        queryFn: () => ApiJournal._get_journal(id)
+        queryFn: () => ApiJournal._get_journal(id!),
+        enabled: !isEmpty(id),
     })
 }
 export const usePostJournal = () => {
@@ -44,6 +45,7 @@ export const usePostJournal = () => {
             queryClient.invalidateQueries({ queryKey: ['journal-all'] })
             queryClient.invalidateQueries({ queryKey: ['journal-my'] })
             queryClient.invalidateQueries({ queryKey: ['journal-by-spotify-id'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
         }
     })
 }
@@ -68,6 +70,8 @@ export const useDeleteJournal = () => {
             queryClient.invalidateQueries({ queryKey: ['journal-all'] })
             queryClient.invalidateQueries({ queryKey: ['journal-by-spotify-id'] })
             queryClient.invalidateQueries({ queryKey: ['journal'] })
+            queryClient.invalidateQueries({ queryKey: ['journal-my'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
         }
     })
 }
@@ -78,6 +82,31 @@ export const useUpdateJournal = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['journal-all'] })
             queryClient.invalidateQueries({ queryKey: ['journal-by-spotify-id'] })
+            queryClient.invalidateQueries({ queryKey: ['journal'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
+        }
+    })
+}
+export const useLikeJournal = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async (id: string) => await ApiJournal._like_journal(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['journal-all'] })
+            queryClient.invalidateQueries({ queryKey: ['journal-by-spotify-id'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
+            queryClient.invalidateQueries({ queryKey: ['journal'] })
+        }
+    })
+}
+export const useUnlikeJournal = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async (id: string) => await ApiJournal._unlike_journal(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['journal-all'] })
+            queryClient.invalidateQueries({ queryKey: ['journal-by-spotify-id'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
             queryClient.invalidateQueries({ queryKey: ['journal'] })
         }
     })

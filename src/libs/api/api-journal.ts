@@ -83,6 +83,22 @@ const ApiJournal = {
         } catch {
             return null
         }
+    },
+    _like_journal: async (id: string): Promise<boolean> => {
+        try {
+            const response = await axios.post(`/api/journals/${id}/like`)
+            return response.status === 200
+        } catch {
+            return false
+        }
+    },
+    _unlike_journal: async (id: string): Promise<boolean> => {
+        try {
+            const response = await axios.delete(`/api/journals/${id}/like`)
+            return response.status === 200
+        } catch {
+            return false
+        }
     }
 }
 

@@ -30,6 +30,8 @@ export const usePostTopster = () => {
         mutationFn: async (topster: TopsterCreateRequest) => await ApiTopster._post_topster(topster),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['topster-all'] })
+            queryClient.invalidateQueries({ queryKey: ['topster-my'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
         }
     })
 }
@@ -40,6 +42,8 @@ export const useDeleteTopster = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['topster-all'] })
             queryClient.invalidateQueries({ queryKey: ['topster'] })
+            queryClient.invalidateQueries({ queryKey: ['topster-my'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
         }
     })
 }
@@ -50,6 +54,29 @@ export const useUpdateTopster = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['topster-all'] })
             queryClient.invalidateQueries({ queryKey: ['topster'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
+        }
+    })
+}
+export const useLikeTopster = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async (id: string) => await ApiTopster._like_topster(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['topster-all'] })
+            queryClient.invalidateQueries({ queryKey: ['topster'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
+        }
+    })
+}
+export const useUnlikeTopster = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async (id: string) => await ApiTopster._unlike_topster(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['topster-all'] })
+            queryClient.invalidateQueries({ queryKey: ['topster'] })
+            queryClient.invalidateQueries({ queryKey: ['community-all'] })
         }
     })
 }

@@ -22,7 +22,7 @@ export interface ITopster {
     showTitles?: boolean,
     showTypes?: boolean,
     isEdited?: boolean,
-    likes?: number,
+    likedUids?: string[],
     replies?: IReply[],
     deleted?: boolean,
     createdAt: Date,
@@ -40,7 +40,7 @@ export class Topster implements ITopster {
     showTitles?: boolean
     showTypes?: boolean
     isEdited?: boolean
-    likes?: number
+    likedUids?: string[]
     replies?: IReply[]
     deleted?: boolean
     createdAt: Date
@@ -57,7 +57,7 @@ export class Topster implements ITopster {
         this.showTitles = data.showTitles || false
         this.showTypes = data.showTypes || false
         this.isEdited = data.isEdited || false
-        this.likes = data.likes || 0
+        this.likedUids = data.likedUids || []
         this.replies = data.replies || []
         this.deleted = data.deleted || false
         this.createdAt = data.createdAt || new Date()

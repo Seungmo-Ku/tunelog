@@ -7,6 +7,7 @@ import React, { useCallback, useEffect } from 'react'
 import { Rating } from '@/libs/interfaces/rating.interface'
 import { useEditRating } from '@/hooks/use-rating'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 
 interface DialogEditRatingProps {
@@ -22,6 +23,7 @@ export const DialogEditRating = ({
 }: DialogEditRatingProps) => {
     const { mutateAsync, isPending } = useEditRating()
     const [isPublic, setIsPublic] = React.useState<boolean>(false)
+    const { t } = useTranslation()
     
     useEffect(() => {
         if (!rating) return
@@ -38,23 +40,23 @@ export const DialogEditRating = ({
                 }
             })
             if (res) {
-                toast.success(`Rating updated successfully`)
+                toast.success(t('ratings.dialog.edit.success'))
             } else {
-                toast.error(`Failed to update rating`)
+                toast.error(t('ratings.dialog.edit.error'))
             }
             onCloseAction()
         } catch {
-            toast.error(`Failed to update rating`)
+            toast.error(t('ratings.dialog.edit.error'))
         }
-    }, [isPending, isPublic, mutateAsync, onCloseAction, rating])
+    }, [isPending, isPublic, mutateAsync, onCloseAction, rating, t])
     return (
         <Dialog transition open={open} onClose={onCloseAction} className='relative z-50 transition duration-300 ease-out data-closed:opacity-0'>
             <div className='fixed inset-0 bg-black/50' aria-hidden='true'/>
             <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
                 <DialogPanel className='w-3/4 space-y-4 bg-[#33373B] text-white md:p-12 p-4 rounded-2xl flex flex-col'>
-                    <DialogTitle className='font-bold'>{`Edit Rating`}</DialogTitle>
+                    <DialogTitle className='font-bold'>{t('ratings.edit_dialog.title')}</DialogTitle>
                     <div className='flex flex-col gap-y-2'>
-                        <p className='text-white'>{isPublic ? 'Public rating (visible to everyone)' : 'Private rating (only visible to you)'}</p>
+                        <p className='text-white'>{isPublic ? t('ratings.edit_dialog.public') : t('ratings.edit_dialog.private')}</p>
                         <Switch
                             checked={isPublic}
                             onChange={setIsPublic}
@@ -68,7 +70,7 @@ export const DialogEditRating = ({
                     </div>
                     <Button.Box
                         disabled={!rating || isPending}
-                        text={`Update Rating`}
+                        text={t('ratings.edit_dialog.update')}
                         onClick={() => {
                             handleUpdate().then(noop)
                         }}

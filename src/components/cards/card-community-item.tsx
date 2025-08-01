@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation'
 import { useAccount } from '@/libs/utils/account'
 import { AccountStatus } from '@/libs/constants/account.constant'
 import { Cards } from '@/components/cards/index'
+import { useLikes } from '@/libs/utils/likes'
 
 
 export interface CardCommunityItemProps {
@@ -22,6 +23,8 @@ export const CardCommunityItem = ({ item, ...props }: CardCommunityItemProps) =>
     const { status, me } = useAccount()
     const [imageType, setImageType] = useState<'artist' | 'track' | 'album' | null>(null)
     const [imageSpotifyId, setImageSpotifyId] = useState<string>('')
+    
+    const { likesButton } = useLikes({ object: item?.item, type: item?.type ?? 'rating' })
     
     useEffect(() => {
         if (!item || !item.item) return
@@ -59,7 +62,7 @@ export const CardCommunityItem = ({ item, ...props }: CardCommunityItemProps) =>
     }, [album, artist, imageType, isAlbumLoading, isArtistLoading, isTrackLoading, item?.item, item?.type, track])
     
     if (!item || !item.item) {
-        return <Cards.CommunityItemSkeleton />
+        return <Cards.CommunityItemSkeleton/>
     }
     
     const contentsByType = () => {
@@ -153,6 +156,9 @@ export const CardCommunityItem = ({ item, ...props }: CardCommunityItemProps) =>
         >
             <div className='relative w-full h-48 bg-gray-200'>
                 <img src={imageUrl ?? '/favicon.ico'} alt={title} className='object-cover w-full h-full'/>
+                <div className='absolute h-fit right-2 top-1 text-white flex justify-center rounded-4xl bg-black/50 backdrop-blur-[5px]'>
+                    {likesButton}
+                </div>
             </div>
             
             <div className='flex flex-col flex-grow p-4 bg-tunelog-dark-alt'>
@@ -164,7 +170,7 @@ export const CardCommunityItem = ({ item, ...props }: CardCommunityItemProps) =>
             </div>
             
             {/* Footer Section */}
-            <div className='px-4 py-3 bg-tunelog-dark'>
+            <div className='px-4 py-3 bg-tunelog-dark flex flex-col'>
                 <div className='flex items-center justify-between text-14-regular text-white'>
                     <p className='flex items-center gap-x-1'>
                         <span>By {author}</span>

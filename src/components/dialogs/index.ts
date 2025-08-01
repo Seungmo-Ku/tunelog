@@ -5,6 +5,8 @@ import { DialogLogin } from '@/components/dialogs/dialog-login'
 import { DialogRegister } from '@/components/dialogs/dialog-register'
 import { DialogLogout } from '@/components/dialogs/dialog-logout'
 import { DialogEditRating } from '@/components/dialogs/dialog-edit-rating'
+import { DialogMobileRightDrawer } from '@/components/dialogs/dialog-mobile-right-drawer'
+import { DialogSettings } from '@/components/dialogs/dialog-settings'
 
 
 export const Dialogs = {
@@ -14,5 +16,7 @@ export const Dialogs = {
     Login: DialogLogin,
     Register: DialogRegister,
     Logout: DialogLogout,
-    EditRating: DialogEditRating
+    EditRating: DialogEditRating,
+    DialogMobileRightDrawer: DialogMobileRightDrawer,
+    Settings: DialogSettings
 }

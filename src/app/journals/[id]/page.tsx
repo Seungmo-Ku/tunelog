@@ -11,10 +11,13 @@ import { Button } from '@/components/buttons'
 import { Dialogs } from '@/components/dialogs'
 import { Pencil, Trash2 } from 'lucide-react'
 import { useIsOwner } from '@/libs/utils/account'
+import { useTranslation } from 'react-i18next'
+import { useLikes } from '@/libs/utils/likes'
 
 
 const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     const appRouter = useRouter()
+    const { t } = useTranslation()
     const { id } = React.use(params)
     const { data: journal, isLoading: isJournalLoading } = useGetJournal(id)
     
@@ -23,6 +26,8 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     const { data: tracks, isLoading: isTrackLoading } = useGetTracksQuery(journal?.subjects.filter((subject) => subject.type === 'track').map(subject => subject.spotifyId) || [])
     
     const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
+    
+    const { likesButton } = useLikes({ object: journal, type: 'journal' })
     
     // noinspection DuplicatedCode
     const subjectMap = useMemo(() => {
@@ -59,9 +64,10 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
         <div className='w-full h-full flex flex-col gap-y-5 overflow-y-auto hide-sidebar text-white p-1'>
             <div className='w-full flex flex-col gap-y-3'>
                 <h1 className='text-24-semibold'>{journal?.title}</h1>
-                <p className='text-14-regular'>{`Written By ${journal?.author ?? ''}`}</p>
-                <p className='text-14-regular'>{`Created At ${new Date(journal?.createdAt ?? '').toLocaleDateString()} | ${journal?.public ? 'Public' : 'Private'}`}</p>
-                {(journal?.updatedAt ?? 0) > (journal?.createdAt ?? 0) && <p className='text-14-regular'>{`Updated At ${new Date(journal?.updatedAt ?? '').toLocaleDateString()}`}</p>}
+                <p className='text-14-regular'>{`By ${journal?.author ?? ''}`}</p>
+                <p className='text-14-regular'>{`${t('keywords.created')} ${new Date(journal?.createdAt ?? '').toLocaleDateString()} | ${journal?.public ? t('keywords.public') : t('keywords.private')}`}</p>
+                {(journal?.updatedAt ?? 0) > (journal?.createdAt ?? 0) && <p className='text-14-regular'>{`${t('keywords.last_edited')} At ${new Date(journal?.updatedAt ?? '').toLocaleDateString()}`}</p>}
+                <div>{likesButton}</div>
             </div>
             <div className='flex gap-x-3 overflow-x-auto hide-sidebar shrink-0 items-start'>
                 {
@@ -90,12 +96,12 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                 (
                     <div className='flex w-full gap-x-2'>
                         <Button.Box
-                            text='Delete'
+                            text={t('keywords.delete')}
                             onClick={() => setDeleteDialogOpen(true)}
                             leftIcon={deleteComponent}
                         />
                         <Button.Box
-                            text='Edit'
+                            text={t('keywords.edit')}
                             onClick={() => {
                                 appRouter.push(`/journals/edit/${journal?._id}`)
                             }}
