@@ -5,14 +5,15 @@ import axios from 'axios'
 
 
 const ApiCommunity = {
-    _get_community_items: async (limit: number = 10, type: CommunityQueryType = 'all', sort: CommunitySortType = 'newest', nextCursor?: string): Promise<DataConnection<CommunityResponse> | null> => {
+    _get_community_items: async (limit: number = 10, type: CommunityQueryType = 'all', sort: CommunitySortType = 'newest', filter: 'all' | 'following' = 'all', nextCursor?: string): Promise<DataConnection<CommunityResponse> | null> => {
         try {
             const params = new URLSearchParams()
             params.append('limit', limit.toString())
             params.append('type', type)
             params.append('sort', sort)
+            params.append('filter', filter)
             if (nextCursor) params.append('cursor', nextCursor)
-
+            
             const { data } = await axios.get<DataConnection<CommunityResponse>>(`/api/community?${params.toString()}`)
             if (!data) return null
             return data
