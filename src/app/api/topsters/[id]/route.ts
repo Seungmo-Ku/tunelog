@@ -16,12 +16,13 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
     const userQuery = user ?
         {
             $or: [
-                { public: true },
+                { public: true, onlyFollowers: false },
+                { public: true, onlyFollowers: true, uid: { $in: user.followingUids } },
                 { uid: user._id.toString() }
             ]
         } :
         {
-            public: true
+            public: true, onlyFollowers: false
         }
     
     const topster = await Topster.findOne({ _id: id, deleted: false, ...userQuery }).select('-password')
