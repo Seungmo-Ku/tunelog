@@ -31,6 +31,7 @@ export const DialogNewRating = ({
     const [comment, setComment] = useState<string>('')
     const [score, setScore] = useState<number>(0)
     const [isPublic, setIsPublic] = useState<boolean>(false)
+    const [isOnlyFollowers, setIsOnlyFollowers] = useState<boolean>(false)
     const { t } = useTranslation()
     
     const { mutateAsync, isPending } = usePostRating()
@@ -113,6 +114,19 @@ export const DialogNewRating = ({
                         </Switch>
                         <p className='text-14-regular text-white'>{isPublic ? t('ratings.edit_dialog.public') : t('ratings.edit_dialog.private')}</p>
                     </div>
+                    {isPublic && <div className='flex items-center gap-x-2'>
+                        <Switch
+                            checked={isOnlyFollowers}
+                            onChange={setIsOnlyFollowers}
+                            className='group relative flex h-7 w-14 cursor-pointer rounded-full bg-white/10 p-1 ease-in-out focus:not-data-focus:outline-none data-checked:bg-white/10 data-focus:outline data-focus:outline-white'
+                        >
+                            <span
+                                aria-hidden='true'
+                                className='pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7'
+                            />
+                        </Switch>
+                        <p className='text-14-regular text-white'>{isOnlyFollowers ? 'Only visible to followers' : 'Visible to everyone'}</p>
+                    </div>}
                     <Button.Box
                         text={t('ratings.new_rating_dialog.create_rating')}
                         disabled={isPending || isEmpty(selectedObjectId) || isEmpty(comment)}
@@ -124,7 +138,8 @@ export const DialogNewRating = ({
                                 author: me?.name ?? '',
                                 score,
                                 comment,
-                                public: isPublic
+                                public: isPublic,
+                                onlyFollowers: isPublic ? isOnlyFollowers : false
                             }
                             await mutateAsync(ratingData)
                             onCloseAction()

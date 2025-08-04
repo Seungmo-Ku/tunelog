@@ -35,7 +35,7 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
     const accessConditionQuery = user ? [
         { public: true, onlyFollowers: false },
         { public: true, onlyFollowers: true, uid: { $in: user.followingUids } },
-        { uid: user._id }
+        { uid: user._id.toString() }
     ] : [
         { public: true, onlyFollowers: false }
     ]

@@ -76,7 +76,7 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
     
     const body = await req.json()
     
-    const { title, components, size, author, showTitles, showTypes, public: isPublic } = body
+    const { title, components, size, author, showTitles, showTypes, public: isPublic, onlyFollowers } = body
     
     if (title) {
         topster.title = title
@@ -103,6 +103,9 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
     }
     if (isPublic !== undefined) {
         topster.public = isPublic
+    }
+    if (onlyFollowers !== undefined) {
+        topster.onlyFollowers = onlyFollowers
     }
     
     topster.isEdited = true

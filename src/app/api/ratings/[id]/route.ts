@@ -51,10 +51,16 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
     
     const body = await req.json()
     
-    const { public: isPublic } = body
+    const { public: isPublic, onlyFollowers } = body
     if (isPublic !== undefined) {
         if (rating.public !== isPublic) {
             rating.public = isPublic
+            rating.isEdited = true
+        }
+    }
+    if (onlyFollowers !== undefined) {
+        if (rating.onlyFollowers !== onlyFollowers) {
+            rating.onlyFollowers = onlyFollowers
             rating.isEdited = true
         }
     }

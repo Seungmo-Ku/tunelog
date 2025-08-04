@@ -85,7 +85,7 @@ export const CardRatingWithContent = ({
             <div className='w-full flex flex-col bg-[#33373B] overflow-hidden rounded-b-[15px] p-[10px] text-white text-13-regular gap-y-1'>
                 <span className='whitespace-pre-line break-keep text-left'>{rating.comment}</span>
                 <p className='space-x-1'>
-                    <span className='text-12-regular text-left'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anonymous'} | ${rating?.public ? 'Public' : 'Private'}`}</span>
+                    <span className='text-12-regular text-left'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anonymous'} | ${rating?.public ? 'Public' : 'Private'} ${(rating?.public && rating?.onlyFollowers && isMyRating) ? '(Only To Followers)' : ''}`}</span>
                     {showMyRating && isMyRating && (
                         <span className='text-12-bold text-tunelog-secondary'>{t('ratings.card.my_rating')}</span>
                     )}
