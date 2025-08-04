@@ -25,6 +25,7 @@ export interface IRating {
     replies?: IReply[]
     deleted?: boolean
     public?: boolean
+    onlyFollowers?: boolean
     uid: string
 } // Rating
 
@@ -63,6 +64,7 @@ export class Rating implements IRating {
     deleted?: boolean
     uid: string
     public?: boolean
+    onlyFollowers?: boolean
     
     constructor(rating: IRating) {
         this._id = rating._id
@@ -79,5 +81,6 @@ export class Rating implements IRating {
         this.deleted = rating.deleted || false
         this.uid = rating.uid || ''
         this.public = rating.public || false
+        this.onlyFollowers = rating.onlyFollowers || false
     }
 }

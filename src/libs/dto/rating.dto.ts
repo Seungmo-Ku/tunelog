@@ -1,9 +1,9 @@
 import { IRating } from '@/libs/interfaces/rating.interface'
 
 
-export type RatingCreateRequest = Pick<IRating, 'type' | 'spotifyId' | 'score' | 'comment' | 'author' | 'public'>
+export type RatingCreateRequest = Pick<IRating, 'type' | 'spotifyId' | 'score' | 'comment' | 'author' | 'public' | 'onlyFollowers'>
 
-export type RatingUpdateRequest = Partial<Pick<IRating, 'public'>>
+export type RatingUpdateRequest = Partial<Pick<IRating, 'public' | 'onlyFollowers'>>
 
 export type RatingResponse = IRating
 
