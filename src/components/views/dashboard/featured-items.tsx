@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation'
 import { Album, Artist, Track } from '@/libs/interfaces/spotify.interface'
 import { Journal } from '@/libs/interfaces/journal.interface'
 
+
 interface FeaturedItemProps {
     item: Album | Artist | Track | Journal | null | undefined
     imageUrl?: string // 저널의 경우 이미지를 외부에서 받아와야 함
 }
 
-export const FeaturedItem= ({ item, imageUrl: externalImageUrl }: FeaturedItemProps) => {
+export const FeaturedItem = ({ item, imageUrl: externalImageUrl }: FeaturedItemProps) => {
     const appRouter = useRouter()
     
     if (!item) return null
