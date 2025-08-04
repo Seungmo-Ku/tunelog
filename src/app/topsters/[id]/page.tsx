@@ -108,7 +108,7 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                 <div className='flex flex-col gap-y-2.5'>
                     <h1 className='text-36-bold text-[#A4C7C6]'>{topster?.title ?? ''}</h1>
                     <p className='text-14-regular text-[#EFEEE0]'>{`By ${topster?.author ?? ''}`}</p>
-                    <p className='text-14-regular text-[#EFEEE0]'>{`${t('keywords.created')} ${new Date(topster?.createdAt ?? 0).toLocaleDateString() ?? ''} | ${topster?.public ? t('keywords.public') : t('keywords.private')}`}</p>
+                    <p className='text-14-regular text-[#EFEEE0]'>{`${t('keywords.created')} ${new Date(topster?.createdAt ?? 0).toLocaleDateString() ?? ''} | ${topster?.public ? t('keywords.public') : t('keywords.private')} ${(topster.public && topster.onlyFollowers && isOwner) ? '(Only To Followers)' : ''}`}</p>
                     <div>{likesButton}</div>
                 </div>
                 {

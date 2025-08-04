@@ -65,7 +65,7 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
             <div className='w-full flex flex-col gap-y-3'>
                 <h1 className='text-24-semibold'>{journal?.title}</h1>
                 <p className='text-14-regular'>{`By ${journal?.author ?? ''}`}</p>
-                <p className='text-14-regular'>{`${t('keywords.created')} ${new Date(journal?.createdAt ?? '').toLocaleDateString()} | ${journal?.public ? t('keywords.public') : t('keywords.private')}`}</p>
+                <p className='text-14-regular'>{`${t('keywords.created')} ${new Date(journal?.createdAt ?? '').toLocaleDateString()} | ${journal?.public ? t('keywords.public') : t('keywords.private')} ${(journal.public && journal.onlyFollowers && isOwner) ? '(Only To Followers)' : ''}`}</p>
                 {(journal?.updatedAt ?? 0) > (journal?.createdAt ?? 0) && <p className='text-14-regular'>{`${t('keywords.last_edited')} At ${new Date(journal?.updatedAt ?? '').toLocaleDateString()}`}</p>}
                 <div>{likesButton}</div>
             </div>

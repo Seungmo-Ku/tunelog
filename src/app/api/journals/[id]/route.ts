@@ -16,12 +16,13 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
     const userQuery = user ?
         {
             $or: [
-                { public: true },
+                { public: true, onlyFollowers: false },
+                { public: true, onlyFollowers: true, uid: { $in: user.followingUids } },
                 { uid: user._id.toString() }
             ]
         } :
         {
-            public: true
+            public: true, onlyFollowers: false
         }
     
     const journal = await Journal.findOne({ _id: id, deleted: false, ...userQuery }).select('-password')
@@ -79,7 +80,7 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
     
     const body = await req.json()
     
-    const { title, content, tags, author, subjects, public: isPublic } = body
+    const { title, content, tags, author, subjects, public: isPublic, onlyFollowers } = body
     
     if (title) {
         journal.title = title
@@ -98,6 +99,9 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
     }
     if (isPublic !== undefined) {
         journal.public = isPublic
+    }
+    if (onlyFollowers !== undefined) {
+        journal.onlyFollowers = onlyFollowers
     }
     
     await journal.save()

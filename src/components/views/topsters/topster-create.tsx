@@ -48,6 +48,7 @@ export const TopsterCreate = ({
         title: ''
     }))
     const [isPublic, setIsPublic] = useState<boolean>(false)
+    const [isOnlyFollowers, setIsOnlyFollowers] = useState<boolean>(false)
     const setLoginDialogOpen = useSetAtom(DialogLoginAtom)
     
     useEffect(() => {
@@ -57,6 +58,7 @@ export const TopsterCreate = ({
         setShowType(topster.showTypes ?? true)
         setGridSize(topster.size)
         setIsPublic(topster.public ?? false)
+        setIsOnlyFollowers(topster.onlyFollowers ?? false)
         setItems(() => {
             const newItems = Array(100).fill({
                 id: '',
@@ -132,7 +134,8 @@ export const TopsterCreate = ({
                 showTitles: showTitle,
                 showTypes: showType,
                 size: gridSize,
-                public: isPublic
+                public: isPublic,
+                onlyFollowers: isPublic ? isOnlyFollowers : false
             })
             if (res) {
                 setTitle('')
@@ -147,13 +150,14 @@ export const TopsterCreate = ({
                 setShowType(true)
                 setOpenDialog(false)
                 setIsPublic(false)
+                setIsOnlyFollowers(false)
                 appRouter.push('/topsters')
             }
         } catch (e) {
             console.error('Error creating topster:', e)
             return
         }
-    }, [appRouter, gridSize, isPending, isPublic, items, me?.name, mutateAsync, setLoginDialogOpen, showTitle, showType, status, title])
+    }, [appRouter, gridSize, isOnlyFollowers, isPending, isPublic, items, me?.name, mutateAsync, setLoginDialogOpen, showTitle, showType, status, title])
     
     return (
         <div className='w-full flex md:flex-row flex-col gap-3 overflow-y-auto hide-sidebar'>
@@ -252,6 +256,19 @@ export const TopsterCreate = ({
                         />
                     </Switch>
                 </div>
+                {isPublic && <div className='flex flex-col gap-y-2'>
+                    <p className='text-white'>{isOnlyFollowers ? 'Only visible to followers' : 'Visible to everyone'}</p>
+                    <Switch
+                        checked={isOnlyFollowers}
+                        onChange={setIsOnlyFollowers}
+                        className='group relative flex h-7 w-14 cursor-pointer rounded-full bg-white/10 p-1 ease-in-out focus:not-data-focus:outline-none data-checked:bg-white/10 data-focus:outline data-focus:outline-white shrink-0'
+                    >
+                        <span
+                            aria-hidden='true'
+                            className='pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7'
+                        />
+                    </Switch>
+                </div>}
                 <Button.Box
                     text={`${topster ? t('keywords.update') : t('keywords.create')} ${t('keywords.topster')}`}
                     disabled={isEmpty(title) || isPending}
@@ -292,7 +309,8 @@ export const TopsterCreate = ({
                         imageUrl: item.url,
                         title: item.title
                     })),
-                    public: isPublic
+                    public: isPublic,
+                    onlyFollowers: isPublic ? isOnlyFollowers : false
                 }}
             />
         </div>

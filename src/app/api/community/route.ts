@@ -18,7 +18,6 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
     
     await connectDB()
     
-    const queryBase = { deleted: false, public: true }
     const sortDirection = sort === 'newest' ? -1 : 1
     
     const cursorQuery = cursor
@@ -32,9 +31,21 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
             nextCursor: null
         })
     }
+    const deletionQuery = { deleted: false }
+    const accessConditionQuery = user ? [
+        { public: true, onlyFollowers: false },
+        { public: true, onlyFollowers: true, uid: { $in: user.followingUids } },
+        { uid: user._id.toString() }
+    ] : [
+        { public: true, onlyFollowers: false }
+    ]
+    const baseQuery = {
+        ...deletionQuery,
+        $or: accessConditionQuery
+    }
     const userQuery = (filter === 'all' || !user) ? {} : { uid: { $in: user.followingUids } }
     
-    const finalQuery = { ...queryBase, ...cursorQuery, ...userQuery }
+    const finalQuery = { ...baseQuery, ...cursorQuery, ...userQuery }
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let results: any[] = []
