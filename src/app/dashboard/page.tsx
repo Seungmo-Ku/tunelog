@@ -12,7 +12,6 @@ import { useGetRecommended } from '@/hooks/use-recommended'
 const DashboardPage = () => {
     const appRouter = useRouter()
     const { data: recommendations, isFetching } = useGetRecommended()
-    console.log(recommendations)
     
     return (
         <div className='flex flex-col w-full h-full'>
