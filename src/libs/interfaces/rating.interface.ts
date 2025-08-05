@@ -9,6 +9,8 @@ export interface IReply {
     updatedAt: Date
     isEdited?: boolean
     deleted?: boolean
+    uid: string
+    likedUids?: string[]
 } // 댓글
 
 export interface IRating {
@@ -37,6 +39,8 @@ export class Reply implements IReply {
     updatedAt: Date
     isEdited?: boolean
     deleted?: boolean
+    uid: string
+    likedUids?: string[]
     
     constructor(reply: IReply) {
         this._id = reply._id
@@ -46,6 +50,8 @@ export class Reply implements IReply {
         this.updatedAt = reply.updatedAt
         this.isEdited = reply.isEdited || false
         this.deleted = reply.deleted || false
+        this.uid = reply.uid || ''
+        this.likedUids = reply.likedUids || []
     }
 }
 
