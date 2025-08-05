@@ -7,18 +7,18 @@ import { FeaturedItem } from '@/components/views/dashboard/featured-items'
 
 
 interface FeaturedItemsContainerProps {
-    slide: IRecommended | undefined | null
+    slide: IRecommended
 }
 
 export const FeaturedItemsContainer = ({ slide }: FeaturedItemsContainerProps) => {
     
-    const { data: track, isFetching: trackFetching } = useGetTrackQuery(slide?.type === 'track' ? slide?.spotifyId : undefined)
-    const { data: album, isFetching: albumFetching } = useGetAlbumQuery(slide?.type === 'album' ? slide?.spotifyId : undefined)
-    const { data: artist, isFetching: artistFetching } = useGetArtistQuery(slide?.type === 'artist' ? slide?.spotifyId : undefined)
-    const { data: journal, isFetching: journalFetching } = useGetJournal(slide?.type === 'journal' ? slide?.spotifyId : undefined)
+    const { data: track, isFetching: trackFetching } = useGetTrackQuery(slide.type === 'track' ? slide.spotifyId : undefined)
+    const { data: album, isFetching: albumFetching } = useGetAlbumQuery(slide.type === 'album' ? slide.spotifyId : undefined)
+    const { data: artist, isFetching: artistFetching } = useGetArtistQuery(slide.type === 'artist' ? slide.spotifyId : undefined)
+    const { data: journal, isFetching: journalFetching } = useGetJournal(slide.type === 'journal' ? slide.spotifyId : undefined)
     
     const journalFirstSubject = useMemo(() => {
-        if (journalFetching || slide?.type !== 'journal') return undefined
+        if (journalFetching || slide.type !== 'journal') return undefined
         if (!journal || !journal.subjects || isEmpty(journal.subjects)) return undefined
         return journal.subjects[0]
     }, [journal, journalFetching, slide])
@@ -46,7 +46,7 @@ export const FeaturedItemsContainer = ({ slide }: FeaturedItemsContainerProps) =
     
     const featuredItem = useMemo(() => {
         if (isAnyFetching) return null
-        switch (slide?.type) {
+        switch (slide.type) {
             case 'track':
                 return track
             case 'artist':

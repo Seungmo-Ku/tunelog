@@ -5,13 +5,14 @@ import { TopJournal } from '@/components/views/dashboard/top-journal'
 import { TopSearchBar } from '@/components/views/dashboard/top-search-bar'
 import { useRouter } from 'next/navigation'
 import React from 'react'
-import { Carousel } from '@/components/carousel/carousel-default'
+import { Carousel } from '@/components/carousel/carousel-featured-item'
 import { useGetRecommended } from '@/hooks/use-recommended'
 
 
 const DashboardPage = () => {
     const appRouter = useRouter()
     const { data: recommendations, isFetching } = useGetRecommended()
+    console.log(recommendations)
     
     return (
         <div className='flex flex-col w-full h-full'>

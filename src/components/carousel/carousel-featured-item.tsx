@@ -5,7 +5,6 @@ import Autoplay from 'embla-carousel-autoplay'
 import { useAutoplay } from '@/hooks/use-carousel-autoplay'
 import { IRecommended } from '@/libs/interfaces/recommended.interface'
 import { FeaturedItemsContainer } from '@/components/carousel/featured-items-container'
-import '../carousel.css'
 
 
 interface CarouselProps {
@@ -26,10 +25,10 @@ export const Carousel = ({ slides, options }: CarouselProps) => {
     }
     
     return (
-        <div className='embla__viewport h-full' ref={emblaRef} onMouseEnter={pauseOrResume} onMouseLeave={pauseOrResume}>
+        <div className='embla__viewport h-full rounded-[40px]' ref={emblaRef} onMouseEnter={pauseOrResume} onMouseLeave={pauseOrResume}>
             <div className='embla__container h-full flex'>
                 {slides.map((recommendations, index) => (
-                    <div className='embla__slide h-full' key={index}>
+                    <div className='embla__slide h-full flex-[0_0_100%] translate-z-0' key={index}>
                         <FeaturedItemsContainer slide={slides[index]}/>
                     </div>
                 ))}

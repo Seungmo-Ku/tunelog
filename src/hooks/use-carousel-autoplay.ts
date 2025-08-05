@@ -4,9 +4,7 @@ import { EmblaCarouselType } from 'embla-carousel'
 
 type UseAutoplayType = {
     autoplayIsPlaying: boolean
-    toggleAutoplay: () => void
     pauseOrResume: () => void
-    onAutoplayButtonClick: (callback: () => void) => void
 }
 
 export const useAutoplay = (
@@ -14,32 +12,9 @@ export const useAutoplay = (
 ): UseAutoplayType => {
     const [autoplayIsPlaying, setAutoplayIsPlaying] = useState(false)
     
-    const onAutoplayButtonClick = useCallback(
-        (callback: () => void) => {
-            const autoplay = emblaApi?.plugins()?.autoplay
-            if (!autoplay) return
-            
-            const resetOrStop =
-                autoplay.options.stopOnInteraction === false
-                ? autoplay.reset
-                : autoplay.stop
-            
-            resetOrStop()
-            callback()
-        },
-        [emblaApi]
-    )
-    
     const pauseOrResume = useCallback(() => {
         const autoplay = emblaApi?.plugins()?.autoplay
         if (!autoplay) return
-        setAutoplayIsPlaying(!autoplay.isPlaying())
-    }, [emblaApi])
-    
-    const toggleAutoplay = useCallback(() => {
-        const autoplay = emblaApi?.plugins()?.autoplay
-        if (!autoplay) return
-        
         const playOrStop = autoplay.isPlaying() ? autoplay.stop : autoplay.play
         playOrStop()
     }, [emblaApi])
@@ -57,8 +32,6 @@ export const useAutoplay = (
     
     return {
         autoplayIsPlaying,
-        toggleAutoplay,
-        pauseOrResume,
-        onAutoplayButtonClick
+        pauseOrResume
     }
 }
