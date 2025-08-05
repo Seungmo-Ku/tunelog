@@ -9,8 +9,11 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
     const { id, replyId } = await params
     await connectDB()
     const user = await findUserByCookie()
-    if (!user || !id || !replyId) {
+    if (!user) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    if (!id || !replyId) {
+        return NextResponse.json({ error: 'Invalid request parameters' }, { status: 400 })
     }
     const journal = await Journal.findById(id)
     if (!journal) {
