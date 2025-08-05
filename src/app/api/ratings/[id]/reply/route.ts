@@ -28,6 +28,5 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ id:
     rating.replies.push(newReply)
     await rating.save()
     const object = rating.toObject()
-    delete object.password
     return NextResponse.json(object, { status: 201 }) // 201 Created
 }

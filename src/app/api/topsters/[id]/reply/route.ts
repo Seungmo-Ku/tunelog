@@ -28,6 +28,5 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ id:
     topster.replies.push(newReply)
     await topster.save()
     const object = topster.toObject()
-    delete object.password
     return NextResponse.json(object, { status: 201 }) // 201 Created
 }

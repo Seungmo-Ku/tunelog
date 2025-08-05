@@ -28,6 +28,5 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ id:
     journal.replies.push(newReply)
     await journal.save()
     const object = journal.toObject()
-    delete object.password
     return NextResponse.json(object, { status: 201 }) // 201 Created
 }
