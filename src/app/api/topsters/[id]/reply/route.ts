@@ -17,7 +17,7 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ id:
     }
     const body = await req.json()
     const { comment, author } = body
-    if( !comment || typeof comment !== 'string' || comment.trim() === '' || comment.length > 500) {
+    if (!comment || typeof comment !== 'string' || comment.trim() === '' || comment.length > 500) {
         return NextResponse.json({ error: 'Invalid comment' }, { status: 400 })
     }
     const newReply = {
