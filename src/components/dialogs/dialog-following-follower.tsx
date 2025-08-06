@@ -22,7 +22,6 @@ export const DialogFollowingFollower = ({
     uid,
     type
 }: DialogFollowingFollowerProps) => {
-    const appRouter = useRouter()
     const { data: followingData, isLoading: isFollowingLoading } = useGetUserFollowing(type === 'following' ? uid : '')
     const { data: followerData, isLoading: isFollowerLoading } = useGetUserFollower(type === 'follower' ? uid : '')
     const following = useMemo(() => {
