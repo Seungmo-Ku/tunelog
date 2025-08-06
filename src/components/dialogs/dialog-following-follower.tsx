@@ -53,16 +53,7 @@ export const DialogFollowingFollower = ({
                             ) : (
                                 follower.map(account => {
                                     return (
-                                        <div
-                                            key={account._id}
-                                            className='flex items-center gap-x-2 p-2 hover:bg-gray-700 rounded-lg cursor-pointer'
-                                            onClick={() => {
-                                                appRouter.push(`/account/${account._id}`)
-                                                onCloseAction()
-                                            }}
-                                        >
-                                            <span className='text-white'>{account.name}</span>
-                                        </div>
+                                        <Cards.UserList account={account} key={account._id}/>
                                     )
                                 })
                             )
