@@ -12,13 +12,15 @@ import { useAccount } from '@/libs/utils/account'
 import { AccountStatus } from '@/libs/constants/account.constant'
 import { Cards } from '@/components/cards/index'
 import { useLikes } from '@/libs/utils/likes'
+import { clsx } from 'clsx'
 
 
 export interface CardCommunityItemProps {
     item: CommunityItem | null | undefined
+    className?: string
 }
 
-export const CardCommunityItem = ({ item, ...props }: CardCommunityItemProps) => {
+export const CardCommunityItem = ({ item, className = '', ...props }: CardCommunityItemProps) => {
     const appRouter = useRouter()
     const { status, me } = useAccount()
     const [imageType, setImageType] = useState<'artist' | 'track' | 'album' | null>(null)
@@ -131,7 +133,7 @@ export const CardCommunityItem = ({ item, ...props }: CardCommunityItemProps) =>
     return (
         <div
             {...props}
-            className='flex flex-col w-full overflow-hidden transition-all duration-300 ease-in-out bg-white rounded-lg shadow-md active:shadow-xl active:scale-95 cursor-pointer'
+            className={clsx('flex flex-col w-full overflow-hidden transition-all duration-300 ease-in-out bg-white rounded-lg shadow-md active:shadow-xl active:scale-95 cursor-pointer', className)}
             onClick={() => {
                 switch (item?.type) {
                     case 'rating':

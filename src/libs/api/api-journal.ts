@@ -5,11 +5,12 @@ import { DataConnection } from '@/libs/dto/rating.dto'
 
 
 const ApiJournal = {
-    _get_all_public_journals: async (limit: number = 10, nextCursor?: string): Promise<DataConnection<JournalResponse> | null> => {
+    _get_all_public_journals: async (limit: number = 10, sort: 'newest' | 'likes' = 'newest', nextCursor?: string): Promise<DataConnection<JournalResponse> | null> => {
         try {
             const params = new URLSearchParams()
             params.append('limit', limit.toString())
             if (nextCursor) params.append('cursor', nextCursor)
+            if (sort) params.append('sort', sort)
             
             const { data } = await axios.get<DataConnection<JournalResponse>>(`/api/journals?${params.toString()}`)
             if (!data) return null

@@ -18,12 +18,13 @@ export const GET = async (req: NextRequest) => {
     const userQuery = user ?
         {
             $or: [
-                { public: true },
+                { public: true, onlyFollowers: false },
+                { public: true, onlyFollowers: true, uid: { $in: user.followingUids } },
                 { uid: user._id.toString() }
             ]
         } :
         {
-            public: true
+            public: true, onlyFollowers: false
         }
     
     // 쿼리 조건 구성

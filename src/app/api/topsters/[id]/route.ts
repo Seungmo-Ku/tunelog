@@ -16,12 +16,13 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
     const userQuery = user ?
         {
             $or: [
-                { public: true },
+                { public: true, onlyFollowers: false },
+                { public: true, onlyFollowers: true, uid: { $in: user.followingUids } },
                 { uid: user._id.toString() }
             ]
         } :
         {
-            public: true
+            public: true, onlyFollowers: false
         }
     
     const topster = await Topster.findOne({ _id: id, deleted: false, ...userQuery }).select('-password')
@@ -75,7 +76,7 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
     
     const body = await req.json()
     
-    const { title, components, size, author, showTitles, showTypes, public: isPublic } = body
+    const { title, components, size, author, showTitles, showTypes, public: isPublic, onlyFollowers } = body
     
     if (title) {
         topster.title = title
@@ -102,6 +103,9 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
     }
     if (isPublic !== undefined) {
         topster.public = isPublic
+    }
+    if (onlyFollowers !== undefined) {
+        topster.onlyFollowers = onlyFollowers
     }
     
     topster.isEdited = true

@@ -14,7 +14,7 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     
     await connectDB()
     
-    const queryBase = type === 'all' ? { deleted: false, public: true } : { deleted: false, public: true, type }
+    const queryBase = type === 'all' ? { deleted: false, public: true, onlyFollowers: false } : { deleted: false, public: true, onlyFollowers: false, type }
     const sortDirection = sort === 'newest' ? -1 : 1
     
     const query = cursor

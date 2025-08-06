@@ -110,7 +110,7 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                     <div onClick={() => appRouter.push(`/account/${topster?.uid}`)}>
                         <p className='text-14-regular text-[#EFEEE0] underline'>{`By ${topster?.author ?? ''}`}</p>
                     </div>
-                    <p className='text-14-regular text-[#EFEEE0]'>{`${t('keywords.created')} ${new Date(topster?.createdAt ?? 0).toLocaleDateString() ?? ''} | ${topster?.public ? t('keywords.public') : t('keywords.private')}`}</p>
+                    <p className='text-14-regular text-[#EFEEE0]'>{`${t('keywords.created')} ${new Date(topster?.createdAt ?? 0).toLocaleDateString() ?? ''} | ${topster?.public ? t('keywords.public') : t('keywords.private')} ${(topster.public && topster.onlyFollowers && isOwner) ? '(Only To Followers)' : ''}`}</p>
                     <div>{likesButton}</div>
                 </div>
                 {
