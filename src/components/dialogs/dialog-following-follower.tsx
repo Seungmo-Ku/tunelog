@@ -5,7 +5,6 @@ import React, { useMemo } from 'react'
 import { capitalizeFirstLetter } from '@/libs/utils/string'
 import { useGetUserFollower, useGetUserFollowing } from '@/hooks/use-account'
 import { Account } from '@/libs/interfaces/account.interface'
-import { useRouter } from 'next/navigation'
 import { Cards } from '@/components/cards'
 
 
