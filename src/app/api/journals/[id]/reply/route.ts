@@ -48,7 +48,7 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
     if (!journal) {
         return NextResponse.json({ error: 'Journal not found' }, { status: 404 })
     }
-    let replies = journal.replies as IReply[]
+    let replies = (journal.replies as IReply[]).filter(reply => !reply.deleted)
     replies = [...replies].sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )

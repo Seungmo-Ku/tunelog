@@ -47,7 +47,7 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
     if (!topster) {
         return NextResponse.json({ error: 'Topster not found' }, { status: 404 })
     }
-    let replies = topster.replies as IReply[]
+    let replies = (topster.replies as IReply[]).filter(reply => !reply.deleted)
     replies = [...replies].sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
