@@ -23,6 +23,5 @@ export const Dialogs = {
     Settings: DialogSettings,
     MobileRightDrawer: DialogMobileRightDrawer,
     FollowingFollower: DialogFollowingFollower,
-    Settings: DialogSettings,
     Comment: DialogComment
 }
