@@ -163,7 +163,7 @@ export const CommunityPageComponent = ({
                     )
                 }
                 {
-                    !isLoading && viewOnlyFollowing && (
+                    !isLoading && viewOnlyFollowing && !isEmpty(communityItems) && (
                         <div className='flex flex-col w-[300px] shrink-0 justify-center rounded-[20px] bg-white/5 hover:bg-white/10 transition cursor-pointer items-center active:scale-95'
                              onClick={() => appRouter.push('/community#initialFollowing=1')}>
                             <p className='text-white text-14-bold text-center'>View more from followings</p>
