@@ -117,7 +117,6 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                         {likesButton}
                         {commentButton}
                     </div>
-                    <div></div>
                 </div>
                 {
                     isOwner && (

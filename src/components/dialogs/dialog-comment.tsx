@@ -84,7 +84,7 @@ export const DialogComment = ({}) => {
             } else {
                 toast.error('Failed to post comment')
             }
-        }catch {
+        } catch {
             toast.error('Failed to post comment')
         }
     }, [comment, id, isPending, me?.name, mutateAsync, status, type])
@@ -115,7 +115,6 @@ export const DialogComment = ({}) => {
                             onClick={handleClick}
                         />
                     </div>
-                    
                 </DialogPanel>
             </div>
         </Dialog>
