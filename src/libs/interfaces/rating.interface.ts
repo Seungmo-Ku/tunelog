@@ -9,6 +9,8 @@ export interface IReply {
     updatedAt: Date
     isEdited?: boolean
     deleted?: boolean
+    uid: string
+    likedUids?: string[]
 } // 댓글
 
 export interface IRating {
@@ -25,6 +27,7 @@ export interface IRating {
     replies?: IReply[]
     deleted?: boolean
     public?: boolean
+    onlyFollowers?: boolean
     uid: string
 } // Rating
 
@@ -36,6 +39,8 @@ export class Reply implements IReply {
     updatedAt: Date
     isEdited?: boolean
     deleted?: boolean
+    uid: string
+    likedUids?: string[]
     
     constructor(reply: IReply) {
         this._id = reply._id
@@ -45,6 +50,8 @@ export class Reply implements IReply {
         this.updatedAt = reply.updatedAt
         this.isEdited = reply.isEdited || false
         this.deleted = reply.deleted || false
+        this.uid = reply.uid || ''
+        this.likedUids = reply.likedUids || []
     }
 }
 
@@ -63,6 +70,7 @@ export class Rating implements IRating {
     deleted?: boolean
     uid: string
     public?: boolean
+    onlyFollowers?: boolean
     
     constructor(rating: IRating) {
         this._id = rating._id
@@ -79,5 +87,6 @@ export class Rating implements IRating {
         this.deleted = rating.deleted || false
         this.uid = rating.uid || ''
         this.public = rating.public || false
+        this.onlyFollowers = rating.onlyFollowers || false
     }
 }

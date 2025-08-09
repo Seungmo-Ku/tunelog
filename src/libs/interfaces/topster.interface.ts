@@ -29,6 +29,7 @@ export interface ITopster {
     updatedAt: Date,
     uid: string,
     public?: boolean
+    onlyFollowers?: boolean
 }
 
 export class Topster implements ITopster {
@@ -47,6 +48,7 @@ export class Topster implements ITopster {
     updatedAt: Date
     uid: string
     public?: boolean
+    onlyFollowers?: boolean
     
     constructor(data: Partial<ITopster>) {
         this._id = data._id || ''
@@ -64,5 +66,6 @@ export class Topster implements ITopster {
         this.updatedAt = data.updatedAt || new Date()
         this.uid = data.uid || ''
         this.public = data.public || false
+        this.onlyFollowers = data.onlyFollowers || false
     }
 }

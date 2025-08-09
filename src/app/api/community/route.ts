@@ -5,6 +5,7 @@ import { Rating } from '@/models/rating-schema.model'
 import { Journal } from '@/models/journal-schema.model'
 import { Topster } from '@/models/topster-schema.model'
 import { PipelineStage } from 'mongoose'
+import { findUserByCookie } from '@/libs/utils/password'
 
 
 export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시글 가져오기
@@ -13,17 +14,38 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
     const cursor = searchParams.get('cursor') // updatedAt 값 (ISO string)
     const type = (searchParams.get('type') ?? 'all') as 'journal' | 'rating' | 'topster' | 'all'
     const sort = (searchParams.get('sort') ?? 'newest') as 'newest' | 'oldest'
+    const filter = (searchParams.get('filter') ?? 'all') as 'all' | 'following'
     
     await connectDB()
     
-    const queryBase = { deleted: false, public: true }
     const sortDirection = sort === 'newest' ? -1 : 1
     
     const cursorQuery = cursor
                         ? { createdAt: { [sort === 'newest' ? '$lt' : '$gt']: new Date(cursor) } }
                         : {}
     
-    const finalQuery = { ...queryBase, ...cursorQuery }
+    const user = await findUserByCookie()
+    if (!user && filter === 'following') {
+        return NextResponse.json({
+            data: [],
+            nextCursor: null
+        })
+    }
+    const deletionQuery = { deleted: false }
+    const accessConditionQuery = user ? [
+        { public: true, onlyFollowers: false },
+        { public: true, onlyFollowers: true, uid: { $in: user.followingUids } },
+        { uid: user._id.toString() }
+    ] : [
+        { public: true, onlyFollowers: false }
+    ]
+    const baseQuery = {
+        ...deletionQuery,
+        $or: accessConditionQuery
+    }
+    const userQuery = (filter === 'all' || !user) ? {} : { uid: { $in: user.followingUids } }
+    
+    const finalQuery = { ...baseQuery, ...cursorQuery, ...userQuery }
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let results: any[] = []

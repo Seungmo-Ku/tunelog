@@ -12,8 +12,8 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     
     await connectDB()
     const query = cursor
-                  ? { createdAt: { $lt: new Date(cursor) }, deleted: false, public: true }
-                  : { deleted: false, public: true }
+                  ? { createdAt: { $lt: new Date(cursor) }, deleted: false, public: true, onlyFollowers: false }
+                  : { deleted: false, public: true, onlyFollowers: false }
     const topsters = await Topster.find(query)
                                   .select('-password')
                                   .sort({ createdAt: -1 })

@@ -25,7 +25,8 @@ const topsterSchema = new mongoose.Schema({
     replies: [replySchema],
     deleted: { type: Boolean, default: false },
     uid: { type: String, required: true },
-    public: { type: Boolean, default: false }
+    public: { type: Boolean, default: false },
+    onlyFollowers: { type: Boolean, default: false }
 }, { timestamps: true })
 
 export const Topster = mongoose.models.Topster || mongoose.model('Topster', topsterSchema)
