@@ -12,6 +12,7 @@ import { Dialogs } from '@/components/dialogs'
 import { useIsOwner } from '@/libs/utils/account'
 import { useTranslation } from 'react-i18next'
 import { useLikes } from '@/libs/utils/likes'
+import { useComment } from '@/libs/utils/comment'
 
 
 const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -26,6 +27,7 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     const isOwner = useIsOwner(topster?.uid)
     
     const { likesButton } = useLikes({ object: topster, type: 'topster' })
+    const { commentButton } = useComment({ type: 'topster', id })
     
     const handleSaveAsImage = () => {
         const element = topsterRef.current
@@ -111,7 +113,10 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                         <p className='text-14-regular text-[#EFEEE0] underline'>{`By ${topster?.author ?? ''}`}</p>
                     </div>
                     <p className='text-14-regular text-[#EFEEE0]'>{`${t('keywords.created')} ${new Date(topster?.createdAt ?? 0).toLocaleDateString() ?? ''} | ${topster?.public ? t('keywords.public') : t('keywords.private')} ${(topster.public && topster.onlyFollowers && isOwner) ? '(Only To Followers)' : ''}`}</p>
-                    <div>{likesButton}</div>
+                    <div className='flex flex-row gap-x-1'>
+                        {likesButton}
+                        {commentButton}
+                    </div>
                 </div>
                 {
                     isOwner && (

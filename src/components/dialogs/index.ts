@@ -8,6 +8,7 @@ import { DialogEditRating } from '@/components/dialogs/dialog-edit-rating'
 import { DialogMobileRightDrawer } from '@/components/dialogs/dialog-mobile-right-drawer'
 import { DialogFollowingFollower } from '@/components/dialogs/dialog-following-follower'
 import { DialogSettings } from '@/components/dialogs/dialog-settings'
+import { DialogComment } from '@/components/dialogs/dialog-comment'
 
 
 export const Dialogs = {
@@ -21,5 +22,6 @@ export const Dialogs = {
     DialogMobileRightDrawer: DialogMobileRightDrawer,
     Settings: DialogSettings,
     MobileRightDrawer: DialogMobileRightDrawer,
-    FollowingFollower: DialogFollowingFollower
+    FollowingFollower: DialogFollowingFollower,
+    Comment: DialogComment
 }

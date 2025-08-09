@@ -9,6 +9,8 @@ import { Dialogs } from '@/components/dialogs'
 import { useAccount } from '@/libs/utils/account'
 import { AccountStatus } from '@/libs/constants/account.constant'
 import { useTranslation } from 'react-i18next'
+import { useSetAtom } from 'jotai/index'
+import { DialogCommentAtom } from '@/components/dialogs/dialog-comment'
 
 
 export interface CardRatingWithContentProps {
@@ -30,7 +32,13 @@ export const CardRatingWithContent = ({
     const [deleteRatingOpen, setDeleteRatingOpen] = useState<boolean>(false)
     const [editRatingOpen, setEditRatingOpen] = useState<boolean>(false)
     const { status, me } = useAccount()
+    const setCommentDialogOpen = useSetAtom(DialogCommentAtom)
     const { t } = useTranslation()
+    
+    const isMyRating = useMemo(() => {
+        return status !== AccountStatus.guest && me?._id === rating?.uid
+    }, [me?._id, rating?.uid, status])
+    
     const ratingsComponent = (
         <Menu>
             <MenuButton
@@ -45,24 +53,32 @@ export const CardRatingWithContent = ({
                 <div className='w-full flex flex-col gap-y-1 items-start text-white cursor-pointer' onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
+                    setCommentDialogOpen((prev) => ({
+                        ...prev,
+                        type: 'rating',
+                        id: rating?._id ?? '',
+                        open: true
+                    }))
+                }}>
+                    Comment
+                </div>
+                {isMyRating && <div className='w-full flex flex-col gap-y-1 items-start text-white cursor-pointer' onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
                     setDeleteRatingOpen(true)
                 }}>
                     {t('ratings.card.delete')}
-                </div>
-                <div className='w-full flex flex-col gap-y-1 items-start text-white cursor-pointer' onClick={(e) => {
+                </div>}
+                {isMyRating && <div className='w-full flex flex-col gap-y-1 items-start text-white cursor-pointer' onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
                     setEditRatingOpen(true)
                 }}>
                     {t('ratings.card.edit')}
-                </div>
+                </div>}
             </MenuItems>
         </Menu>
     )
-    
-    const isMyRating = useMemo(() => {
-        return status !== AccountStatus.guest && me?._id === rating?.uid
-    }, [me?._id, rating?.uid, status])
     
     if (!rating) return (
         <Cards.RatingWithContentSkeleton {...props}/>
@@ -78,7 +94,7 @@ export const CardRatingWithContent = ({
                 title={`${title}`}
                 type={rating.type}
                 duration={`${rating.score}/5`}
-                rightIcon={isMyRating ? ratingsComponent : undefined}
+                rightIcon={ratingsComponent}
                 containerClassName='!w-full rounded-none rounded-t-[15px]'
             />
             <div className='w-full bg-white/50 h-[1px]'/>
