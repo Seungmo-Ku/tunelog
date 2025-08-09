@@ -172,7 +172,13 @@ export const CardCommunityItem = ({ item, className = '', ...props }: CardCommun
             </div>
             
             {/* Footer Section */}
-            <div className='px-4 py-3 bg-tunelog-dark flex flex-col'>
+            <div
+                className='px-4 py-3 bg-tunelog-dark flex flex-col'
+                onClick={(e) => {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    appRouter.push(`/account/${item.item?.uid}`)
+                }}>
                 <div className='flex items-center justify-between text-14-regular text-white'>
                     <p className='flex items-center gap-x-1'>
                         <span>By {author}</span>

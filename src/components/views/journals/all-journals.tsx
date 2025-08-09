@@ -1,7 +1,7 @@
 'use client'
 
 import { Cards } from '@/components/cards'
-import { useGetMyJournals } from '@/hooks/use-journal'
+import { useGetMyJournals, useGetUserJournals } from '@/hooks/use-journal'
 import { useEffect, useMemo } from 'react'
 import { Journal, JournalByMonth } from '@/libs/interfaces/journal.interface'
 import { useInView } from 'react-intersection-observer'
@@ -14,23 +14,41 @@ import { BookText, Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 
-export const MyJournals = () => {
+interface AllJournalsProps {
+    showMyJournal: boolean
+    uid?: string | null | undefined
+}
+
+export const AllJournals = ({
+    showMyJournal = true,
+    uid
+}: AllJournalsProps) => {
     const { t } = useTranslation()
     const appRouter = useRouter()
-    const { data: journalsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isJournalLoading } = useGetMyJournals(20)
+    const { data: myJournalsData, fetchNextPage: myFetchNextPage, hasNextPage: myHasNextPage, isFetchingNextPage: isMyFetchingNextPage, isLoading: isMyJournalLoading } = useGetMyJournals(20, showMyJournal)
+    const { data: userJournalsData, fetchNextPage: userFetchNextPage, hasNextPage: userHasNextPage, isFetchingNextPage: isUserFetchingNextPage, isLoading: isUserJournalLoading } = useGetUserJournals(uid ?? '', 20, !showMyJournal)
     const journals = useMemo(() => {
-        if (isJournalLoading) return []
-        const journalsArray = journalsData?.pages.flatMap(page => page.data) ?? []
-        return journalsArray?.map(journal => new Journal(journal)) ?? []
-    }, [isJournalLoading, journalsData?.pages])
+        if (showMyJournal) {
+            if (isMyJournalLoading) return []
+            const journalsArray = myJournalsData?.pages.flatMap(page => page.data) ?? []
+            return journalsArray?.map(journal => new Journal(journal)) ?? []
+        } else {
+            if (isUserJournalLoading) return []
+            const journalsArray = userJournalsData?.pages.flatMap(page => page.data) ?? []
+            return journalsArray?.map(journal => new Journal(journal)) ?? []
+        }
+    }, [isMyJournalLoading, isUserJournalLoading, myJournalsData?.pages, showMyJournal, userJournalsData?.pages])
     
     const { ref, inView } = useInView()
     
     useEffect(() => {
-        if (inView && hasNextPage && !isFetchingNextPage) {
-            fetchNextPage()
+        if (inView) {
+            if (showMyJournal && !isMyFetchingNextPage && myHasNextPage)
+                myFetchNextPage()
+            else if (!showMyJournal && !isUserFetchingNextPage && userHasNextPage)
+                userFetchNextPage()
         }
-    }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage])
+    }, [inView, isMyFetchingNextPage, isUserFetchingNextPage, myFetchNextPage, myHasNextPage, showMyJournal, userFetchNextPage, userHasNextPage])
     
     const { subjectMap } = useJournalWithObjects(journals)
     
@@ -50,11 +68,15 @@ export const MyJournals = () => {
     
     const PlusIcon = useMemo(() => <Plus className='w-5 h-5 text-tunelog-secondary'/>, [])
     
+    const isLoading = useMemo(() => {
+        return showMyJournal ? isMyJournalLoading : isUserJournalLoading
+    }, [isMyJournalLoading, isUserJournalLoading, showMyJournal])
+    
     return (
         <div className='flex flex-col w-full gap-y-10'>
-            <Button.Box text={t('journals.new_journal')} leftIcon={PlusIcon} className='text-14-regular w-fit h-10' onClick={() => appRouter.push('/journals/create')}/>
+            {showMyJournal && <Button.Box text={t('journals.new_journal')} leftIcon={PlusIcon} className='text-14-regular w-fit h-10' onClick={() => appRouter.push('/journals/create')}/>}
             {
-                isJournalLoading && isEmpty(sortedEntries) && (
+                isLoading && isEmpty(sortedEntries) && (
                     <div className='flex gap-x-3'>
                         {
                             Array.from({ length: 5 }).map((_, index) => (
@@ -65,18 +87,18 @@ export const MyJournals = () => {
                 )
             }
             {
-                !isJournalLoading && isEmpty(sortedEntries) && (
+                !isLoading && isEmpty(sortedEntries) && (
                     <div className='flex flex-col items-center justify-center w-full py-20 text-center gap-y-4'>
                         <BookText className='w-10 h-10 text-white'/>
                         <div className='flex flex-col gap-y-1'>
                             <p className='text-16-bold text-white'>{t('journals.no_journal_yet')}</p>
-                            <p className='text-14-regular text-tunelog-secondary'>{t('journals.leave_journal')}</p>
+                            {showMyJournal && <p className='text-14-regular text-tunelog-secondary'>{t('journals.leave_journal')}</p>}
                         </div>
                     </div>
                 )
             }
             {
-                !isJournalLoading && !isEmpty(sortedEntries) && (
+                !isLoading && !isEmpty(sortedEntries) && (
                     <div className='flex flex-col gap-y-5'>
                         {
                             sortedEntries.map(([yearMonth, monthJournals]) => (
@@ -112,7 +134,7 @@ export const MyJournals = () => {
             }
             <div ref={ref} className='h-[1px] '/>
             {
-                isFetchingNextPage && hasNextPage && (
+                (isMyFetchingNextPage || isUserFetchingNextPage) && (
                     <div className='flex gap-x-3'>
                         {
                             Array.from({ length: 5 }).map((_, index) => (

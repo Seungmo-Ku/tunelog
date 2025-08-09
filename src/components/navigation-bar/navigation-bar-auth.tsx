@@ -7,7 +7,7 @@ import { useAccount } from '@/libs/utils/account'
 import { useSetAtom } from 'jotai/index'
 import { DialogLoginAtom } from '@/components/dialogs/dialog-login'
 import { clsx } from 'clsx'
-import { DialogLogoutAtom } from '@/components/dialogs/dialog-logout'
+import { useRouter } from 'next/navigation'
 import { DialogSettingsAtom } from '@/components/dialogs/dialog-settings'
 
 
@@ -20,9 +20,8 @@ export interface NavbarAuthProps {
 
 export const useNavbarAuth = () => {
     const { status } = useAccount()
-    
+    const appRouter = useRouter()
     const openDialogLogin = useSetAtom(DialogLoginAtom)
-    const openDialogLogout = useSetAtom(DialogLogoutAtom)
     const openDialogSettings = useSetAtom(DialogSettingsAtom)
     
     const navbarAuthComponents: NavbarAuthProps[] = useMemo(() => [
@@ -41,10 +40,11 @@ export const useNavbarAuth = () => {
             Icon: User,
             show: status !== AccountStatus.guest,
             onClick: () => {
-                openDialogLogout(prev => ({
-                    ...prev,
-                    open: true
-                }))
+                // openDialogLogout(prev => ({
+                //     ...prev,
+                //     open: true
+                // }))
+                appRouter.push('/account/me')
             },
             title: 'Account Info'
         },
@@ -59,7 +59,7 @@ export const useNavbarAuth = () => {
             },
             title: 'Settings'
         }
-    ], [openDialogLogin, openDialogLogout, openDialogSettings, status])
+    ], [appRouter, openDialogLogin, openDialogSettings, status])
     
     const navbarAuth = useMemo(() => {
         return (
