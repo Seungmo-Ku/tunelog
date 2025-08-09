@@ -110,7 +110,7 @@ export const DialogComment = ({}) => {
                             onChange={(e) => setComment(e.target.value)}
                         />
                         <Button.Box
-                            text='upload'
+                            text='Post'
                             disabled={isEmpty(comment) || isPending}
                             onClick={handleClick}
                         />
