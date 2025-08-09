@@ -70,7 +70,20 @@ const apiTopster = {
         } catch {
             return false
         }
-    }
+    },
+    _get_user_topsters: async (id: string, limit: number = 10, nextCursor?: string): Promise<DataConnection<TopsterResponse> | null> => {
+        try {
+            const params = new URLSearchParams()
+            params.append('limit', limit.toString())
+            if (nextCursor) params.append('cursor', nextCursor)
+            
+            const { data } = await axios.get<DataConnection<TopsterResponse>>(`/api/topsters/user/${id}?${params.toString()}`)
+            if (!data) return null
+            return data
+        } catch {
+            return null
+        }
+    },
 }
 
 export default apiTopster
