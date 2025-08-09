@@ -6,8 +6,15 @@ import { DialogCommentAtom } from '@/components/dialogs/dialog-comment'
 import { useSetAtom } from 'jotai/index'
 import { MessageCircle } from 'lucide-react'
 
+interface useCommentProps {
+    type: 'rating' | 'topster' | 'journal'
+    id: string
+}
 
-export const useComment = () => {
+export const useComment = ({
+    type,
+    id
+}: useCommentProps) => {
     
     const setOpenCommentDialog = useSetAtom(DialogCommentAtom)
     
@@ -21,11 +28,16 @@ export const useComment = () => {
         return (
             <Button.Box
                 text='Comments'
-                onClick={() => setOpenCommentDialog((prev) => ({ ...prev, open: true }))}
+                onClick={() => setOpenCommentDialog((prev) => ({
+                    ...prev,
+                    open: true,
+                    type,
+                    id
+                }))}
                 rightIcon={messageIcon}
             />
         )
-    }, [messageIcon, setOpenCommentDialog])
+    }, [id, messageIcon, setOpenCommentDialog, type])
     
     return {
         commentButton

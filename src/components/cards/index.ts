@@ -14,6 +14,7 @@ import { CardCommunityItem } from '@/components/cards/card-community-item'
 import { CardCommunityItemSkeleton } from '@/components/cards/card-community-item-skeleton'
 import { CardAccount } from '@/components/cards/card-account'
 import { CardUserList } from '@/components/cards/card-user-list'
+import { CardComment } from '@/components/cards/card-comment'
 
 
 export const Cards = {
@@ -32,5 +33,6 @@ export const Cards = {
     CommunityItem: CardCommunityItem,
     CommunityItemSkeleton: CardCommunityItemSkeleton,
     Account: CardAccount,
-    UserList: CardUserList
+    UserList: CardUserList,
+    Comment: CardComment
 }

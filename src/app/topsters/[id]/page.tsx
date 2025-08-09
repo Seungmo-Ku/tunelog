@@ -27,7 +27,7 @@ const TopsterDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     const isOwner = useIsOwner(topster?.uid)
     
     const { likesButton } = useLikes({ object: topster, type: 'topster' })
-    const { commentButton } = useComment()
+    const { commentButton } = useComment({ type: 'topster', id })
     
     const handleSaveAsImage = () => {
         const element = topsterRef.current

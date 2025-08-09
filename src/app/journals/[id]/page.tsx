@@ -13,6 +13,7 @@ import { Pencil, Trash2 } from 'lucide-react'
 import { useIsOwner } from '@/libs/utils/account'
 import { useTranslation } from 'react-i18next'
 import { useLikes } from '@/libs/utils/likes'
+import { useComment } from '@/libs/utils/comment'
 
 
 const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -28,6 +29,7 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
     
     const { likesButton } = useLikes({ object: journal, type: 'journal' })
+    const { commentButton } = useComment({ type: 'journal', id })
     
     // noinspection DuplicatedCode
     const subjectMap = useMemo(() => {
@@ -69,7 +71,10 @@ const JournalDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
                 </div>
                 <p className='text-14-regular'>{`${t('keywords.created')} ${new Date(journal?.createdAt ?? '').toLocaleDateString()} | ${journal?.public ? t('keywords.public') : t('keywords.private')} ${(journal.public && journal.onlyFollowers && isOwner) ? '(Only To Followers)' : ''}`}</p>
                 {(journal?.updatedAt ?? 0) > (journal?.createdAt ?? 0) && <p className='text-14-regular'>{`${t('keywords.last_edited')} At ${new Date(journal?.updatedAt ?? '').toLocaleDateString()}`}</p>}
-                <div>{likesButton}</div>
+                <div className='flex flex-row gap-x-1'>
+                    {likesButton}
+                    {commentButton}
+                </div>
             </div>
             <div className='flex gap-x-3 overflow-x-auto hide-sidebar shrink-0 items-start'>
                 {
