@@ -2,12 +2,12 @@ import React, { useMemo } from 'react'
 import { useGetAlbumQuery, useGetArtistQuery, useGetTrackQuery } from '@/hooks/use-spotify'
 import { useGetJournal } from '@/hooks/use-journal'
 import { isEmpty } from 'lodash'
-import { IRecommended } from '@/libs/interfaces/recommended.interface'
+import { Recommended } from '@/libs/interfaces/recommended.interface'
 import { FeaturedItem } from '@/components/views/dashboard/featured-items'
 
 
 interface FeaturedItemsContainerProps {
-    slide: IRecommended
+    slide: Recommended
 }
 
 export const FeaturedItemsContainer = ({ slide }: FeaturedItemsContainerProps) => {
