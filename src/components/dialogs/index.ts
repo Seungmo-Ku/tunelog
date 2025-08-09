@@ -6,7 +6,9 @@ import { DialogRegister } from '@/components/dialogs/dialog-register'
 import { DialogLogout } from '@/components/dialogs/dialog-logout'
 import { DialogEditRating } from '@/components/dialogs/dialog-edit-rating'
 import { DialogMobileRightDrawer } from '@/components/dialogs/dialog-mobile-right-drawer'
+import { DialogFollowingFollower } from '@/components/dialogs/dialog-following-follower'
 import { DialogSettings } from '@/components/dialogs/dialog-settings'
+import { DialogComment } from '@/components/dialogs/dialog-comment'
 
 
 export const Dialogs = {
@@ -18,5 +20,8 @@ export const Dialogs = {
     Logout: DialogLogout,
     EditRating: DialogEditRating,
     DialogMobileRightDrawer: DialogMobileRightDrawer,
-    Settings: DialogSettings
+    Settings: DialogSettings,
+    MobileRightDrawer: DialogMobileRightDrawer,
+    FollowingFollower: DialogFollowingFollower,
+    Comment: DialogComment
 }

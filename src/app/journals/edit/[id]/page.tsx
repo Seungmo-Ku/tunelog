@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useGetJournal } from '@/hooks/use-journal'
-import { CreatingComponent } from '@/components/views/journals/creating-component'
+import { CreatingJournal } from '@/components/views/journals/creating-journal'
 import { useIsOwner } from '@/libs/utils/account'
 
 
@@ -27,7 +27,7 @@ const JournalEditPage = ({ params }: { params: Promise<{ id: string }> }) => {
     }
     return (
         <div className='flex flex-col w-full h-full overflow-y-auto hide-sidebar text-white'>
-            <CreatingComponent journal={journal}/>
+            <CreatingJournal journal={journal}/>
         </div>
     )
 }

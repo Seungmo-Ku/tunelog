@@ -3,17 +3,54 @@ import { isEmpty } from 'lodash'
 import { connectDB } from '@/libs/api-server/mongoose'
 import { Journal } from '@/models/journal-schema.model'
 import { findUserByCookie } from '@/libs/utils/password'
+import { PipelineStage } from 'mongoose'
 
 
 export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
     const { searchParams } = new URL(req.url)
     const limit = !isEmpty(searchParams.get('limit')) ? parseInt(searchParams.get('limit')!) : 10
+    const sort = (searchParams.get('sort') ?? 'newest') as 'newest' | 'likes'
+    
     const cursor = searchParams.get('cursor')
     
     await connectDB()
+    
+    const match = {
+        deleted: false,
+        public: true,
+        onlyFollowers: false
+    }
+    // TODO. pagenation 이 필요해지면 nextCursor 사용
+    if (sort === 'likes') {
+        const pipeline: PipelineStage[] = [
+            { $match: match },
+            {
+                $addFields: {
+                    likeCount: { $size: '$likedUids' } // likedUids 배열의 크기를 likeCount로 추가해서 내림차순 정렬
+                }
+            },
+            {
+                $sort: {
+                    likeCount: -1,
+                    createdAt: -1
+                }
+            },
+            {
+                $limit: limit
+            }
+        ]
+        
+        const journals = await Journal.aggregate(pipeline)
+        
+        return NextResponse.json({
+            data: journals,
+            nextCursor: null
+        })
+    }
+    
     const query = cursor
-                  ? { createdAt: { $lt: new Date(cursor) }, deleted: false, public: true }
-                  : { deleted: false, public: true }
+                  ? { createdAt: { $lt: new Date(cursor) }, ...match }
+                  : match
     const journals = await Journal.find(query)
                                   .select('-password')
                                   .sort({ createdAt: -1 })

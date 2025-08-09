@@ -12,6 +12,9 @@ import { CardRatingWithContent } from '@/components/cards/card-rating-with-conte
 import { CardRatingWithContentSkeleton } from '@/components/cards/card-rating-with-content-skeleton'
 import { CardCommunityItem } from '@/components/cards/card-community-item'
 import { CardCommunityItemSkeleton } from '@/components/cards/card-community-item-skeleton'
+import { CardAccount } from '@/components/cards/card-account'
+import { CardUserList } from '@/components/cards/card-user-list'
+import { CardComment } from '@/components/cards/card-comment'
 
 
 export const Cards = {
@@ -28,5 +31,8 @@ export const Cards = {
     RatingWithContent: CardRatingWithContent,
     RatingWithContentSkeleton: CardRatingWithContentSkeleton,
     CommunityItem: CardCommunityItem,
-    CommunityItemSkeleton: CardCommunityItemSkeleton
+    CommunityItemSkeleton: CardCommunityItemSkeleton,
+    Account: CardAccount,
+    UserList: CardUserList,
+    Comment: CardComment
 }

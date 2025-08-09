@@ -9,6 +9,8 @@ import { Dialogs } from '@/components/dialogs'
 import { useAccount } from '@/libs/utils/account'
 import { AccountStatus } from '@/libs/constants/account.constant'
 import { useTranslation } from 'react-i18next'
+import { useSetAtom } from 'jotai/index'
+import { DialogCommentAtom } from '@/components/dialogs/dialog-comment'
 
 
 export interface CardRatingWithContentProps {
@@ -30,7 +32,13 @@ export const CardRatingWithContent = ({
     const [deleteRatingOpen, setDeleteRatingOpen] = useState<boolean>(false)
     const [editRatingOpen, setEditRatingOpen] = useState<boolean>(false)
     const { status, me } = useAccount()
+    const setCommentDialogOpen = useSetAtom(DialogCommentAtom)
     const { t } = useTranslation()
+    
+    const isMyRating = useMemo(() => {
+        return status !== AccountStatus.guest && me?._id === rating?.uid
+    }, [me?._id, rating?.uid, status])
+    
     const ratingsComponent = (
         <Menu>
             <MenuButton
@@ -45,24 +53,32 @@ export const CardRatingWithContent = ({
                 <div className='w-full flex flex-col gap-y-1 items-start text-white cursor-pointer' onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
+                    setCommentDialogOpen((prev) => ({
+                        ...prev,
+                        type: 'rating',
+                        id: rating?._id ?? '',
+                        open: true
+                    }))
+                }}>
+                    Comment
+                </div>
+                {isMyRating && <div className='w-full flex flex-col gap-y-1 items-start text-white cursor-pointer' onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
                     setDeleteRatingOpen(true)
                 }}>
                     {t('ratings.card.delete')}
-                </div>
-                <div className='w-full flex flex-col gap-y-1 items-start text-white cursor-pointer' onClick={(e) => {
+                </div>}
+                {isMyRating && <div className='w-full flex flex-col gap-y-1 items-start text-white cursor-pointer' onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
                     setEditRatingOpen(true)
                 }}>
                     {t('ratings.card.edit')}
-                </div>
+                </div>}
             </MenuItems>
         </Menu>
     )
-    
-    const isMyRating = useMemo(() => {
-        return status !== AccountStatus.guest && me?._id === rating?.uid
-    }, [me?._id, rating?.uid, status])
     
     if (!rating) return (
         <Cards.RatingWithContentSkeleton {...props}/>
@@ -78,14 +94,14 @@ export const CardRatingWithContent = ({
                 title={`${title}`}
                 type={rating.type}
                 duration={`${rating.score}/5`}
-                rightIcon={isMyRating ? ratingsComponent : undefined}
+                rightIcon={ratingsComponent}
                 containerClassName='!w-full rounded-none rounded-t-[15px]'
             />
             <div className='w-full bg-white/50 h-[1px]'/>
             <div className='w-full flex flex-col bg-[#33373B] overflow-hidden rounded-b-[15px] p-[10px] text-white text-13-regular gap-y-1'>
                 <span className='whitespace-pre-line break-keep text-left'>{rating.comment}</span>
                 <p className='space-x-1'>
-                    <span className='text-12-regular text-left'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anonymous'} | ${rating?.public ? 'Public' : 'Private'}`}</span>
+                    <span className='text-12-regular text-left'>{`${new Date(rating.createdAt).toLocaleDateString()} ${rating.author ?? 'Anonymous'} | ${rating?.public ? 'Public' : 'Private'} ${(rating?.public && rating?.onlyFollowers && isMyRating) ? '(Only To Followers)' : ''}`}</span>
                     {showMyRating && isMyRating && (
                         <span className='text-12-bold text-tunelog-secondary'>{t('ratings.card.my_rating')}</span>
                     )}

@@ -29,7 +29,7 @@ export interface CreatingComponentProps {
     journal?: Journal | null | undefined
 }
 
-export const CreatingComponent = ({
+export const CreatingJournal = ({
     journal = null
 }: CreatingComponentProps) => {
     const { t } = useTranslation()
@@ -43,6 +43,7 @@ export const CreatingComponent = ({
         custom: ''
     })
     const [isPublic, setIsPublic] = useState<boolean>(false)
+    const [isOnlyFollowers, setIsOnlyFollowers] = useState<boolean>(false)
     const [selectedObjectId, setSelectedObjectId] = useState<string>('')
     const [selectedObject, setSelectedObject] = useState<SelectedObjectProps[]>([])
     const [openUpdateDialog, setOpenUpdateDialog] = useState<boolean>(false)
@@ -64,6 +65,7 @@ export const CreatingComponent = ({
             }
         }))
         setIsPublic(journal.public ?? false)
+        setIsOnlyFollowers(journal.onlyFollowers ?? false)
     }, [journal])
     
     const appRouter = useRouter()
@@ -92,12 +94,13 @@ export const CreatingComponent = ({
             content: html ?? '',
             author: me?.name ?? '',
             tags,
-            public: isPublic
+            public: isPublic,
+            onlyFollowers: isPublic ? isOnlyFollowers : false
         })
         if (res) {
             appRouter.replace(`/journals`)
         }
-    }, [appRouter, isPending, isPublic, me?.name, mutateAsync, selectedObject, setLoginDialogOpen, status, tags, title])
+    }, [appRouter, isOnlyFollowers, isPending, isPublic, me?.name, mutateAsync, selectedObject, setLoginDialogOpen, status, tags, title])
     
     useEffect(() => {
         if (selectedObject.length > 0) {
@@ -292,6 +295,19 @@ export const CreatingComponent = ({
                         </Switch>
                         <p className='text-14-regular text-white'>{isPublic ? t('journals.create.public') : t('journals.create.private')}</p>
                     </div>
+                    {isPublic && <div className='flex items-center gap-x-2'>
+                        <Switch
+                            checked={isOnlyFollowers}
+                            onChange={setIsOnlyFollowers}
+                            className='group relative flex h-7 w-14 cursor-pointer rounded-full bg-white/10 p-1 ease-in-out focus:not-data-focus:outline-none data-checked:bg-white/10 data-focus:outline data-focus:outline-white'
+                        >
+                            <span
+                                aria-hidden='true'
+                                className='pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7'
+                            />
+                        </Switch>
+                        <p className='text-white'>{isOnlyFollowers ? 'Only visible to followers' : 'Visible to everyone'}</p>
+                    </div>}
                 </div>
             </div>
             <Dialogs.MutationObject
@@ -308,7 +324,8 @@ export const CreatingComponent = ({
                         type: obj.type,
                         spotifyId: obj.id
                     })),
-                    public: isPublic
+                    public: isPublic,
+                    onlyFollowers: isPublic ? isOnlyFollowers : false
                 }}
             />
         </div>
