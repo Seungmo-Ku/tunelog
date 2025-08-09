@@ -55,7 +55,7 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
         replies = replies.filter(reply => new Date(reply.createdAt) < new Date(cursor))
     }
     const pagedReplies = replies.slice(0, limit)
-    const nextCursor = pagedReplies.length === limit ? pagedReplies[pagedReplies.length - 1].createdAt.toISOString() : null
+    const nextCursor = (pagedReplies.length === limit && !isEmpty(pagedReplies)) ? pagedReplies[pagedReplies.length - 1].createdAt.toISOString() : null
     
     return NextResponse.json({
         data: pagedReplies,
