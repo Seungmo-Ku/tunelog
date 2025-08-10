@@ -19,7 +19,7 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ uid:
                   ? { createdAt: { $lt: new Date(cursor) }, ...queryUser }
                   : queryUser
     const topsters = await Topster.find(query)
-                                  .select('-password')
+                                  .select('-password -replies')
                                   .sort({ createdAt: -1 })
                                   .limit(limit)
     

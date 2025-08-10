@@ -25,7 +25,7 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
             public: true, onlyFollowers: false
         }
     
-    const topster = await Topster.findOne({ _id: id, deleted: false, ...userQuery }).select('-password')
+    const topster = await Topster.findOne({ _id: id, deleted: false, ...userQuery }).select('-password -replies')
     return NextResponse.json(topster, { status: 200 }) // 200 OK
 }
 
@@ -112,7 +112,7 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
     
     await topster.save()
     
-    const updatedTopster = await Topster.findById(id).select('-password')
+    const updatedTopster = await Topster.findById(id).select('-password -replies')
     
     return NextResponse.json(updatedTopster, { status: 200 })
 }
