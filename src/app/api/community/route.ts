@@ -54,14 +54,14 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
         const pipeline: PipelineStage[] = [
             { $match: finalQuery },
             { $addFields: { itemType: 'rating' } },
-            { $project: { password: 0 } },
+            { $project: { password: 0, replies: 0 } },
             {
                 $unionWith: {
                     coll: 'journals',
                     pipeline: [
                         { $match: finalQuery },
                         { $addFields: { itemType: 'journal' } },
-                        { $project: { password: 0 } }
+                        { $project: { password: 0, replies: 0 } }
                     ]
                 }
             },
@@ -71,7 +71,7 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
                     pipeline: [
                         { $match: finalQuery },
                         { $addFields: { itemType: 'topster' } },
-                        { $project: { password: 0 } }
+                        { $project: { password: 0, replies: 0 } }
                     ]
                 }
             },
@@ -100,7 +100,7 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
         
         if (model) {
             const data = await model.find(finalQuery)
-                                    .select('-password')
+                                    .select('-password -replies')
                                     .sort({ createdAt: sortDirection })
                                     .limit(limit)
                                     .lean()
