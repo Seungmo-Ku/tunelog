@@ -40,7 +40,7 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     
-    const rating = await Rating.findById(id)
+    const rating = await Rating.findById(id).select('-password -replies')
     if (!rating) {
         return NextResponse.json({ error: 'Rating not found' }, { status: 404 })
     }

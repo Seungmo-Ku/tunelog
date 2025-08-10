@@ -24,7 +24,7 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ uid:
                   : { ...queryBase }
     
     const ratings = await Rating.find(query)
-                                .select('-password')
+                                .select('-password -replies')
                                 .sort({ createdAt: sortDirection })
                                 .limit(limit)
     

@@ -22,7 +22,7 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
                   : { ...queryBase }
     
     const ratings = await Rating.find(query)
-                                .select('-password') // 비밀번호는 제외
+                                .select('-password -replies')
                                 .sort({ createdAt: sortDirection })
                                 .limit(limit)
     
