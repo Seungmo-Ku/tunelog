@@ -15,7 +15,7 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
                   ? { createdAt: { $lt: new Date(cursor) }, deleted: false, public: true, onlyFollowers: false }
                   : { deleted: false, public: true, onlyFollowers: false }
     const topsters = await Topster.find(query)
-                                  .select('-password')
+                                  .select('-password -replies')
                                   .sort({ createdAt: -1 })
                                   .limit(limit)
     

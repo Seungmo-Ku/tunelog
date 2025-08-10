@@ -25,7 +25,7 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ id: 
             public: true, onlyFollowers: false
         }
     
-    const journal = await Journal.findOne({ _id: id, deleted: false, ...userQuery }).select('-password')
+    const journal = await Journal.findOne({ _id: id, deleted: false, ...userQuery }).select('-password -replies')
     if (!journal) {
         return new Response(JSON.stringify({ error: 'Journal not found' }), { status: 404 })
     }
@@ -106,7 +106,7 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
     
     await journal.save()
     
-    const updateJournal = await Journal.findById(id).select('-password')
+    const updateJournal = await Journal.findById(id).select('-password -replies')
     
     return NextResponse.json(updateJournal, { status: 200 })
 }
