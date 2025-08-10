@@ -20,7 +20,7 @@ export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
                   ? { createdAt: { $lt: new Date(cursor) }, deleted: false, uid: user._id.toString() }
                   : { deleted: false, uid: user._id.toString() }
     const journals = await Journal.find(query)
-                                  .select('-password')
+                                  .select('-password -replies')
                                   .sort({ createdAt: -1 })
                                   .limit(limit)
     

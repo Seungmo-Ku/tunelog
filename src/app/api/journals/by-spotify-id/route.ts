@@ -41,7 +41,7 @@ export const GET = async (req: NextRequest) => {
         } : baseQuery
     
     const journals = await Journal.find(query)
-                                  .select('-password')
+                                  .select('-password -replies')
                                   .sort({ createdAt: -1 })
                                   .limit(limit)
     
