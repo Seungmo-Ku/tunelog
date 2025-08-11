@@ -1,12 +1,15 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Reply } from '@/libs/interfaces/rating.interface'
 import { useRouter } from 'next/navigation'
-import { useSetAtom } from 'jotai/index'
 import { DialogCommentAtom } from '@/components/dialogs/dialog-comment'
 import { Menu, MenuButton, MenuItems } from '@headlessui/react'
 import { EllipsisVertical } from 'lucide-react'
+import { useDeleteReply } from '@/hooks/use-reply'
+import { useAccount } from '@/libs/utils/account'
+import { useAtom } from 'jotai'
+import toast from 'react-hot-toast'
 
 
 interface CardCommentProps {
@@ -18,13 +21,32 @@ export const CardComment = ({
     ...props
 }: CardCommentProps) => {
     const appRouter = useRouter()
-    // const { me } = useAccount()
-    const setDialogOpen = useSetAtom(DialogCommentAtom)
+    const { me } = useAccount()
+    const [dialogOpen, setDialogOpen] = useAtom(DialogCommentAtom)
+    const { mutateAsync: deleteReply, isPending: isDeletePending } = useDeleteReply()
     
-    // const isMyReply = useMemo(() => {
-    //     if (!me || !reply) return false
-    //     return me?._id === reply?.uid
-    // }, [me, reply])
+    const isMyReply = useMemo(() => {
+        if (!me || !reply) return false
+        return me?._id === reply?.uid
+    }, [me, reply])
+    
+    const handleDeleteReply = async () => {
+        if (!reply) return
+        try {
+            const res = await deleteReply({ type: dialogOpen.type ?? 'rating', id: dialogOpen.id ?? '', replyId: reply._id })
+            if (res) {
+                toast.success('Reply deleted successfully')
+                setDialogOpen((prev) => ({
+                    ...prev,
+                    open: false
+                }))
+            } else {
+                toast.error('Failed to delete reply')
+            }
+        } catch {
+            toast.error('Failed to delete reply')
+        }
+    }
     
     if (!reply) return null
     
@@ -56,6 +78,19 @@ export const CardComment = ({
                 }}>
                     Visit Profile
                 </div>
+                {
+                    isMyReply && (
+                        <div
+                            className='w-full flex flex-col gap-y-1 items-start text-white cursor-pointer'
+                            onClick={async () => {
+                                if (isDeletePending) return
+                                await handleDeleteReply()
+                            }}
+                        >
+                            Delete
+                        </div>
+                    )
+                }
             </MenuItems>
         </Menu>
     )

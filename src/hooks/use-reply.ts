@@ -24,9 +24,18 @@ export const useGetReplies = (type: 'rating' | 'journal' | 'topster' | null, id?
 export const usePostReply = () => {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: async ({type, id, reply}: {type: 'rating' | 'journal' | 'topster', id: string, reply: ReplyCreateRequest}) => await ApiReply._post_reply(type, id, reply),
+        mutationFn: async ({ type, id, reply }: { type: 'rating' | 'journal' | 'topster', id: string, reply: ReplyCreateRequest }) => await ApiReply._post_reply(type, id, reply),
         onSuccess: (data, variables) => {
-            queryClient.invalidateQueries({ queryKey: ['reply', variables.type, variables.id]})
+            queryClient.invalidateQueries({ queryKey: ['reply', variables.type, variables.id] })
+        }
+    })
+}
+export const useDeleteReply = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async ({ type, id, replyId }: { type: 'rating' | 'journal' | 'topster', id: string, replyId: string }) => await ApiReply._delete_reply(type, id, replyId),
+        onSuccess: (data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['reply', variables.type, variables.id] })
         }
     })
 }
