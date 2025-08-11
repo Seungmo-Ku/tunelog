@@ -27,6 +27,14 @@ const ApiReply = {
             console.error('ApiReply._post_reply', e)
             return null
         }
+    },
+    _delete_reply: async (type: 'rating' | 'journal' | 'topster', id: string, replyId: string): Promise<boolean> => {
+        try {
+            const response = await axios.delete(`/api/${type}s/${id}/reply/${replyId}`)
+            return response.status === 200
+        } catch {
+            return false
+        }
     }
 }
 

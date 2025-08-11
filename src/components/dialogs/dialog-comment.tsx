@@ -38,7 +38,7 @@ export const DialogComment = ({}) => {
         const repliesArray = data?.pages.flatMap(page => page.data) ?? []
         return repliesArray?.map(reply => new Reply(reply)) ?? []
     }, [data?.pages, isLoading])
-    const { mutateAsync, isPending } = usePostReply()
+    const { mutateAsync: postReply, isPending: isPostPending } = usePostReply()
     
     const [comment, setComment] = useState<string>('')
     
@@ -64,13 +64,13 @@ export const DialogComment = ({}) => {
     }, [setDialogOpen])
     
     const handleClick = useCallback(async () => {
-        if (isEmpty(comment) || isPending || !type || !id) return
+        if (isEmpty(comment) || isPostPending || !type || !id) return
         if (status === AccountStatus.guest) {
             toast.error('You must be logged in to post a comment')
             return
         }
         try {
-            const res = await mutateAsync({
+            const res = await postReply({
                 type,
                 id,
                 reply: {
@@ -87,7 +87,7 @@ export const DialogComment = ({}) => {
         } catch {
             toast.error('Failed to post comment')
         }
-    }, [comment, id, isPending, me?.name, mutateAsync, status, type])
+    }, [comment, id, isPostPending, me?.name, postReply, status, type])
     
     return (
         <Dialog transition open={open} onClose={onClose} className='relative z-50 transition duration-300 ease-out data-closed:opacity-0'>
@@ -111,7 +111,7 @@ export const DialogComment = ({}) => {
                         />
                         <Button.Box
                             text='Post'
-                            disabled={isEmpty(comment) || isPending}
+                            disabled={isEmpty(comment) || isPostPending}
                             onClick={handleClick}
                         />
                     </div>
