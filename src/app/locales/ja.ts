@@ -66,7 +66,14 @@ const ja = {
     },
     likes: {
         guest: 'ログイン後にいいねを押してください！',
-        error: 'いいねの操作に失敗しました',
+        error: 'いいねの操作に失敗しました'
+    },
+    notify: {
+        following: '{{ name }}があなたをフォローし始めました。',
+        followed: 'あなたは{{ name }}をフォローし始めました。',
+        new_from_following: '{{ name }}さんの新しい{{ type }}',
+        new_comment: '{{ name }}さんがあなたの{{ type }}にコメントしました。',
+        new_like: '{{ name }}さんがあなたの{{ type }}にいいねしました。'
     },
     keywords: {
         rating: '評価',
