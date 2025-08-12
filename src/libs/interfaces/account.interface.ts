@@ -4,8 +4,10 @@ export interface INotify {
     name?: string
     type?: string
     link?: string
+    uid?: string
     createdAt: Date
     updatedAt: Date
+    checked?: boolean
 }
 
 export interface IAccount {
@@ -28,6 +30,7 @@ export class Notify implements INotify {
     link?: string
     createdAt: Date
     updatedAt: Date
+    checked?: boolean
     
     constructor(data: INotify) {
         this._id = data._id
@@ -37,6 +40,7 @@ export class Notify implements INotify {
         this.link = data.link || ''
         this.createdAt = data.createdAt
         this.updatedAt = data.updatedAt
+        this.checked = data.checked || false
     }
 }
 

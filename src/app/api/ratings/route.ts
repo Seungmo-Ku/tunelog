@@ -3,6 +3,7 @@ import { Rating } from '@/models/rating-schema.model'
 import { NextRequest, NextResponse } from 'next/server'
 import { isEmpty } from 'lodash'
 import { findUserByCookie } from '@/libs/utils/password'
+import { Account } from '@/models/account-schema.model'
 
 
 export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
@@ -45,6 +46,20 @@ export const POST = async (req: NextRequest) => {
     const newRating = await Rating.create(body)
     const object = newRating.toObject()
     delete object.password
+    if (object.public || object.onlyFollowers) {
+        await Promise.all(
+            user.followerUids.map(async (uid: string) => {
+                const notify = {
+                    info: 'new_from_following',
+                    name: user.name,
+                    type: 'Rating',
+                    link: `/ratings/user/${object.uid}`,
+                    uid: object.uid
+                }
+                await Account.updateOne({ _id: uid }, { $push: { notify } })
+            })
+        )
+    }
     return NextResponse.json(object, { status: 201 }) // 201 Created
 }
 

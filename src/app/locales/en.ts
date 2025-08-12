@@ -69,8 +69,8 @@ const en = {
         error: 'Failed to like this item. Please try again.',
     },
     notify: {
-        following: '{{ name }} is now following you.',
-        followed: 'You are now following {{ name }}.',
+        followed: '{{ name }} is now following you.',
+        following: 'You are now following {{ name }}.',
         new_from_following: '{{ name }} has posted a new {{ type }}.',
         new_comment: '{{ name }} commented on your {{ type }}.',
         new_like: '{{ name }} liked your {{ type }}.',

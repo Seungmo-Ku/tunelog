@@ -3,6 +3,7 @@ import { connectDB } from '@/libs/api-server/mongoose'
 import { Topster } from '@/models/topster-schema.model'
 import { isEmpty } from 'lodash'
 import { findUserByCookie } from '@/libs/utils/password'
+import { Account } from '@/models/account-schema.model'
 
 
 export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
@@ -38,5 +39,19 @@ export const POST = async (req: NextRequest) => {
     const newTopster = await Topster.create(body)
     const object = newTopster.toObject()
     delete object.password
+    if (object.public || object.onlyFollowers) {
+        await Promise.all(
+            user.followerUids.map(async (uid: string) => {
+                const notify = {
+                    info: 'new_from_following',
+                    name: user.name,
+                    type: `Topster - ${object.title}`,
+                    link: `/topsters/${object._id}`,
+                    uid: object.uid
+                }
+                await Account.updateOne({ _id: uid }, { $push: { notify } })
+            })
+        )
+    }
     return NextResponse.json(object, { status: 201 }) // 201 Created
 }

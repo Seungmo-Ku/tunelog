@@ -3,6 +3,7 @@ import { isEmpty } from 'lodash'
 import { connectDB } from '@/libs/api-server/mongoose'
 import { Account } from '@/models/account-schema.model'
 import { findUserByCookie } from '@/libs/utils/password'
+import { INotify } from '@/libs/interfaces/account.interface'
 
 
 export const GET = async (req: NextRequest, { params }: { params: Promise<{ uid: string }> }) => {
@@ -61,6 +62,20 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ uid
     }
     followedUser.followerUids.push(followingUser._id.toString())
     followingUser.followingUids.push(followedUser._id.toString())
+    const newNotifyOnFollowing = {
+        info: 'notify.following',
+        name: followedUser.name,
+        uid: followedUser._id.toString(),
+        link: `accounts/${followedUser._id.toString()}`
+    }
+    const newNotifyOnFollowed = {
+        info: 'notify.followed',
+        name: followingUser.name,
+        uid: followingUser._id.toString(),
+        link: `accounts/${followingUser._id.toString()}`
+    }
+    followingUser.notify.push(newNotifyOnFollowing)
+    followedUser.notify.push(newNotifyOnFollowed)
     await followedUser.save()
     await followingUser.save()
     return NextResponse.json({ message: 'Followed successfully' }, { status: 201 })
@@ -89,6 +104,9 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ u
     
     followedUser.followerUids = followedUser.followerUids.filter((uid: string) => uid !== followingUser._id.toString())
     followingUser.followingUids = followingUser.followingUids.filter((uid: string) => uid !== followedUser._id.toString())
+    
+    followedUser.notify = followedUser.notify.filter((notify: Partial<INotify>) => !(notify?.uid === followingUser._id.toString() && notify?.info === 'notify.followed'))
+    followingUser.notify = followingUser.notify.filter((notify: Partial<INotify>) => !(notify?.uid === followedUser._id.toString() && notify?.info === 'notify.following'))
     
     await followedUser.save()
     await followingUser.save()

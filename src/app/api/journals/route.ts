@@ -4,6 +4,7 @@ import { connectDB } from '@/libs/api-server/mongoose'
 import { Journal } from '@/models/journal-schema.model'
 import { findUserByCookie } from '@/libs/utils/password'
 import { PipelineStage } from 'mongoose'
+import { Account } from '@/models/account-schema.model'
 
 
 export const GET = async (req: NextRequest) => { // 모든 rating 가져오기
@@ -74,5 +75,19 @@ export const POST = async (req: NextRequest) => {
     body.uid = user._id.toString()
     const newJournal = await Journal.create(body)
     const object = newJournal.toObject()
+    if (object.public || object.onlyFollowers) {
+        await Promise.all(
+            user.followerUids.map(async (uid: string) => {
+                const notify = {
+                    info: 'new_from_following',
+                    name: user.name,
+                    type: `Journal - ${object.title}`,
+                    link: `/journals/${object._id}`,
+                    uid: object.uid
+                }
+                await Account.updateOne({ _id: uid }, { $push: { notify } })
+            })
+        )
+    }
     return NextResponse.json(object, { status: 201 }) // 201 Created
 }
