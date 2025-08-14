@@ -291,6 +291,19 @@
     height: 500px;
 }
 
+.react-calendar__month-view__weekdays__weekday {
+    text-align: center;
+}
+
+.react-calendar__navigation {
+    display: flex;
+    justify-content: center;
+}
+
+.react-calendar__tile abbr {
+    display: none;
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         --background: #1D2123;

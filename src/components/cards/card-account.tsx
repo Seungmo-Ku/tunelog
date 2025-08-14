@@ -11,6 +11,9 @@ import { Dialogs } from '@/components/dialogs'
 import { ObjectCountResponse } from '@/libs/dto/account.dto'
 import { isEmpty, noop } from 'lodash'
 import { useFollowUnfollow } from '@/libs/utils/follow-unfollow'
+import Calendar from 'react-calendar'
+import { useTranslation } from 'react-i18next'
+import { clsx } from 'clsx'
 
 
 interface CardAccountProps {
@@ -27,6 +30,8 @@ export const CardAccount = ({
     const { mutateAsync, isPending } = useHandleLogout()
     const { me } = useAccount()
     const appRouter = useRouter()
+    const { i18n } = useTranslation()
+    
     const [openUidDialog, setOpenUidDialog] = useState<boolean>(false)
     const [type, setType] = useState<'following' | 'follower'>('following')
     
@@ -46,6 +51,11 @@ export const CardAccount = ({
             toast.error('Log Out failed')
         }
     }, [appRouter, isPending, mutateAsync])
+    
+    const isDateDisabled = useCallback((date: Date) => {
+        if (!account) return true
+        return date < new Date(account.createdAt) || date > new Date()
+    }, [account])
     
     if (!account) return null
     return (
@@ -148,6 +158,26 @@ export const CardAccount = ({
                                 <p className='text-18-regular text-black'>{objectCount?.topsterCount ?? 0}</p>
                             </div>
                         </div>
+                        <Calendar
+                            locale={i18n.language}
+                            maxDate={new Date()}
+                            next2Label={null}
+                            prev2Label={null}
+                            minDetail='month'
+                            className='flex flex-col'
+                            tileClassName=''
+                            tileDisabled={({ date }) => {
+                                // Disable dates before account creation date
+                                return isDateDisabled(date)
+                            }}
+                            tileContent={({ date }) => {
+                                return (
+                                    <div className={clsx(isDateDisabled(date) ? 'text-gray-500' : 'text-white', 'text-center')}>
+                                        {date.toLocaleDateString()}
+                                    </div>
+                                )
+                            }}
+                        />
                         <div className='pt-4 mt-4 border-t border-gray-700 text-12-regular text-gray-500'>
                             <p>Account created: {new Date(account.createdAt).toLocaleDateString()}</p>
                             <p>Last updated: {new Date(account.updatedAt).toLocaleDateString()}</p>
