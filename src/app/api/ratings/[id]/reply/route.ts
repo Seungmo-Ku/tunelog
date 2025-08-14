@@ -4,6 +4,7 @@ import { findUserByCookie } from '@/libs/utils/password'
 import { Rating } from '@/models/rating-schema.model'
 import { IReply } from '@/libs/interfaces/rating.interface'
 import { isEmpty } from 'lodash'
+import { Account } from '@/models/account-schema.model'
 
 
 export const POST = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
@@ -33,6 +34,18 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ id:
     rating.replies.push(newReply)
     await rating.save()
     const object = rating.toObject()
+    if (object.uid !== user._id.toString()) { //본인 글의 댓글이 아닌경우
+        const createdReply = rating.replies[rating.replies.length - 1]
+        const notify = {
+            info: 'notify.new_comment',
+            name: user.name, //보내는사람
+            type: 'Rating',
+            link: `/detail/${rating.type}/${rating.spotifyId}`,
+            uid: object.uid, //받는사람
+            _id: createdReply._id
+        }
+        await Account.updateOne({ _id: notify.uid }, { $push: { notify } })
+    }
     return NextResponse.json(object, { status: 201 }) // 201 Created
 }
 

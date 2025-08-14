@@ -4,6 +4,7 @@ import { findUserByCookie } from '@/libs/utils/password'
 import { Journal } from '@/models/journal-schema.model'
 import { isEmpty } from 'lodash'
 import { IReply } from '@/libs/interfaces/rating.interface'
+import { Account } from '@/models/account-schema.model'
 
 
 export const POST = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
@@ -32,8 +33,19 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ id:
     }
     journal.replies.push(newReply)
     await journal.save()
-    
     const object = journal.toObject()
+    if (object.uid !== user._id.toString()) {
+        const createdReply = journal.replies[journal.replies.length - 1]
+        const notify = {
+            info: 'notify.new_comment',
+            name: user.name, //보내는사람
+            type: 'Journal',
+            link: `/journals/${object._id}`,
+            uid: object.uid, //받는사람
+            _id: createdReply._id
+        }
+        await Account.updateOne({ _id: notify.uid }, { $push: { notify } })
+    }
     return NextResponse.json(object, { status: 201 }) // 201 Created
 }
 

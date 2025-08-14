@@ -3,6 +3,8 @@ import { connectDB } from '@/libs/api-server/mongoose'
 import { findUserByCookie } from '@/libs/utils/password'
 import { IReply } from '@/libs/interfaces/rating.interface'
 import { Topster } from '@/models/topster-schema.model'
+import mongoose from 'mongoose'
+import { Account } from '@/models/account-schema.model'
 
 
 export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ id: string, replyId: string }> }) => {
@@ -24,5 +26,7 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
     }
     topster.replies = topster.replies.filter((reply: IReply) => reply._id.toString() !== replyId)
     await topster.save()
+    const objectReplyId = new mongoose.Types.ObjectId(replyId)
+    await Account.updateOne({ _id: topster.toObject().uid }, { $pull: { notify: { _id: objectReplyId } } })
     return NextResponse.json('OK', { status: 200 })
 }

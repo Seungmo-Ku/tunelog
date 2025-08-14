@@ -4,6 +4,7 @@ import { findUserByCookie } from '@/libs/utils/password'
 import { Topster } from '@/models/topster-schema.model'
 import { isEmpty } from 'lodash'
 import { IReply } from '@/libs/interfaces/rating.interface'
+import { Account } from '@/models/account-schema.model'
 
 
 export const POST = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
@@ -33,6 +34,18 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ id:
     topster.replies.push(newReply)
     await topster.save()
     const object = topster.toObject()
+    if (object.uid !== user._id.toString()) { //본인 글의 댓글이 아닌경우
+        const createdReply = topster.replies[topster.replies.length - 1]
+        const notify = {
+            info: 'notify.new_comment',
+            name: user.name, //보내는사람
+            type: 'Topster',
+            link: `/topsters/${object._id}`,
+            uid: object.uid, //받는사람
+            _id: createdReply._id
+        }
+        await Account.updateOne({ _id: notify.uid }, { $push: { notify } })
+    }
     return NextResponse.json(object, { status: 201 }) // 201 Created
 }
 
