@@ -27,6 +27,6 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
     journal.replies = journal.replies.filter((reply: IReply) => reply._id.toString() !== replyId)
     await journal.save()
     const objectReplyId = new mongoose.Types.ObjectId(replyId)
-    await Account.updateOne({ _id: journal.toObject().uid }, { $pull: { notify: { _id: objectReplyId } } })
+    await Account.updateOne({ _id: journal.uid }, { $pull: { notify: { _id: objectReplyId } } })
     return NextResponse.json('OK', { status: 200 })
 }
