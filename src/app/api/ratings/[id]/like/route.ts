@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { connectDB } from '@/libs/api-server/mongoose'
 import { findUserByCookie } from '@/libs/utils/password'
 import { Rating } from '@/models/rating-schema.model'
+import { Account } from '@/models/account-schema.model'
 
 
 export const POST = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
@@ -20,6 +21,16 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ id:
     }
     rating.likedUids.push(user._id.toString())
     await rating.save()
+    if (rating.uid !== user._id.toString()) { //본인 글의 like가 아닌경우
+        const notify = {
+            info: 'notify.new_like',
+            name: user.name, //보내는사람
+            type: 'Rating',
+            link: `/detail/${rating.type}/${rating.spotifyId}`,
+            uid: user._id.toString()
+        }
+        await Account.updateOne({ _id: rating.uid }, { $push: { notify } })
+    }
     return NextResponse.json('OK', { status: 200 })
 }
 
@@ -39,5 +50,6 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
     }
     rating.likedUids = rating.likedUids.filter((uid: string) => uid !== user._id.toString())
     await rating.save()
+    await Account.updateOne({ _id: rating.uid }, { $pull: { notify: { uid: user._id.toString() } } })
     return NextResponse.json('OK', { status: 200 })
 }
