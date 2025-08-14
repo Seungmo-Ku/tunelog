@@ -12,20 +12,24 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
     const { searchParams } = new URL(req.url)
     const limit = !isEmpty(searchParams.get('limit')) ? parseInt(searchParams.get('limit')!, 10) : 10
     const cursor = searchParams.get('cursor') // updatedAt 값 (ISO string)
-    const type = (searchParams.get('type') ?? 'all') as 'journal' | 'rating' | 'topster' | 'all'
+    const objectTypeFilter = (searchParams.get('type') ?? 'all') as 'journal' | 'rating' | 'topster' | 'all'
     const sort = (searchParams.get('sort') ?? 'newest') as 'newest' | 'oldest'
-    const filter = (searchParams.get('filter') ?? 'all') as 'all' | 'following'
+    const followingFilter = (searchParams.get('filter') ?? 'all') as 'all' | 'following'
+    const uidFilter = (searchParams.get('uid') ?? null) as string | null
+    const dateFilter = searchParams.get('date') as string | null
     
     await connectDB()
     
     const sortDirection = sort === 'newest' ? -1 : 1
     
-    const cursorQuery = cursor
-                        ? { createdAt: { [sort === 'newest' ? '$lt' : '$gt']: new Date(cursor) } }
-                        : {}
+    const createdAtQuery: Record<string, Date> = {}
+    
+    if (cursor) {
+        createdAtQuery[sort === 'newest' ? '$lt' : '$gt'] = new Date(cursor)
+    }
     
     const user = await findUserByCookie()
-    if (!user && filter === 'following') {
+    if (!user && followingFilter === 'following') {
         return NextResponse.json({
             data: [],
             nextCursor: null
@@ -39,18 +43,34 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
     ] : [
         { public: true, onlyFollowers: false }
     ]
+    const uidQuery = uidFilter ? { uid: uidFilter } : {}
+    
+    if (dateFilter) {
+        const [year, month] = dateFilter.split('-').map(Number)
+        const startOfMonth = new Date(year, month - 1, 1, 0, 0, 0, 0)
+        const endOfMonth = new Date(year, month, 0, 23, 59, 59, 999)
+        
+        createdAtQuery['$gte'] = startOfMonth
+        createdAtQuery['$lte'] = endOfMonth
+    }
+    
     const baseQuery = {
         ...deletionQuery,
+        ...uidQuery,
         $or: accessConditionQuery
     }
-    const userQuery = (filter === 'all' || !user) ? {} : { uid: { $in: user.followingUids } }
+    const userQuery = (followingFilter === 'all' || !user) ? {} : { uid: { $in: user.followingUids } }
     
-    const finalQuery = { ...baseQuery, ...cursorQuery, ...userQuery }
+    const finalQuery = {
+        ...baseQuery,
+        ...userQuery,
+        ...(Object.keys(createdAtQuery).length > 0 ? { createdAt: createdAtQuery } : {})
+    }
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let results: any[] = []
     
-    if (type === 'all') {
+    if (objectTypeFilter === 'all') {
         const pipeline: PipelineStage[] = [
             { $match: finalQuery },
             { $addFields: { itemType: 'rating' } },
@@ -86,7 +106,7 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
         }))
     } else {
         let model
-        switch (type) {
+        switch (objectTypeFilter) {
             case 'rating':
                 model = Rating
                 break
@@ -105,7 +125,7 @@ export const GET = async (req: NextRequest) => { // 모든 커뮤니티 게시�
                                     .limit(limit)
                                     .lean()
             
-            results = data.map((object) => ({ itemType: type, item: object }))
+            results = data.map((object) => ({ itemType: objectTypeFilter, item: object }))
         }
     }
     

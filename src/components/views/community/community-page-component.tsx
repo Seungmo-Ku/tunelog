@@ -85,7 +85,7 @@ export const CommunityPageComponent = ({
         }
     }, [])
     
-    const { data: communityItemsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useGetCommunityItems(10, selectedFilter, selectedSorting, selectedFollowing)
+    const { data: communityItemsData, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useGetCommunityItems(10, selectedFilter, selectedSorting, selectedFollowing, null, null)
     
     const communityItems: CommunityItem[] = useMemo(() => {
         if (isLoading) return []

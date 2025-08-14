@@ -151,7 +151,7 @@ export const CardAccount = ({
                                 <p className='text-18-regular text-black'>{objectCount?.topsterCount ?? 0}</p>
                             </div>
                         </div>
-                        <ActivityCalendar account={account} isMyAccount={isMyAccount}/>
+                        <ActivityCalendar account={account}/>
                         <div className='pt-4 mt-4 border-t border-gray-700 text-12-regular text-gray-500'>
                             <p>Account created: {new Date(account.createdAt).toLocaleDateString()}</p>
                             <p>Last updated: {new Date(account.updatedAt).toLocaleDateString()}</p>
