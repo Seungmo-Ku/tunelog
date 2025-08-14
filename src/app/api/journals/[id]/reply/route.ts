@@ -41,10 +41,10 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ id:
             name: user.name, //보내는사람
             type: 'Journal',
             link: `/journals/${object._id}`,
-            uid: object.uid, //받는사람
+            uid: user._id.toString(),
             _id: createdReply._id
         }
-        await Account.updateOne({ _id: notify.uid }, { $push: { notify } })
+        await Account.updateOne({ _id: object.uid }, { $push: { notify } })
     }
     return NextResponse.json(object, { status: 201 }) // 201 Created
 }
