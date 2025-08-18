@@ -108,7 +108,7 @@ export const ActivityCalendar = ({
                         {
                             itemsForDay.length > 0 && (
                                 <div className='aspect-square p-1 shrink-0'>
-                                    <ActivityCalendarImages item={itemsForDay[0]}/>
+                                    <ActivityCalendarImages item={itemsForDay}/>
                                 </div>
                             )
                         }

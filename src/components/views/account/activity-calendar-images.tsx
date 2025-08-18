@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'
 
 
 export interface ActivityCalendarImagesProps {
-    item: CommunityItem | null | undefined
+    item: CommunityItem[] | null | undefined
 }
 
 export const ActivityCalendarImages = ({
@@ -21,17 +21,22 @@ export const ActivityCalendarImages = ({
     const [imageType, setImageType] = useState<'artist' | 'track' | 'album' | null>(null)
     const [imageSpotifyId, setImageSpotifyId] = useState<string>('')
     
+    const length = useMemo(() => {
+        if (!item) return 0
+        return item.length
+    }, [item])
+    
     useEffect(() => {
-        if (!item || !item.item) return
+        if (!item || !item[0].item) return
         
-        switch (item.type) {
+        switch (item[0].type) {
             case 'rating':
-                const rating = item.item as IRating
+                const rating = item[0].item as IRating
                 setImageType(rating.type)
                 setImageSpotifyId(rating.spotifyId)
                 break
             case 'journal':
-                const journal = item.item as Journal
+                const journal = item[0].item as Journal
                 const subject = journal.subjects[0]
                 setImageType(subject.type)
                 setImageSpotifyId(subject.spotifyId)
@@ -45,7 +50,8 @@ export const ActivityCalendarImages = ({
     const { data: artist, isLoading: isArtistLoading } = useGetArtistQuery(imageType === 'artist' ? imageSpotifyId : '')
     
     const imageUrl = useMemo(() => {
-        if (item?.type === 'topster') return (item.item as Topster).components[0].imageUrl
+        if (!item || !item[0] || !item[0].item) return undefined
+        if (item[0].type === 'topster') return (item[0].item as Topster).components[0].imageUrl
         switch (imageType) {
             case 'track':
                 return !isTrackLoading && track ? track.album?.images?.[0]?.url : undefined
@@ -54,7 +60,7 @@ export const ActivityCalendarImages = ({
             case 'artist':
                 return !isArtistLoading && artist ? artist.images?.[0]?.url : undefined
         }
-    }, [album, artist, imageType, isAlbumLoading, isArtistLoading, isTrackLoading, item?.item, item?.type, track])
+    }, [album, artist, imageType, isAlbumLoading, isArtistLoading, isTrackLoading, item, track])
     
     if (!imageUrl || isTrackLoading || isAlbumLoading || isArtistLoading) {
         return (
@@ -62,25 +68,37 @@ export const ActivityCalendarImages = ({
         )
     }
     return (
-        <img
+        <div
+            className='aspect-square shrink-0 cursor-pointer transition active:scale-95 relative'
             {...props}
-            alt={imageSpotifyId}
-            src={imageUrl}
-            className='aspect-square shrink-0 cursor-pointer transition active:scale-95'
             onClick={() => {
-                if (!item || !item.item) return
-                switch (item.type) {
+                if (!item || !item[0].item) return
+                switch (item[0].type) {
                     case 'rating':
-                        appRouter.push(`/ratings/user/${item.item.uid}`)
+                        const rating = item[0].item as IRating
+                        appRouter.push(`/detail/${rating.type}/${rating.spotifyId}`)
                         break
                     case 'journal':
-                        appRouter.push(`/journals/${(item.item as Journal)._id}`)
+                        appRouter.push(`/journals/${(item[0].item as Journal)._id}`)
                         break
                     case 'topster':
-                        appRouter.push(`/topsters/${(item.item as Topster)._id}`)
+                        appRouter.push(`/topsters/${(item[0].item as Topster)._id}`)
                         break
                 }
             }}
-        />
+        >
+            <img
+                alt={imageSpotifyId}
+                src={imageUrl}
+                className='aspect-square'
+            />
+            {
+                length > 1 && (
+                    <div className='absolute bottom-0 right-0 bg-black/50 text-white text-xs px-2 py-1 rounded-tl-lg'>
+                        {length}
+                    </div>
+                )
+            }
+        </div>
     )
 }
