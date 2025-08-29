@@ -8,6 +8,5 @@ export const GET = async () => {
     if (!user) {
         return new Response(JSON.stringify({ error: 'User not found' }), { status: 404 })
     }
-    delete user.password
     return new Response(JSON.stringify(user), { status: 200 })
 }
