@@ -15,6 +15,5 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ uid:
         return new Response(JSON.stringify({ error: 'User not found' }), { status: 404 })
     }
     const newUser = user.toObject()
-    delete newUser.password
     return new Response(JSON.stringify(newUser), { status: 200 })
 }
