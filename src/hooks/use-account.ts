@@ -118,3 +118,10 @@ export const useUnfollowUser = (id: string) => {
         }
     })
 }
+export const useGetNotify = () => {
+    const { status, me } = useAccount()
+    return useQuery({
+        queryKey: ['user-notify', status, me?._id ?? ''],
+        queryFn: () => ApiAccount._get_notify()
+    })
+}

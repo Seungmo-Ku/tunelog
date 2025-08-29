@@ -1,6 +1,6 @@
 import { Account } from '@/libs/interfaces/account.interface'
 import axios from 'axios'
-import { AccountLoginDto, AccountRegisterDto, AccountResponse, ObjectCountResponse } from '@/libs/dto/account.dto'
+import { AccountLoginDto, AccountNotify, AccountRegisterDto, AccountResponse, ObjectCountResponse } from '@/libs/dto/account.dto'
 import { DataConnection } from '@/libs/dto/rating.dto'
 
 
@@ -81,7 +81,7 @@ const ApiAccount = {
             const params = new URLSearchParams()
             params.append('limit', limit.toString())
             if (nextCursor) params.append('cursor', nextCursor)
-
+            
             const { data } = await axios.get<DataConnection<AccountResponse>>(`/api/accounts/${id}/following?${params.toString()}`)
             if (!data) return null
             return data
@@ -134,6 +134,18 @@ const ApiAccount = {
                 return false
             }
             return false
+        }
+    },
+    _get_notify: async (): Promise<AccountNotify | null> => {
+        try {
+            const response = await axios.get(`/api/accounts/me/get-notify`)
+            if (response.status !== 200) {
+                return null
+            } else {
+                return response.data as AccountNotify
+            }
+        } catch {
+            return null
         }
     }
 }
