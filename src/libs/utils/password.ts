@@ -32,7 +32,7 @@ export const findUserByCookie = async () => {
     } catch {
         return null
     }
-    const user = await Account.findById(payload.sub).select('-password')
+    const user = await Account.findById(payload.sub).select('-password -notify')
     if (!user) {
         return null
     }
