@@ -66,13 +66,13 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ uid
         info: 'notify.following',
         name: followedUser.name,
         uid: followedUser._id.toString(),
-        link: `accounts/${followedUser._id.toString()}`
+        link: `/account/${followedUser._id.toString()}`
     }
     const newNotifyOnFollowed = {
         info: 'notify.followed',
         name: followingUser.name,
         uid: followingUser._id.toString(),
-        link: `accounts/${followingUser._id.toString()}`
+        link: `/account/${followingUser._id.toString()}`
     }
     followingUser.notify.push(newNotifyOnFollowing)
     followedUser.notify.push(newNotifyOnFollowed)
