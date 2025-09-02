@@ -10,7 +10,7 @@ import { clsx } from 'clsx'
 import { useRouter } from 'next/navigation'
 import { DialogSettingsAtom } from '@/components/dialogs/dialog-settings'
 import { Popover } from '@base-ui-components/react/popover'
-import { NotificationContainer } from '@/components/panels/notification-container'
+import { PopoverNotificationContainer } from '@/components/popovers/popover-notification-container'
 import { ArrowSvg } from '@/stories/assets/arrow'
 
 
@@ -82,7 +82,6 @@ export const useNavbarAuth = () => {
                                 <component.Icon
                                     key={`icon-${index}`}
                                     className={clsx('w-[22px] h-[22px] cursor-pointer shrink-0 text-[#EFEEE0] opacity-25')}
-                                    //onClick={() => component.onClick()}
                                 />
                             </Popover.Trigger>
                             <Popover.Portal>
@@ -91,7 +90,7 @@ export const useNavbarAuth = () => {
                                         <Popover.Arrow className='data-[side=bottom]:top-[-8px] data-[side=left]:right-[-13px] data-[side=left]:rotate-90 data-[side=right]:left-[-13px] data-[side=right]:-rotate-90 data-[side=top]:bottom-[-8px] data-[side=top]:rotate-180'>
                                             <ArrowSvg/>
                                         </Popover.Arrow>
-                                        <NotificationContainer/>
+                                        <PopoverNotificationContainer/>
                                     </Popover.Popup>
                                 </Popover.Positioner>
                             </Popover.Portal>

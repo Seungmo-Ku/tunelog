@@ -1,14 +1,14 @@
 'use client'
 
-import { Notification } from '@/components/panels/notification'
+import { PopoverNotification } from '@/components/popovers/popover-notification'
 import { useGetNotify } from '@/hooks/use-account'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { atom, useAtom } from 'jotai'
 
 
 export const NotifyLengthAtom = atom(0)
 
-export const NotificationContainer = () => {
+export const PopoverNotificationContainer = () => {
     const { data: notify, isLoading: isAccountLoading } = useGetNotify()
     const [arrayLength, setArrayLength] = useAtom(NotifyLengthAtom)
     
@@ -16,23 +16,26 @@ export const NotificationContainer = () => {
         if (isAccountLoading || notify === undefined || notify === null) {
             return []
         } else {
-            setArrayLength(notify.length)
             return notify
         }
-    }, [notify, isAccountLoading, setArrayLength])
+    }, [notify, isAccountLoading])
     
-    if (notifyArray === undefined || notifyArray === null || arrayLength === 0) {
+    useEffect(() => {
+        setArrayLength(notifyArray.length)
+    },[setArrayLength, notifyArray])
+    
+    if (arrayLength === 0) {
         return (
             <div>
-                There is no new notification
+                {isAccountLoading ? <div>Loading notification...</div>: <div>There is no new notification</div>}
             </div>
         )
     } else return (
-        <div className='w-80 min-h-10 max-h-45 overflow-y-scroll'>
+        <div className='w-80 min-h-10 max-h-35 overflow-y-scroll'>
             {
                 notifyArray.map((notification, index) => {
                     return (
-                        <Notification notification={notification} key={index}/>
+                        <PopoverNotification notification={notification} key={index}/>
                     )
                 })
             }
