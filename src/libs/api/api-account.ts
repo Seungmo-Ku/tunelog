@@ -138,7 +138,7 @@ const ApiAccount = {
     },
     _get_notify: async (): Promise<AccountNotify | null> => {
         try {
-            const response = await axios.get(`/api/accounts/me/get-notify`)
+            const response = await axios.get(`/api/accounts/me/notify`)
             if (response.status !== 200) {
                 return null
             } else {
@@ -146,6 +146,14 @@ const ApiAccount = {
             }
         } catch {
             return null
+        }
+    },
+    _check_notify: async (id: string): Promise<boolean> => {
+        try {
+            const response = await axios.patch(`/api/accounts/me/notify/${id}`)
+            return response.status === 200
+        } catch {
+            return false
         }
     }
 }

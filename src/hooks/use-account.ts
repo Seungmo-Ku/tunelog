@@ -125,3 +125,12 @@ export const useGetNotify = () => {
         queryFn: () => ApiAccount._get_notify()
     })
 }
+export const useCheckNotify = (id: string) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async () => ApiAccount._check_notify(id),
+        onSuccess: () => {
+            invalidateQueries(queryClient)
+        }
+    })
+}
