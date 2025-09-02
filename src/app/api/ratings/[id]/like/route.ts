@@ -50,6 +50,6 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
     }
     rating.likedUids = rating.likedUids.filter((uid: string) => uid !== user._id.toString())
     await rating.save()
-    await Account.updateOne({ _id: rating.uid }, { $pull: { notify: { uid: user._id.toString(), link: `/detail/${rating.type}/${rating.spotifyId}` } } })
+    await Account.updateOne({ _id: rating.uid }, { $pull: { notify: { uid: user._id.toString(), info:'notify.new_like', link: `/detail/${rating.type}/${rating.spotifyId}` } } })
     return NextResponse.json('OK', { status: 200 })
 }
