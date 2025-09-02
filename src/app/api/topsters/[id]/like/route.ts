@@ -50,6 +50,6 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
     }
     topster.likedUids = topster.likedUids.filter((uid: string) => uid !== user._id.toString())
     await topster.save()
-    await Account.updateOne({ _id: topster.uid }, { $pull: { notify: { uid: user._id.toString(), info:'notify.new_like', link: `/topsters/${id}` } } })
+    await Account.updateOne({ _id: topster.uid }, { $pull: { notify: { uid: user._id.toString(), info: 'notify.new_like', link: `/topsters/${id}` } } })
     return NextResponse.json('OK', { status: 200 })
 }

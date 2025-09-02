@@ -22,12 +22,12 @@ export const PopoverNotificationContainer = () => {
     
     useEffect(() => {
         setArrayLength(notifyArray.length)
-    },[setArrayLength, notifyArray])
+    }, [setArrayLength, notifyArray])
     
     if (arrayLength === 0) {
         return (
             <div>
-                {isAccountLoading ? <div>Loading notification...</div>: <div>There is no new notification</div>}
+                {isAccountLoading ? <div>Loading notification...</div> : <div>There is no new notification</div>}
             </div>
         )
     } else return (
