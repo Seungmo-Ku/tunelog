@@ -9,9 +9,7 @@ import { DialogLoginAtom } from '@/components/dialogs/dialog-login'
 import { clsx } from 'clsx'
 import { useRouter } from 'next/navigation'
 import { DialogSettingsAtom } from '@/components/dialogs/dialog-settings'
-import { Popover } from '@base-ui-components/react/popover'
-import { PopoverNotificationContainer } from '@/components/popovers/popover-notification-container'
-import { ArrowSvg } from '@/stories/assets/arrow'
+import { PopoverContainer } from '@/components/popovers/popover-container'
 
 
 export interface NavbarAuthProps {
@@ -43,10 +41,6 @@ export const useNavbarAuth = () => {
             Icon: User,
             show: status !== AccountStatus.guest,
             onClick: () => {
-                // openDialogLogout(prev => ({
-                //     ...prev,
-                //     open: true
-                // }))
                 appRouter.push('/account/me')
             },
             title: 'Account Info'
@@ -54,8 +48,6 @@ export const useNavbarAuth = () => {
         {
             Icon: Bell,
             show: status !== AccountStatus.guest,
-            onClick: () => {
-            },
             title: 'Notifications'
         },
         {
@@ -77,24 +69,8 @@ export const useNavbarAuth = () => {
                 {navbarAuthComponents.map((component, index) => {
                     if (!component.show) return null
                     else if (component.title === 'Notifications') return (
-                        <Popover.Root key={`icon-${index}`}>
-                            <Popover.Trigger>
-                                <component.Icon
-                                    key={`icon-${index}`}
-                                    className={clsx('w-[22px] h-[22px] cursor-pointer shrink-0 text-[#EFEEE0] opacity-25')}
-                                />
-                            </Popover.Trigger>
-                            <Popover.Portal>
-                                <Popover.Positioner side={'right'} sideOffset={8}>
-                                    <Popover.Popup className='origin-[var(--transform-origin)] rounded-lg bg-[canvas] px-6 py-4 text-gray-900 shadow-lg shadow-gray-200 outline-1 outline-gray-200 transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0 dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300'>
-                                        <Popover.Arrow className='data-[side=bottom]:top-[-8px] data-[side=left]:right-[-13px] data-[side=left]:rotate-90 data-[side=right]:left-[-13px] data-[side=right]:-rotate-90 data-[side=top]:bottom-[-8px] data-[side=top]:rotate-180'>
-                                            <ArrowSvg/>
-                                        </Popover.Arrow>
-                                        <PopoverNotificationContainer/>
-                                    </Popover.Popup>
-                                </Popover.Positioner>
-                            </Popover.Portal>
-                        </Popover.Root>
+                        <PopoverContainer key={`icon-${index}`} direction={'right'} trigger={<component.Icon
+                            key={`icon-${index}`} className={clsx('w-[22px] h-[22px] cursor-pointer shrink-0 text-[#EFEEE0] opacity-25')}/>}/>
                     )
                     return (
                         <component.Icon
