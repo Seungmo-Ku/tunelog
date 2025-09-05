@@ -58,7 +58,7 @@ export const DialogMobileRightDrawer = ({
                             <div className='w-full flex flex-col gap-y-1 items-start'>
                                 {
                                     components.map((component, index) => {
-                                        if (!component.show) return null
+                                        if (!component.show || component.title === 'Notifications') return null
                                         return (
                                             <div key={`mobile-navbar-${index}`}>
                                                 <button
