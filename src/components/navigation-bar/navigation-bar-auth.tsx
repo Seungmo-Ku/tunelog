@@ -48,6 +48,8 @@ export const useNavbarAuth = () => {
         {
             Icon: Bell,
             show: status !== AccountStatus.guest,
+            onClick: () => {
+            },
             title: 'Notifications'
         },
         {

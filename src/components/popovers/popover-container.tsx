@@ -5,7 +5,7 @@ import React from 'react'
 
 
 export interface PopoverProps {
-    trigger: react.ReactNode
+    trigger: React.ReactNode
     direction: 'top' | 'bottom' | 'left' | 'right'
 }
 
