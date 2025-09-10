@@ -9,7 +9,8 @@ import { DialogLoginAtom } from '@/components/dialogs/dialog-login'
 import { clsx } from 'clsx'
 import { useRouter } from 'next/navigation'
 import { DialogSettingsAtom } from '@/components/dialogs/dialog-settings'
-import { PopoverContainer } from '@/components/popovers/popover-container'
+import { PopoverDefault } from '@/components/popovers/popover-default'
+import { PopoverNotificationContainer } from '@/components/popovers/popover-notification-container'
 
 
 export interface NavbarAuthProps {
@@ -71,8 +72,9 @@ export const useNavbarAuth = () => {
                 {navbarAuthComponents.map((component, index) => {
                     if (!component.show) return null
                     else if (component.title === 'Notifications') return (
-                        <PopoverContainer key={`icon-${index}`} direction={'right'} trigger={<component.Icon
-                            key={`icon-${index}`} className={clsx('w-[22px] h-[22px] cursor-pointer shrink-0 text-[#EFEEE0] opacity-25')}/>}/>
+                        <PopoverDefault key={`icon-${index}`} direction={'right'} trigger={<component.Icon
+                            key={`icon-${index}`} className={clsx('w-[22px] h-[22px] cursor-pointer shrink-0 text-[#EFEEE0] opacity-25')}/>}
+                                        popup={<PopoverNotificationContainer/>}/>
                     )
                     return (
                         <component.Icon

@@ -1,15 +1,15 @@
 import { ArrowSvg } from '@/stories/assets/arrow'
-import { PopoverNotificationContainer } from '@/components/popovers/popover-notification-container'
 import { Popover } from '@base-ui-components/react/popover'
 import React from 'react'
 
 
 export interface PopoverProps {
     trigger: React.ReactNode
+    popup: React.ReactNode
     direction: 'top' | 'bottom' | 'left' | 'right'
 }
 
-export const PopoverContainer = ({ trigger, direction }: PopoverProps) => {
+export const PopoverDefault = ({ trigger, popup, direction }: PopoverProps) => {
     return (
         <Popover.Root>
             <Popover.Trigger>
@@ -21,7 +21,7 @@ export const PopoverContainer = ({ trigger, direction }: PopoverProps) => {
                         <Popover.Arrow className='data-[side=bottom]:top-[-8px] data-[side=left]:right-[-13px] data-[side=left]:rotate-90 data-[side=right]:left-[-13px] data-[side=right]:-rotate-90 data-[side=top]:bottom-[-8px] data-[side=top]:rotate-180'>
                             <ArrowSvg/>
                         </Popover.Arrow>
-                        <PopoverNotificationContainer/>
+                        {popup}
                     </Popover.Popup>
                 </Popover.Positioner>
             </Popover.Portal>
