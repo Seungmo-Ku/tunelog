@@ -17,7 +17,7 @@ export const SearchBarDefault = ({
     ...props
 }: SearchBarDefaultProps) => {
     return (
-        <div {...props} className={clsx('w-full h-[72px] flex bg-opacity-25 items-center justify-start md:pl-[27px] pl-3 gap-x-5 text-14-regular', className)}>
+        <div {...props} className={clsx('w-full h-[72px] flex bg-opacity-25 items-center justify-start md:pl-[27px] pl-3 gap-x-5 text-16-regular', className)}>
             <Search className='text-white/25 w-4 h-4 md:flex hidden'/>
             <Input
                 type='text'
