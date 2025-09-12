@@ -74,6 +74,8 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ uid
         uid: followingUser._id.toString(),
         link: `/account/${followingUser._id.toString()}`
     }
+    if(!followingUser.notify) followingUser.notify = []
+    if(!followedUser.notify) followedUser.notify = []
     followingUser.notify.push(newNotifyOnFollowing)
     followedUser.notify.push(newNotifyOnFollowed)
     await followedUser.save()
@@ -105,8 +107,8 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ u
     followedUser.followerUids = followedUser.followerUids.filter((uid: string) => uid !== followingUser._id.toString())
     followingUser.followingUids = followingUser.followingUids.filter((uid: string) => uid !== followedUser._id.toString())
     
-    followedUser.notify = followedUser.notify.filter((notify: Partial<INotify>) => !(notify?.uid === followingUser._id.toString() && notify?.info === 'notify.followed'))
-    followingUser.notify = followingUser.notify.filter((notify: Partial<INotify>) => !(notify?.uid === followedUser._id.toString() && notify?.info === 'notify.following'))
+    followedUser.notify = followedUser.notify?.filter((notify: Partial<INotify>) => !(notify?.uid === followingUser._id.toString() && notify?.info === 'notify.followed'))
+    followingUser.notify = followingUser.notify?.filter((notify: Partial<INotify>) => !(notify?.uid === followedUser._id.toString() && notify?.info === 'notify.following'))
     
     await followedUser.save()
     await followingUser.save()
