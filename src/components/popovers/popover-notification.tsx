@@ -35,7 +35,7 @@ export const PopoverNotification = ({
                            }}>
                 {t(notification.info, { name: notification.name, type: notification.type })}
             </Popover.Close>
-            <X className='hover:cursor-pointer text-red-500 size-6'
+            <X className='hover:cursor-pointer text-red-500 size-6 active:scale-[0.95] transition-transform'
                onClick={() => {
                    handleUpdate()
                }}/>

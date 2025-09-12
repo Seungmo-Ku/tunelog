@@ -24,7 +24,7 @@ export const PopoverNotificationContainer = () => {
             </div>
         )
     } else return (
-        <div className='w-75 min-h-8 max-h-35 overflow-y-scroll'>
+        <div className='w-75 min-h-8 max-h-33 overflow-y-scroll'>
             {
                 array.map((notification, index) => {
                     return (
