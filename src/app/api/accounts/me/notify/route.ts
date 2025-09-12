@@ -26,6 +26,11 @@ export const GET = async () => {
                     }
                 },
                 {
+                    $sort: {
+                        'notify.createdAt': -1
+                    }
+                },
+                {
                     $replaceRoot: {
                         newRoot: '$notify'
                     }
