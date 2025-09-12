@@ -28,17 +28,14 @@ export const PopoverNotification = ({
     
     return (
         <div className='flex'>
-            <Popover.Close className='w-max-80 overflow-y-scroll mb-2 hover:cursor-pointer border-b-1'
+            <Popover.Close className='w-max-80 active:scale-[0.95] transition-transform overflow-y-scroll box-border mb-1 hover:cursor-pointer border-b hover:border-white border-transparent'
                            onClick={() => {
-                               if (notification.link !== undefined) {
-                                   appRouter.push(notification.link)
-                                   
-                               }
+                               if (notification.link !== undefined) appRouter.push(notification.link)
                                handleUpdate()
                            }}>
                 {t(notification.info, { name: notification.name, type: notification.type })}
-            <X className='hover:cursor-pointer hover:bg-gray-200 text-red-500 size-6'
             </Popover.Close>
+            <X className='hover:cursor-pointer text-red-500 size-6'
                onClick={() => {
                    handleUpdate()
                }}/>
