@@ -2,18 +2,26 @@
 
 import { PopoverNotification } from '@/components/popovers/popover-notification'
 import { useGetNotify } from '@/hooks/use-account'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { INotify } from '@/libs/interfaces/account.interface'
+import { useInView } from 'react-intersection-observer'
 
 
 export const PopoverNotificationContainer = () => {
-    const { data: notify, isLoading: isAccountLoading } = useGetNotify()
+    const { data: notify, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isAccountLoading } = useGetNotify(4)
     const [array, setArray] = useState<INotify[]>([])
+    const { ref, inView } = useInView()
+    
+    useEffect(() => {
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage()
+        }
+    }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage])
     
     useMemo(() => {
         if (isAccountLoading || notify === undefined || notify === null) {
         } else {
-            setArray(notify)
+            setArray(notify.pages.flatMap(page => page.data))
         }
     }, [notify, isAccountLoading, setArray])
     
@@ -24,7 +32,7 @@ export const PopoverNotificationContainer = () => {
             </div>
         )
     } else return (
-        <div className='w-75 min-h-8 max-h-33 overflow-y-scroll'>
+        <div className='w-75 min-h-8 max-h-25 overflow-y-scroll'>
             {
                 array.map((notification, index) => {
                     return (
@@ -32,6 +40,7 @@ export const PopoverNotificationContainer = () => {
                     )
                 })
             }
+            <div ref={ref}/>
         </div>
     )
 }

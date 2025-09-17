@@ -9,4 +9,4 @@ export type AccountResponse = IAccount
 
 export type ObjectCountResponse = IObjectCount
 
-export type AccountNotify = INotify[]
+export type NotifyResponse = INotify

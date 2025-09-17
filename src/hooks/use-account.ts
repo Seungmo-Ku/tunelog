@@ -118,11 +118,16 @@ export const useUnfollowUser = (id: string) => {
         }
     })
 }
-export const useGetNotify = () => {
+export const useGetNotify = (limit: number = 4) => {
     const { status, me } = useAccount()
-    return useQuery({
-        queryKey: ['user-notify', status, me?._id ?? ''],
-        queryFn: () => ApiAccount._get_notify()
+    return useInfiniteQuery<DataConnection<NotifyResponse>, Error>({
+        queryKey: ['user-notify', limit, status, me?._id ?? ''],
+        queryFn: async ({ pageParam }) => {
+            const cursor = typeof pageParam === 'string' ? pageParam : ''
+            return await ApiAccount._get_notify(limit, cursor) ?? { data: [], nextCursor: undefined }
+        },
+        initialPageParam: '',
+        getNextPageParam: (lastPage) => lastPage?.nextCursor
     })
 }
 export const useCheckNotify = (id: string) => {
