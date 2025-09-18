@@ -24,3 +24,20 @@ export const PATCH = async (req: NextRequest, { params }: { params: Promise<{ id
         }
     }
 }
+
+export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+    await connectDB()
+    const { id } = await params
+    const uid = await findUserIdByCookie()
+    if (!uid) {
+        return new Response(JSON.stringify({ error: 'User not found' }), { status: 404 })
+    } else {
+        try {
+            await Account.updateOne({ _id: new mongoose.Types.ObjectId(uid) }, { $pull: { notify: { _id: new mongoose.Types.ObjectId(id) } } })
+            return NextResponse.json({ status: 200 })
+        } catch (error) {
+            console.error('Error deleting notification:', error)
+            throw error
+        }
+    }
+}

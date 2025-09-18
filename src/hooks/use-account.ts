@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import ApiAccount from '@/libs/api/api-account'
-import { AccountLoginDto, AccountRegisterDto, AccountResponse } from '@/libs/dto/account.dto'
+import { AccountLoginDto, AccountRegisterDto, AccountResponse, NotifyResponse } from '@/libs/dto/account.dto'
 import { QueryClient } from '@tanstack/query-core'
 import { DataConnection } from '@/libs/dto/rating.dto'
 import { isEmpty } from 'lodash'
@@ -134,6 +134,15 @@ export const useCheckNotify = (id: string) => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: async () => ApiAccount._check_notify(id),
+        onSuccess: () => {
+            invalidateQueries(queryClient)
+        }
+    })
+}
+export const useDeleteNotify = (id: string) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async () => ApiAccount._delete_notify(id),
         onSuccess: () => {
             invalidateQueries(queryClient)
         }
