@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import ApiAccount from '@/libs/api/api-account'
-import { AccountLoginDto, AccountRegisterDto, AccountResponse } from '@/libs/dto/account.dto'
+import { AccountLoginDto, AccountRegisterDto, AccountResponse, NotifyResponse } from '@/libs/dto/account.dto'
 import { QueryClient } from '@tanstack/query-core'
 import { DataConnection } from '@/libs/dto/rating.dto'
 import { isEmpty } from 'lodash'
@@ -115,6 +115,36 @@ export const useUnfollowUser = (id: string) => {
             queryClient.invalidateQueries({ queryKey: ['user-follower'] })
             queryClient.invalidateQueries({ queryKey: ['me'] })
             queryClient.invalidateQueries({ queryKey: ['user-by-id', id] })
+        }
+    })
+}
+export const useGetNotify = (limit: number = 4) => {
+    const { status, me } = useAccount()
+    return useInfiniteQuery<DataConnection<NotifyResponse>, Error>({
+        queryKey: ['user-notify', limit, status, me?._id ?? ''],
+        queryFn: async ({ pageParam }) => {
+            const cursor = typeof pageParam === 'string' ? pageParam : ''
+            return await ApiAccount._get_notify(limit, cursor) ?? { data: [], nextCursor: undefined }
+        },
+        initialPageParam: '',
+        getNextPageParam: (lastPage) => lastPage?.nextCursor
+    })
+}
+export const useCheckNotify = (id: string) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async () => ApiAccount._check_notify(id),
+        onSuccess: () => {
+            invalidateQueries(queryClient)
+        }
+    })
+}
+export const useDeleteNotify = (id: string) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async () => ApiAccount._delete_notify(id),
+        onSuccess: () => {
+            invalidateQueries(queryClient)
         }
     })
 }

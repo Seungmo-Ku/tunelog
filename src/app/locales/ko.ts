@@ -68,6 +68,13 @@ const ko = {
         guest: '로그인 후 좋아요를 눌러주세요',
         error: '좋아요를 누르는 데 실패했어요. 다시 시도해주세요.',
     },
+    notify: {
+        followed: '{{ name }} 이(가) 당신을 팔로우하기 시작했어요.',
+        following: '{{ name }} 을(를) 팔로우하기 시작했어요.',
+        new_from_following: '{{ name }} 이(가) 새로운 {{ type }}을(를) 게시했어요.',
+        new_comment: '{{ name }} 가 당신의 {{ type }}에 댓글을 남겼어요.',
+        new_like: '{{ name }} 가 당신의 {{ type }}을(를) 좋아요를 눌렀어요.',
+    },
     keywords: {
         rating: '레이팅',
         journal: '저널',

@@ -10,11 +10,10 @@ export const GET = async (req: NextRequest, { params }: { params: Promise<{ uid:
     if (!uid) {
         return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
     }
-    const user = await Account.findById(uid)
+    const user = await Account.findById(uid).select('-password -notify')
     if (!user || !user.isActive) {
         return new Response(JSON.stringify({ error: 'User not found' }), { status: 404 })
     }
     const newUser = user.toObject()
-    delete newUser.password
     return new Response(JSON.stringify(newUser), { status: 200 })
 }

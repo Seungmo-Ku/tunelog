@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { connectDB } from '@/libs/api-server/mongoose'
 import { findUserByCookie } from '@/libs/utils/password'
 import { Topster } from '@/models/topster-schema.model'
+import { Account } from '@/models/account-schema.model'
 
 
 export const POST = async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
@@ -20,6 +21,16 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ id:
     }
     topster.likedUids.push(user._id.toString())
     await topster.save()
+    if (topster.uid !== user._id.toString()) { //본인 글의 like가 아닌경우
+        const notify = {
+            info: 'notify.new_like',
+            name: user.name, //보내는사람
+            type: 'Topster',
+            link: `/topsters/${id}`,
+            uid: user._id.toString()
+        }
+        await Account.updateOne({ _id: topster.uid }, { $push: { notify } })
+    }
     return NextResponse.json('OK', { status: 200 })
 }
 
@@ -39,5 +50,6 @@ export const DELETE = async (req: NextRequest, { params }: { params: Promise<{ i
     }
     topster.likedUids = topster.likedUids.filter((uid: string) => uid !== user._id.toString())
     await topster.save()
+    await Account.updateOne({ _id: topster.uid }, { $pull: { notify: { uid: user._id.toString(), info: 'notify.new_like', link: `/topsters/${id}` } } })
     return NextResponse.json('OK', { status: 200 })
 }

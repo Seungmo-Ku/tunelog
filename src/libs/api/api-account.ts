@@ -1,6 +1,6 @@
 import { Account } from '@/libs/interfaces/account.interface'
 import axios from 'axios'
-import { AccountLoginDto, AccountRegisterDto, AccountResponse, ObjectCountResponse } from '@/libs/dto/account.dto'
+import { AccountLoginDto, AccountRegisterDto, AccountResponse, NotifyResponse, ObjectCountResponse } from '@/libs/dto/account.dto'
 import { DataConnection } from '@/libs/dto/rating.dto'
 
 
@@ -81,7 +81,7 @@ const ApiAccount = {
             const params = new URLSearchParams()
             params.append('limit', limit.toString())
             if (nextCursor) params.append('cursor', nextCursor)
-
+            
             const { data } = await axios.get<DataConnection<AccountResponse>>(`/api/accounts/${id}/following?${params.toString()}`)
             if (!data) return null
             return data
@@ -133,6 +133,37 @@ const ApiAccount = {
             if (axios.isAxiosError(error) && error.response?.status === 400) {
                 return false
             }
+            return false
+        }
+    },
+    _get_notify: async (limit: number = 4, nextCursor?: string): Promise<DataConnection<NotifyResponse> | null> => {
+        try {
+            const params = new URLSearchParams()
+            params.append('limit', limit.toString())
+            if (nextCursor) params.append('cursor', nextCursor)
+            const { data } = await axios.get<DataConnection<NotifyResponse>>(`/api/accounts/me/notify?${params.toString()}`)
+            if (!data) {
+                return null
+            } else {
+                return data
+            }
+        } catch {
+            return null
+        }
+    },
+    _check_notify: async (id: string): Promise<boolean> => {
+        try {
+            const response = await axios.patch(`/api/accounts/me/notify/${id}`)
+            return response.status === 200
+        } catch {
+            return false
+        }
+    },
+    _delete_notify: async (id: string): Promise<boolean> => {
+        try {
+            const response = await axios.delete(`/api/accounts/me/notify/${id}`)
+            return response.status === 200
+        } catch {
             return false
         }
     }

@@ -1,3 +1,15 @@
+export interface INotify {
+    readonly _id: string
+    info: string
+    name?: string
+    type?: string
+    link?: string
+    uid?: string
+    createdAt: Date
+    updatedAt: Date
+    checked?: boolean
+}
+
 export interface IAccount {
     readonly _id: string
     userid: string
@@ -7,6 +19,29 @@ export interface IAccount {
     updatedAt: Date
     followingUids?: string[]
     followerUids?: string[]
+    notify?: INotify[]
+}
+
+export class Notify implements INotify {
+    readonly _id: string
+    info: string
+    name?: string
+    type?: string
+    link?: string
+    createdAt: Date
+    updatedAt: Date
+    checked?: boolean
+    
+    constructor(data: INotify) {
+        this._id = data._id
+        this.info = data.info
+        this.name = data.name || ''
+        this.type = data.type || ''
+        this.link = data.link || ''
+        this.createdAt = data.createdAt
+        this.updatedAt = data.updatedAt
+        this.checked = data.checked || false
+    }
 }
 
 export class Account implements IAccount {
@@ -17,6 +52,7 @@ export class Account implements IAccount {
     updatedAt: Date
     followingUids?: string[]
     followerUids?: string[]
+    notify?: INotify[]
     
     constructor(data: IAccount) {
         this._id = data._id
@@ -26,6 +62,7 @@ export class Account implements IAccount {
         this.updatedAt = data.updatedAt
         this.followingUids = data.followingUids || []
         this.followerUids = data.followerUids || []
+        this.notify = data.notify ? data.notify.map(notify => new Notify(notify)) : []
     }
 }
 

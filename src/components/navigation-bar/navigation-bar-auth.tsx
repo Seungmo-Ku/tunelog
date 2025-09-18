@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo } from 'react'
-import { LogIn, User, Settings } from 'lucide-react'
+import { Bell, LogIn, Settings, User } from 'lucide-react'
 import { AccountStatus } from '@/libs/constants/account.constant'
 import { useAccount } from '@/libs/utils/account'
 import { useSetAtom } from 'jotai/index'
@@ -9,6 +9,8 @@ import { DialogLoginAtom } from '@/components/dialogs/dialog-login'
 import { clsx } from 'clsx'
 import { useRouter } from 'next/navigation'
 import { DialogSettingsAtom } from '@/components/dialogs/dialog-settings'
+import { PopoverDefault } from '@/components/popovers/popover-default'
+import { PopoverNotificationContainer } from '@/components/popovers/popover-notification-container'
 
 
 export interface NavbarAuthProps {
@@ -40,13 +42,16 @@ export const useNavbarAuth = () => {
             Icon: User,
             show: status !== AccountStatus.guest,
             onClick: () => {
-                // openDialogLogout(prev => ({
-                //     ...prev,
-                //     open: true
-                // }))
                 appRouter.push('/account/me')
             },
             title: 'Account Info'
+        },
+        {
+            Icon: Bell,
+            show: status !== AccountStatus.guest,
+            onClick: () => {
+            },
+            title: 'Notifications'
         },
         {
             Icon: Settings,
@@ -66,6 +71,11 @@ export const useNavbarAuth = () => {
             <div className='bg-tunelog-dark-alt rounded-[32px] flex flex-col py-[25px] px-[15px] gap-y-[31px] items-center justify-center'>
                 {navbarAuthComponents.map((component, index) => {
                     if (!component.show) return null
+                    else if (component.title === 'Notifications') return (
+                        <PopoverDefault key={`icon-${index}`} direction={'right'} trigger={<component.Icon
+                            key={`icon-${index}`} className={clsx('w-[22px] h-[22px] cursor-pointer shrink-0 text-[#EFEEE0] opacity-25')}/>}
+                                        popup={<PopoverNotificationContainer/>}/>
+                    )
                     return (
                         <component.Icon
                             key={`icon-${index}`}

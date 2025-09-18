@@ -68,6 +68,13 @@ const en = {
         guest: 'You need to log in to like this item.',
         error: 'Failed to like this item. Please try again.',
     },
+    notify: {
+        followed: '{{ name }} is now following you.',
+        following: 'You are now following {{ name }}.',
+        new_from_following: '{{ name }} has posted a new {{ type }}.',
+        new_comment: '{{ name }} commented on your {{ type }}.',
+        new_like: '{{ name }} liked your {{ type }}.',
+    },
     keywords: {
         rating: 'Rating',
         journal: 'Journal',
