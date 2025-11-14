@@ -52,6 +52,10 @@ export default function RootLayout({
     
     return (
         <html lang='en'>
+        <head>
+            <meta name='viewport' content='user-scalable=no'/>
+            <title>TUNELOG</title>
+        </head>
         <body className={`${quicksand.variable} antialiased w-screen flex items-center justify-center overflow-hidden`} style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
         <QueryClientProvider client={queryClient}>
             <div className='flex md:flex-row flex-col w-full h-full max-w-[1440px] md:px-4 overflow-hidden'>

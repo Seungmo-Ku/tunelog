@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TuneLog
+
+TuneLog is a web application built with Next.js that allows users to discover, rate, and discuss music. You can search for songs, albums, and artists, write reviews and journal entries, create personalized "Topsters" (your favorite album charts), and engage with a community of music lovers.
+
+## Features
+
+*   **Music Discovery:** Search for any song, album, or artist.
+*   **Ratings & Reviews:** Rate your favorite music and write detailed reviews.
+*   **Journals:** Write long-form journal entries about any music-related topic.
+*   **Topsters:** Create and customize your own "Topster" charts to showcase your favorite albums.
+*   **Community:** Participate in discussions and see what other users are listening to.
+*   **Internationalization:** Supports multiple languages (English, Korean, Japanese).
+
+## Tech Stack
+
+*   **Framework:** [Next.js](https://nextjs.org/)
+*   **Language:** [TypeScript](https://www.typescriptlang.org/)
+*   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+*   **UI Components:** [Headless UI](https://headlessui.dev/)
+*   **Data Fetching:** [TanStack Query](https://tanstack.com/query/latest)
+*   **Database ORM:** [Mongoose](https://mongoosejs.com/)
+*   **State Management:** [Jotai](https://jotai.org/)
+*   **Rich Text Editor:** [Tiptap](https://tiptap.dev/)
+*   **Drag & Drop:** [Dnd Kit](https://dndkit.com/)
+*   **Internationalization:** [i18next](https://www.i18next.com/)
+*   **Component Development:** [Storybook](https://storybook.js.org/)
 
 ## Getting Started
 
-First, run the development server:
+To get a local copy up and running, follow these simple steps.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Prerequisites
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+*   Node.js (v20 or later)
+*   Yarn (or npm)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Installation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1.  **Clone the repository:**
+    ```sh
+    git clone https://github.com/your-username/tunelog.git
+    cd tunelog
+    ```
 
-## Learn More
+2.  **Install dependencies:**
+    ```sh
+    yarn install
+    # or
+    npm install
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+3.  **Set up environment variables:**
+    Create a `.env.local` file in the root of the project and add the necessary environment variables (e.g., database connection string, API keys).
+    ```
+    # .env.local
+    MONGODB_URI=your_mongodb_connection_string
+    NEXTAUTH_SECRET=your_nextauth_secret
+    NEXTAUTH_URL=http://localhost:3002
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4.  **Run the development server:**
+    ```sh
+    yarn dev
+    # or
+    npm run dev
+    ```
+    The application will be available at `http://localhost:3002`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Available Scripts
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*   `yarn dev`: Runs the app in development mode.
+*   `yarn build`: Builds the app for production.
+*   `yarn start`: Starts a production server.
+*   `yarn lint`: Lints the codebase.
+*   `yarn storybook`: Runs Storybook for component development.
+*   `yarn build-storybook`: Builds the Storybook static site.
