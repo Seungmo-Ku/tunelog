@@ -1,6 +1,7 @@
 # TuneLog
 
 TuneLog is a web application built with Next.js that allows users to discover, rate, and discuss music. You can search for songs, albums, and artists, write reviews and journal entries, create personalized "Topsters" (your favorite album charts), and engage with a community of music lovers.
+Available on https://tunelog-phi.vercel.app/
 
 ## Features
 
